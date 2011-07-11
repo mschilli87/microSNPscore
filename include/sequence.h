@@ -60,6 +60,11 @@ class sequence {
 
 
   private:
+    /*****************************************************************//**
+    * @brief nucleotide sequence
+    *
+    * A vector containing the sequence's nucleotides from 5' to 3'
+    *********************************************************************/
     vector<nucleotide> nucleotides;
 
 };

@@ -55,6 +55,11 @@ class alignment {
 
 
   private:
+    /*****************************************************************//**
+    * @brief alignment columns
+    *
+    * A vector containing the alignment's columns from miRNA 5' to 3'
+    *********************************************************************/
     vector<alignmentColumn> columns;
 
 };
