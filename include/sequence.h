@@ -161,6 +161,90 @@ class nucleotide {
     *********************************************************************/
     nucleotide & operator=(const nucleotide & source);
 
+
+  private:
+    /*****************************************************************//**
+    * @brief position on chromosome
+    *
+    * This is the nucleotide's position on its chromosome, the 5' end of
+    * the + strand (i.e. the 3' end of the - strand) beeing position 1
+    *********************************************************************/
+    
+    unsigned int position;
+
+
+  public:
+    /*****************************************************************//**
+    * @brief get method for position attribute
+    *
+    * This method is used to access the position of the nucleotide on its
+    * chromosome, the 5' end of the + strand (i.e. the 3' end of the -
+    * strand) beeing position 1
+    *
+    * @return the position of the nucleotide on its chromosome
+    *********************************************************************/
+    
+    inline const unsigned int get_position() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief nucleo base
+    *
+    * This is the nucleo base of the nucleotide.
+    *********************************************************************/
+    
+    nucleoBase base;
+
+
+  public:
+    /*****************************************************************//**
+    * @brief get method for nucleo base attribute
+    *
+    * This method is used to access the nucleo base of the nucleotide
+    *
+    * @return the nucleo base of the nucleotide
+    *********************************************************************/
+    inline const nucleoBase get_base() const;
+
+};
+/*****************************************************************//**
+* @brief get method for position attribute
+*
+* This method is used to access the position of the nucleotide on its
+* chromosome, the 5' end of the + strand (i.e. the 3' end of the -
+* strand) beeing position 1
+*
+* @return the position of the nucleotide on its chromosome
+*********************************************************************/
+
+inline const unsigned int nucleotide::get_position() const {
+  return position;
+}
+
+/*****************************************************************//**
+* @brief get method for nucleo base attribute
+*
+* This method is used to access the nucleo base of the nucleotide
+*
+* @return the nucleo base of the nucleotide
+*********************************************************************/
+inline const nucleoBase nucleotide::get_base() const {
+  return base;
+}
+
+/*****************************************************************//**
+* @brief nucleo base type
+*
+* This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
+*********************************************************************/
+
+enum nucleoBase {
+  Adenine,
+  Cytosine,
+  Guanine,
+  Uracil
+
 };
 
 } // namespace microSNPscan
