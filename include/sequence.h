@@ -46,7 +46,7 @@ class sequence {
     /*****************************************************************//**
     * @brief assignment operator
     *
-    * This is used to copy an instance of  the sequnce class by
+    * This is used to copy an instance of  the sequence class by
     * assigning it to another one
     *
     * @param source the sequece object to be copied
