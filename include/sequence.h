@@ -4,6 +4,7 @@
 
 #include <vector>
 using namespace std;
+#include "alignment.h"
 
 namespace microSNPscan {
 
@@ -167,24 +168,26 @@ class nucleotide {
     * @brief position on chromosome
     *
     * This is the nucleotide's position on its chromosome, the 5' end of
-    * the + strand (i.e. the 3' end of the - strand) beeing position 1
+    * the + strand (i.e. the 3' end of the - strand) beeing position 1.
+    * Gaps are given the position of their predecessors in the alignment.
     *********************************************************************/
     
-    unsigned int position;
+    unsigned int chromosome_position;
 
 
   public:
     /*****************************************************************//**
-    * @brief get method for position attribute
+    * @brief get method for chromosome position attribute
     *
     * This method is used to access the position of the nucleotide on its
     * chromosome, the 5' end of the + strand (i.e. the 3' end of the -
-    * strand) beeing position 1
+    * strand) beeing position 1. Gaps will return the position of their
+    * predecessor in the alignment.
     *
     * @return the position of the nucleotide on its chromosome
     *********************************************************************/
     
-    inline const unsigned int get_position() const;
+    inline const unsigned int get_chromosome_position() const;
 
 
   private:
@@ -207,19 +210,48 @@ class nucleotide {
     *********************************************************************/
     inline const nucleoBase get_base() const;
 
+
+  private:
+    alignmentColumn ;
+
+    /*****************************************************************//**
+    * @brief position in sequence
+    *
+    * This is the nucleotide's position in the sequence, the 5' end
+    * beeing position 1.
+    * Gaps are given the position of their predecessors in the alignment.
+    *********************************************************************/
+    
+    unsigned int sequence_position;
+
+
+  public:
+    /*****************************************************************//**
+    * @brief get method for sequence position attribute
+    *
+    * This method is used to access the position of the nucleotide in the
+    * sequence, the 5' end beeing position 1. Gaps will return the
+    * position of their predecessor in the alignment.
+    *
+    * @return the position of the nucleotide in the sequence
+    *********************************************************************/
+    
+    inline const unsigned int get_sequence_position() const;
+
 };
 /*****************************************************************//**
-* @brief get method for position attribute
+* @brief get method for chromosome position attribute
 *
 * This method is used to access the position of the nucleotide on its
 * chromosome, the 5' end of the + strand (i.e. the 3' end of the -
-* strand) beeing position 1
+* strand) beeing position 1. Gaps will return the position of their
+* predecessor in the alignment.
 *
 * @return the position of the nucleotide on its chromosome
 *********************************************************************/
 
-inline const unsigned int nucleotide::get_position() const {
-  return position;
+inline const unsigned int nucleotide::get_chromosome_position() const {
+  return chromosome_position;
 }
 
 /*****************************************************************//**
@@ -234,6 +266,20 @@ inline const nucleoBase nucleotide::get_base() const {
 }
 
 /*****************************************************************//**
+* @brief get method for sequence position attribute
+*
+* This method is used to access the position of the nucleotide in the
+* sequence, the 5' end beeing position 1. Gaps will return the
+* position of their predecessor in the alignment.
+*
+* @return the position of the nucleotide in the sequence
+*********************************************************************/
+
+inline const unsigned int nucleotide::get_sequence_position() const {
+  return sequence_position;
+}
+
+/*****************************************************************//**
 * @brief nucleo base type
 *
 * This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
@@ -243,7 +289,9 @@ enum nucleoBase {
   Adenine,
   Cytosine,
   Guanine,
-  Uracil
+  Uracil,
+  Masked,
+  Gap
 
 };
 

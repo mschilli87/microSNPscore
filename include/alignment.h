@@ -4,6 +4,7 @@
 
 #include <vector>
 using namespace std;
+#include "sequence.h"
 
 namespace microSNPscan {
 
@@ -109,7 +110,76 @@ class alignmentColumn {
     *********************************************************************/
     alignmentColumn & operator=(const alignmentColumn & source);
 
+
+  private:
+    /*****************************************************************//**
+    * @brief messenger RNA nucleotide
+    *
+    * This is the nucleotide of the messenger RNA that is aligned in that
+    * alignment column
+    *********************************************************************/
+    
+    nucleotide mRNA_nucleotide;
+
+    /*****************************************************************//**
+    * @brief microRNA nucleotide
+    *
+    * This is the nucleotide of the microRNA that is aligned in that
+    * alignment column
+    *********************************************************************/
+    nucleotide miRNA_nucleotide;
+
+
+  public:
+    /*****************************************************************//**
+    * @brief get method for messenger RNA nucleotide attribute
+    *
+    * This method is used to access the nucleotide of the messenger RNA
+    * that is aligned in that alignment column.
+    *
+    * @return the mRNA nucleotide aligned in that alignment column
+    *********************************************************************/
+    
+    inline const nucleotide get_mRNA_nucleotide() const;
+
+    /*****************************************************************//**
+    * @brief get method for microRNA nucleotide attribute
+    *
+    * This method is used to access the nucleotide of the microRNA
+    * that is aligned in that alignment column.
+    *
+    * @return the miRNA nucleotide aligned in that alignment column
+    *********************************************************************/
+    
+    inline const nucleotide get_miRNA_nucleotide() const;
+
 };
+/*****************************************************************//**
+* @brief get method for messenger RNA nucleotide attribute
+*
+* This method is used to access the nucleotide of the messenger RNA
+* that is aligned in that alignment column.
+*
+* @return the mRNA nucleotide aligned in that alignment column
+*********************************************************************/
+
+inline const nucleotide alignmentColumn::get_mRNA_nucleotide() const {
+  return mRNA_nucleotide;
+}
+
+/*****************************************************************//**
+* @brief get method for microRNA nucleotide attribute
+*
+* This method is used to access the nucleotide of the microRNA
+* that is aligned in that alignment column.
+*
+* @return the miRNA nucleotide aligned in that alignment column
+*********************************************************************/
+
+inline const nucleotide alignmentColumn::get_miRNA_nucleotide() const {
+  return miRNA_nucleotide;
+}
+
 
 } // namespace microSNPscan
 #endif
