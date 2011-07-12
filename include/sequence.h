@@ -5,6 +5,8 @@
 #include <vector>
 using namespace std;
 #include "alignment.h"
+#include <string>
+using namespace std;
 
 namespace microSNPscan {
 
@@ -86,8 +88,29 @@ class sequence {
     *
     * @return the strand of the sequence (Plus or Minus)
     *********************************************************************/
-    
     inline const strand get_strand() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief chromosome
+    *
+    * This is the chromosome the sequence is on.
+    *********************************************************************/
+    
+    chromosome chromosome;
+
+
+  public:
+    /*****************************************************************//**
+    * @brief get method for chromosome attribute
+    *
+    * This method is used to access the chromosome the sequence is on.
+    *
+    * @return the chromosome of the sequence
+    *********************************************************************/
+    
+    inline const chromosome get_chromosome() const;
 
 };
 /*****************************************************************//**
@@ -98,9 +121,20 @@ class sequence {
 *
 * @return the strand of the sequence (Plus or Minus)
 *********************************************************************/
-
 inline const strand sequence::get_strand() const {
   return strand;
+}
+
+/*****************************************************************//**
+* @brief get method for chromosome attribute
+*
+* This method is used to access the chromosome the sequence is on.
+*
+* @return the chromosome of the sequence
+*********************************************************************/
+
+inline const chromosome sequence::get_chromosome() const {
+  return chromosome;
 }
 
 /*****************************************************************//**
@@ -334,9 +368,21 @@ enum nucleoBase {
 * This represents the strand of a sequence (Plus or Minus).
 *********************************************************************/
 
-${template}class strand${inherit} {
-${members}};
-${inlines}
+enum strand {
+  Plus,
+  Minus
+
+};
+/*****************************************************************//**
+* @brief chromosome type
+*
+* This represents a chromosome. It is defined as string to handle
+* different notations (like "chr1" or "1" and "MIT" or "24") (but this
+* is done without any consistency checking) and special 'chromosomes'
+* (like "HSCHR12_3_CTG2_1" and "GL000195.1").
+*********************************************************************/
+
+typedef string chromosome;
 
 } // namespace microSNPscan
 #endif
