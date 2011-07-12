@@ -5,6 +5,253 @@
 namespace microSNPscan {
 
 /*****************************************************************//**
+* @brief chromosome type
+*
+* This represents a chromosome. It is defined as string to handle
+* different notations (like "chr1" or "1" and "MIT" or "24") (but this
+* is done without any consistency checking) and special 'chromosomes'
+* (like "HSCHR12_3_CTG2_1" and "GL000195.1").
+*********************************************************************/
+
+typedef std::string chromosome;
+/*****************************************************************//**
+* @brief strand type
+*
+* This represents the strand of a sequence (Plus or Minus).
+*********************************************************************/
+
+enum strand {
+  Plus,
+  Minus
+
+};
+/*****************************************************************//**
+* @brief exon class
+*
+* This represents an exon as a pair of positions (start/stop).
+*********************************************************************/
+
+class exon {
+  public:
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to create an instance of the class exon.
+    *
+    * @return an empty exon
+    *********************************************************************/
+    exon();
+
+    /*****************************************************************//**
+    * @brief destructor
+    *
+    * This is used to remove an instance of the exon class.
+    *
+    *********************************************************************/
+    ~exon();
+
+    /*****************************************************************//**
+    * @brief const copy constructor
+    *
+    * This is used to copy an instance of the exon class.
+    *
+    * @param source exon object to copy
+    * @return a copy of the source exon object
+    *********************************************************************/
+    exon(const exon & source);
+
+    /*****************************************************************//**
+    * @brief assignment operator
+    *
+    * This is used to copy an instance of  the exon class by
+    * assigning it to another one
+    *
+    * @param source the exon object to be copied
+    * @return a copy of the source exon object
+    *********************************************************************/
+    exon & operator=(const exon & source);
+
+};
+/*****************************************************************//**
+* @brief nucleo base type
+*
+* This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
+*********************************************************************/
+
+enum nucleoBase {
+  Adenine,
+  Cytosine,
+  Guanine,
+  Uracil,
+  Masked,
+  Gap
+
+};
+/*****************************************************************//**
+* @brief chromosome position type
+*
+* This represents a position on a chromosome, the 5' end of the
+* + strand (i.e. the 3' end of the - strand) beeing position 1.
+*********************************************************************/
+
+typedef unsigned int chromosomePosition;
+/*****************************************************************//**
+* @brief chromosome position type
+*
+* This represents a position on a sequence, the 5' end of the
+* sequence beeing position 1.
+*********************************************************************/
+typedef unsigned short sequencePosition;
+/*****************************************************************//**
+* @brief nucleotide class
+*
+* This represents a nucleotide.
+*********************************************************************/
+
+class nucleotide {
+  public:
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to create an instance of the class nucleotide.
+    *
+    * @return an empty exon
+    *********************************************************************/
+    nucleotide();
+
+    /*****************************************************************//**
+    * @brief destructor
+    *
+    * This is used to remove an instance of the nucleotide class.
+    *
+    *********************************************************************/
+    ~nucleotide();
+
+    /*****************************************************************//**
+    * @brief const copy constructor
+    *
+    * This is used to copy an instance of the nucleotide class.
+    *
+    * @param source nucleotide object to copy
+    * @return a copy of the source nucleotide object
+    *********************************************************************/
+    nucleotide(const nucleotide & source);
+
+    /*****************************************************************//**
+    * @brief assignment operator
+    *
+    * This is used to copy an instance of  the nucleotide class by
+    * assigning it to another one
+    *
+    * @param source the nucleotide object to be copied
+    * @return a copy of the source nucleotide object
+    *********************************************************************/
+    nucleotide & operator=(const nucleotide & source);
+
+    /*****************************************************************//**
+    * @brief get method for nucleo base attribute
+    *
+    * This method is used to access the nucleo base of the nucleotide
+    *
+    * @return the nucleo base of the nucleotide
+    *********************************************************************/
+    inline const nucleoBase get_base() const;
+
+    /*****************************************************************//**
+    * @brief get method for sequence position attribute
+    *
+    * This method is used to access the position of the nucleotide in the
+    * sequence, the 5' end beeing position 1. Gaps will return the
+    * position of their predecessor in the alignment.
+    *
+    * @return the position of the nucleotide in the sequence
+    *********************************************************************/
+    
+    inline const sequencePosition get_sequence_position() const;
+
+    /*****************************************************************//**
+    * @brief get method for chromosome position attribute
+    *
+    * This method is used to access the position of the nucleotide on its
+    * chromosome, the 5' end of the + strand (i.e. the 3' end of the -
+    * strand) beeing position 1. Gaps will return the position of their
+    * predecessor in the alignment.
+    *
+    * @return the position of the nucleotide on its chromosome
+    *********************************************************************/
+    
+    inline const chromosomePosition get_chromosome_position() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief nucleo base
+    *
+    * This is the nucleo base of the nucleotide.
+    *********************************************************************/
+    
+    nucleoBase base;
+
+    /*****************************************************************//**
+    * @brief position in sequence
+    *
+    * This is the nucleotide's position in the sequence, the 5' end
+    * beeing position 1.
+    * Gaps are given the position of their predecessors in the alignment.
+    *********************************************************************/
+    sequencePosition sequence_position;
+
+    /*****************************************************************//**
+    * @brief position on chromosome
+    *
+    * This is the nucleotide's position on its chromosome, the 5' end of
+    * the + strand (i.e. the 3' end of the - strand) beeing position 1.
+    * Gaps are given the position of their predecessors in the alignment.
+    *********************************************************************/
+    chromosomePosition chromosome_position;
+
+};
+/*****************************************************************//**
+* @brief get method for nucleo base attribute
+*
+* This method is used to access the nucleo base of the nucleotide
+*
+* @return the nucleo base of the nucleotide
+*********************************************************************/
+inline const nucleoBase nucleotide::get_base() const {
+  return base;
+}
+
+/*****************************************************************//**
+* @brief get method for sequence position attribute
+*
+* This method is used to access the position of the nucleotide in the
+* sequence, the 5' end beeing position 1. Gaps will return the
+* position of their predecessor in the alignment.
+*
+* @return the position of the nucleotide in the sequence
+*********************************************************************/
+
+inline const sequencePosition nucleotide::get_sequence_position() const {
+  return sequence_position;
+}
+
+/*****************************************************************//**
+* @brief get method for chromosome position attribute
+*
+* This method is used to access the position of the nucleotide on its
+* chromosome, the 5' end of the + strand (i.e. the 3' end of the -
+* strand) beeing position 1. Gaps will return the position of their
+* predecessor in the alignment.
+*
+* @return the position of the nucleotide on its chromosome
+*********************************************************************/
+
+inline const chromosomePosition nucleotide::get_chromosome_position() const {
+  return chromosome_position;
+}
+
+/*****************************************************************//**
 * @brief sequence class
 *
 * This shall become the representation for sequences (DNA and RNA)
@@ -242,253 +489,6 @@ inline const strand sequence::get_strand() const {
   return strand;
 }
 
-/*****************************************************************//**
-* @brief chromosome type
-*
-* This represents a chromosome. It is defined as string to handle
-* different notations (like "chr1" or "1" and "MIT" or "24") (but this
-* is done without any consistency checking) and special 'chromosomes'
-* (like "HSCHR12_3_CTG2_1" and "GL000195.1").
-*********************************************************************/
-
-typedef std::string chromosome;
-/*****************************************************************//**
-* @brief strand type
-*
-* This represents the strand of a sequence (Plus or Minus).
-*********************************************************************/
-
-enum strand {
-  Plus,
-  Minus
-
-};
-/*****************************************************************//**
-* @brief exon class
-*
-* This represents an exon as a pair of positions (start/stop).
-*********************************************************************/
-
-class exon {
-  public:
-    /*****************************************************************//**
-    * @brief standard constructor
-    *
-    * This is used to create an instance of the class exon.
-    *
-    * @return an empty exon
-    *********************************************************************/
-    exon();
-
-    /*****************************************************************//**
-    * @brief destructor
-    *
-    * This is used to remove an instance of the exon class.
-    *
-    *********************************************************************/
-    ~exon();
-
-    /*****************************************************************//**
-    * @brief const copy constructor
-    *
-    * This is used to copy an instance of the exon class.
-    *
-    * @param source exon object to copy
-    * @return a copy of the source exon object
-    *********************************************************************/
-    exon(const exon & source);
-
-    /*****************************************************************//**
-    * @brief assignment operator
-    *
-    * This is used to copy an instance of  the exon class by
-    * assigning it to another one
-    *
-    * @param source the exon object to be copied
-    * @return a copy of the source exon object
-    *********************************************************************/
-    exon & operator=(const exon & source);
-
-};
-/*****************************************************************//**
-* @brief nucleotide class
-*
-* This represents a nucleotide.
-*********************************************************************/
-
-class nucleotide {
-  public:
-    /*****************************************************************//**
-    * @brief standard constructor
-    *
-    * This is used to create an instance of the class nucleotide.
-    *
-    * @return an empty exon
-    *********************************************************************/
-    nucleotide();
-
-    /*****************************************************************//**
-    * @brief destructor
-    *
-    * This is used to remove an instance of the nucleotide class.
-    *
-    *********************************************************************/
-    ~nucleotide();
-
-    /*****************************************************************//**
-    * @brief const copy constructor
-    *
-    * This is used to copy an instance of the nucleotide class.
-    *
-    * @param source nucleotide object to copy
-    * @return a copy of the source nucleotide object
-    *********************************************************************/
-    nucleotide(const nucleotide & source);
-
-    /*****************************************************************//**
-    * @brief assignment operator
-    *
-    * This is used to copy an instance of  the nucleotide class by
-    * assigning it to another one
-    *
-    * @param source the nucleotide object to be copied
-    * @return a copy of the source nucleotide object
-    *********************************************************************/
-    nucleotide & operator=(const nucleotide & source);
-
-    /*****************************************************************//**
-    * @brief get method for nucleo base attribute
-    *
-    * This method is used to access the nucleo base of the nucleotide
-    *
-    * @return the nucleo base of the nucleotide
-    *********************************************************************/
-    inline const nucleoBase get_base() const;
-
-    /*****************************************************************//**
-    * @brief get method for sequence position attribute
-    *
-    * This method is used to access the position of the nucleotide in the
-    * sequence, the 5' end beeing position 1. Gaps will return the
-    * position of their predecessor in the alignment.
-    *
-    * @return the position of the nucleotide in the sequence
-    *********************************************************************/
-    
-    inline const sequencePosition get_sequence_position() const;
-
-    /*****************************************************************//**
-    * @brief get method for chromosome position attribute
-    *
-    * This method is used to access the position of the nucleotide on its
-    * chromosome, the 5' end of the + strand (i.e. the 3' end of the -
-    * strand) beeing position 1. Gaps will return the position of their
-    * predecessor in the alignment.
-    *
-    * @return the position of the nucleotide on its chromosome
-    *********************************************************************/
-    
-    inline const chromosomePosition get_chromosome_position() const;
-
-
-  private:
-    /*****************************************************************//**
-    * @brief nucleo base
-    *
-    * This is the nucleo base of the nucleotide.
-    *********************************************************************/
-    
-    nucleoBase base;
-
-    /*****************************************************************//**
-    * @brief position in sequence
-    *
-    * This is the nucleotide's position in the sequence, the 5' end
-    * beeing position 1.
-    * Gaps are given the position of their predecessors in the alignment.
-    *********************************************************************/
-    sequencePosition sequence_position;
-
-    /*****************************************************************//**
-    * @brief position on chromosome
-    *
-    * This is the nucleotide's position on its chromosome, the 5' end of
-    * the + strand (i.e. the 3' end of the - strand) beeing position 1.
-    * Gaps are given the position of their predecessors in the alignment.
-    *********************************************************************/
-    chromosomePosition chromosome_position;
-
-};
-/*****************************************************************//**
-* @brief get method for nucleo base attribute
-*
-* This method is used to access the nucleo base of the nucleotide
-*
-* @return the nucleo base of the nucleotide
-*********************************************************************/
-inline const nucleoBase nucleotide::get_base() const {
-  return base;
-}
-
-/*****************************************************************//**
-* @brief get method for sequence position attribute
-*
-* This method is used to access the position of the nucleotide in the
-* sequence, the 5' end beeing position 1. Gaps will return the
-* position of their predecessor in the alignment.
-*
-* @return the position of the nucleotide in the sequence
-*********************************************************************/
-
-inline const sequencePosition nucleotide::get_sequence_position() const {
-  return sequence_position;
-}
-
-/*****************************************************************//**
-* @brief get method for chromosome position attribute
-*
-* This method is used to access the position of the nucleotide on its
-* chromosome, the 5' end of the + strand (i.e. the 3' end of the -
-* strand) beeing position 1. Gaps will return the position of their
-* predecessor in the alignment.
-*
-* @return the position of the nucleotide on its chromosome
-*********************************************************************/
-
-inline const chromosomePosition nucleotide::get_chromosome_position() const {
-  return chromosome_position;
-}
-
-/*****************************************************************//**
-* @brief nucleo base type
-*
-* This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
-*********************************************************************/
-
-enum nucleoBase {
-  Adenine,
-  Cytosine,
-  Guanine,
-  Uracil,
-  Masked,
-  Gap
-
-};
-/*****************************************************************//**
-* @brief chromosome position type
-*
-* This represents a position on a chromosome, the 5' end of the
-* + strand (i.e. the 3' end of the - strand) beeing position 1.
-*********************************************************************/
-
-typedef unsigned int chromosomePosition;
-/*****************************************************************//**
-* @brief chromosome position type
-*
-* This represents a position on a sequence, the 5' end of the
-* sequence beeing position 1.
-*********************************************************************/
-typedef unsigned short sequencePosition;
 
 } // namespace microSNPscan
 #endif
