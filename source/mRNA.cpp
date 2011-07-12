@@ -11,6 +11,8 @@ namespace microSNPscan {
 * @return an empty mRNA
 *********************************************************************/
 mRNA::mRNA() {
+  // Bouml preserved body begin 00020F13
+  // Bouml preserved body end 00020F13
 }
 
 /*****************************************************************//**
@@ -20,6 +22,8 @@ mRNA::mRNA() {
 *
 *********************************************************************/
 mRNA::~mRNA() {
+  // Bouml preserved body begin 00020F93
+  // Bouml preserved body end 00020F93
 }
 
 /*****************************************************************//**
@@ -31,6 +35,8 @@ mRNA::~mRNA() {
 * @return a copy of the source mRNA object
 *********************************************************************/
 mRNA::mRNA(const mRNA & source) {
+  // Bouml preserved body begin 00021013
+  // Bouml preserved body end 00021013
 }
 
 /*****************************************************************//**
@@ -43,6 +49,8 @@ mRNA::mRNA(const mRNA & source) {
 * @return a copy of the source mRNA object
 *********************************************************************/
 mRNA & mRNA::operator=(const mRNA & source) {
+  // Bouml preserved body begin 00021093
+  // Bouml preserved body end 00021093
 }
 
 

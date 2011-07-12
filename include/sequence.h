@@ -2,11 +2,7 @@
 #define MICROSNPSCAN_SEQUENCE_H
 
 
-#include <vector>
-using namespace std;
-#include "alignment.h"
 #include <string>
-using namespace std;
 
 namespace microSNPscan {
 
@@ -61,25 +57,16 @@ class sequence {
     
     sequence & operator=(const sequence & source);
 
-
-  private:
     /*****************************************************************//**
-    * @brief nucleotide sequence
+    * @brief get method for chromosome attribute
     *
-    * A vector containing the sequence's nucleotides from 5' to 3'
-    *********************************************************************/
-    vector<nucleotide> nucleotides;
-
-    /*****************************************************************//**
-    * @brief strand on chromosome
+    * This method is used to access the chromosome the sequence is on.
     *
-    * This is the chromosome strand (Plus or Minus) the sequence is on.
+    * @return the chromosome of the sequence
     *********************************************************************/
     
-    strand strand;
+    inline const chromosome get_chromosome() const;
 
-
-  public:
     /*****************************************************************//**
     * @brief get method for strand attribute
     *
@@ -90,27 +77,62 @@ class sequence {
     *********************************************************************/
     inline const strand get_strand() const;
 
-
-  private:
     /*****************************************************************//**
-    * @brief chromosome
+    * @brief get subsequence from sequence position
     *
-    * This is the chromosome the sequence is on.
+    * This method can be used to extract a subsequence of a given length
+    * starting (i.e. 5' end) at a given position from the sequence.
+    * If the length is too high so that the queried subsequence would
+    * reach over the (3') end of the sequence, a shorter subsequence
+    * starting at the disired start position and ending at the (3') end of
+    * the sequence will be returned.
+    * If the given position is not part of the sequence, an empty sequence
+    * will be returned.
+    *
+    * @param from the start position in the sequence of the subsequence
+    * @param len the (maximal) length of the subsequence
+    * @return the subsequence starting at the given position and ending
+    *         after the given length (5' to 3') or at the end of the
+    *         sequence
     *********************************************************************/
     
-    chromosome chromosome;
+    sequence get_subsequence_from(const sequencePosition & from, unsigned short len);
 
-
-  public:
     /*****************************************************************//**
-    * @brief get method for chromosome attribute
+    * @brief get subsequence to sequence position
     *
-    * This method is used to access the chromosome the sequence is on.
+    * This method can be used to extract a subsequence of a given length
+    * ending (i.e. 3' end) at a given position from the sequence.
+    * If the length is too high so that the queried subsequence would
+    * reach over the (5') end of the sequence, a shorter subsequence
+    * ending at the disired end position and starting at the (5') end of
+    * the sequence will be returned.
+    * If the given position is not part of the sequence, an empty sequence
+    * will be returned.
     *
-    * @return the chromosome of the sequence
+    * @param to the end position in the sequence of the subsequence
+    * @param len the (maximal) length of the subsequence
+    * @return the subsequence ending at the given position and starting
+    *         after the given length (3' to 5') or at the start of the
+    *         sequence
     *********************************************************************/
     
-    inline const chromosome get_chromosome() const;
+    sequence get_subsequence_to(const sequencePosition & to, unsigned short len);
+
+    /*****************************************************************//**
+    * @brief get subsequence between sequence positions
+    *
+    * This method can be used to extract a subsequence starting (i.e. 5'
+    * end) end ending (i.e. 3' end) at given positions from the sequence.
+    * If at least one of the given positions is not part of the sequence,
+    * an empty sequence will be returned.
+    *
+    * @param from the start position in the sequence of the subsequence
+    * @param to the end position in the sequence of the subsequence
+    * @return the subsequence starting and ending at the given positions
+    *********************************************************************/
+    
+    sequence get_subsequence_from_to(const sequencePosition & from, const sequencePosition & to);
 
     /*****************************************************************//**
     * @brief get subsequence from chromosome position
@@ -135,27 +157,6 @@ class sequence {
     sequence get_subsequence_chr_from(const chromosomePosition & from, unsigned short len);
 
     /*****************************************************************//**
-    * @brief get subsequence from sequence position
-    *
-    * This method can be used to extract a subsequence of a given length
-    * starting (i.e. 5' end) at a given position from the sequence.
-    * If the length is too high so that the queried subsequence would
-    * reach over the (3') end of the sequence, a shorter subsequence
-    * starting at the disired start position and ending at the (3') end of
-    * the sequence will be returned.
-    * If the given position is not part of the sequence, an empty sequence
-    * will be returned.
-    *
-    * @param from the start position in the sequence of the subsequence
-    * @param len the (maximal) length of the subsequence
-    * @return the subsequence starting at the given position and ending
-    *         after the given length (5' to 3') or at the end of the
-    *         sequence
-    *********************************************************************/
-    
-    sequence get_subsequence_from(const sequencePosition & from, unsigned short len);
-
-    /*****************************************************************//**
     * @brief get subsequence to chromosome position
     *
     * This method can be used to extract a subsequence of a given length
@@ -178,27 +179,6 @@ class sequence {
     sequence get_subsequence_chr_to(const chromosomePosition & to, unsigned short len);
 
     /*****************************************************************//**
-    * @brief get subsequence to sequence position
-    *
-    * This method can be used to extract a subsequence of a given length
-    * ending (i.e. 3' end) at a given position from the sequence.
-    * If the length is too high so that the queried subsequence would
-    * reach over the (5') end of the sequence, a shorter subsequence
-    * ending at the disired end position and starting at the (5') end of
-    * the sequence will be returned.
-    * If the given position is not part of the sequence, an empty sequence
-    * will be returned.
-    *
-    * @param to the end position in the sequence of the subsequence
-    * @param len the (maximal) length of the subsequence
-    * @return the subsequence ending at the given position and starting
-    *         after the given length (3' to 5') or at the start of the
-    *         sequence
-    *********************************************************************/
-    
-    sequence get_subsequence_to(const sequencePosition & to, unsigned short len);
-
-    /*****************************************************************//**
     * @brief get subsequence between chromosome positions
     *
     * This method can be used to extract a subsequence starting (i.e. 5'
@@ -214,22 +194,44 @@ class sequence {
     
     sequence get_subsequence_chr_from_to(const chromosomePosition & from, const chromosomePosition & to);
 
+
+  private:
     /*****************************************************************//**
-    * @brief get subsequence between sequence positions
+    * @brief chromosome
     *
-    * This method can be used to extract a subsequence starting (i.e. 5'
-    * end) end ending (i.e. 3' end) at given positions from the sequence.
-    * If at least one of the given positions is not part of the sequence,
-    * an empty sequence will be returned.
-    *
-    * @param from the start position in the sequence of the subsequence
-    * @param to the end position in the sequence of the subsequence
-    * @return the subsequence starting and ending at the given positions
+    * This is the chromosome the sequence is on.
     *********************************************************************/
     
-    sequence get_subsequence_from_to(const sequencePosition & from, const sequencePosition & to);
+    chromosome chromosome;
+
+    /*****************************************************************//**
+    * @brief strand on chromosome
+    *
+    * This is the chromosome strand (Plus or Minus) the sequence is on.
+    *********************************************************************/
+    
+    strand strand;
+
+    /*****************************************************************//**
+    * @brief nucleotide sequence
+    *
+    * A vector containing the sequence's nucleotides from 5' to 3'
+    *********************************************************************/
+    std::vector<nucleotide> nucleotides;
 
 };
+/*****************************************************************//**
+* @brief get method for chromosome attribute
+*
+* This method is used to access the chromosome the sequence is on.
+*
+* @return the chromosome of the sequence
+*********************************************************************/
+
+inline const chromosome sequence::get_chromosome() const {
+  return chromosome;
+}
+
 /*****************************************************************//**
 * @brief get method for strand attribute
 *
@@ -243,17 +245,26 @@ inline const strand sequence::get_strand() const {
 }
 
 /*****************************************************************//**
-* @brief get method for chromosome attribute
+* @brief chromosome type
 *
-* This method is used to access the chromosome the sequence is on.
-*
-* @return the chromosome of the sequence
+* This represents a chromosome. It is defined as string to handle
+* different notations (like "chr1" or "1" and "MIT" or "24") (but this
+* is done without any consistency checking) and special 'chromosomes'
+* (like "HSCHR12_3_CTG2_1" and "GL000195.1").
 *********************************************************************/
 
-inline const chromosome sequence::get_chromosome() const {
-  return chromosome;
-}
+typedef string chromosome;
+/*****************************************************************//**
+* @brief strand type
+*
+* This represents the strand of a sequence (Plus or Minus).
+*********************************************************************/
 
+enum strand {
+  Plus,
+  Minus
+
+};
 /*****************************************************************//**
 * @brief exon class
 *
@@ -347,18 +358,6 @@ class nucleotide {
     *********************************************************************/
     nucleotide & operator=(const nucleotide & source);
 
-
-  private:
-    /*****************************************************************//**
-    * @brief nucleo base
-    *
-    * This is the nucleo base of the nucleotide.
-    *********************************************************************/
-    
-    nucleoBase base;
-
-
-  public:
     /*****************************************************************//**
     * @brief get method for nucleo base attribute
     *
@@ -368,21 +367,18 @@ class nucleotide {
     *********************************************************************/
     inline const nucleoBase get_base() const;
 
-
-  private:
-    alignmentColumn ;
-
     /*****************************************************************//**
-    * @brief position on chromosome
+    * @brief get method for sequence position attribute
     *
-    * This is the nucleotide's position on its chromosome, the 5' end of
-    * the + strand (i.e. the 3' end of the - strand) beeing position 1.
-    * Gaps are given the position of their predecessors in the alignment.
+    * This method is used to access the position of the nucleotide in the
+    * sequence, the 5' end beeing position 1. Gaps will return the
+    * position of their predecessor in the alignment.
+    *
+    * @return the position of the nucleotide in the sequence
     *********************************************************************/
-    chromosomePosition chromosome_position;
+    
+    inline const sequencePosition get_sequence_position() const;
 
-
-  public:
     /*****************************************************************//**
     * @brief get method for chromosome position attribute
     *
@@ -399,6 +395,14 @@ class nucleotide {
 
   private:
     /*****************************************************************//**
+    * @brief nucleo base
+    *
+    * This is the nucleo base of the nucleotide.
+    *********************************************************************/
+    
+    nucleoBase base;
+
+    /*****************************************************************//**
     * @brief position in sequence
     *
     * This is the nucleotide's position in the sequence, the 5' end
@@ -407,19 +411,14 @@ class nucleotide {
     *********************************************************************/
     sequencePosition sequence_position;
 
-
-  public:
     /*****************************************************************//**
-    * @brief get method for sequence position attribute
+    * @brief position on chromosome
     *
-    * This method is used to access the position of the nucleotide in the
-    * sequence, the 5' end beeing position 1. Gaps will return the
-    * position of their predecessor in the alignment.
-    *
-    * @return the position of the nucleotide in the sequence
+    * This is the nucleotide's position on its chromosome, the 5' end of
+    * the + strand (i.e. the 3' end of the - strand) beeing position 1.
+    * Gaps are given the position of their predecessors in the alignment.
     *********************************************************************/
-    
-    inline const sequencePosition get_sequence_position() const;
+    chromosomePosition chromosome_position;
 
 };
 /*****************************************************************//**
@@ -431,6 +430,20 @@ class nucleotide {
 *********************************************************************/
 inline const nucleoBase nucleotide::get_base() const {
   return base;
+}
+
+/*****************************************************************//**
+* @brief get method for sequence position attribute
+*
+* This method is used to access the position of the nucleotide in the
+* sequence, the 5' end beeing position 1. Gaps will return the
+* position of their predecessor in the alignment.
+*
+* @return the position of the nucleotide in the sequence
+*********************************************************************/
+
+inline const sequencePosition nucleotide::get_sequence_position() const {
+  return sequence_position;
 }
 
 /*****************************************************************//**
@@ -449,20 +462,6 @@ inline const chromosomePosition nucleotide::get_chromosome_position() const {
 }
 
 /*****************************************************************//**
-* @brief get method for sequence position attribute
-*
-* This method is used to access the position of the nucleotide in the
-* sequence, the 5' end beeing position 1. Gaps will return the
-* position of their predecessor in the alignment.
-*
-* @return the position of the nucleotide in the sequence
-*********************************************************************/
-
-inline const sequencePosition nucleotide::get_sequence_position() const {
-  return sequence_position;
-}
-
-/*****************************************************************//**
 * @brief nucleo base type
 *
 * This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
@@ -477,27 +476,6 @@ enum nucleoBase {
   Gap
 
 };
-/*****************************************************************//**
-* @brief strand type
-*
-* This represents the strand of a sequence (Plus or Minus).
-*********************************************************************/
-
-enum strand {
-  Plus,
-  Minus
-
-};
-/*****************************************************************//**
-* @brief chromosome type
-*
-* This represents a chromosome. It is defined as string to handle
-* different notations (like "chr1" or "1" and "MIT" or "24") (but this
-* is done without any consistency checking) and special 'chromosomes'
-* (like "HSCHR12_3_CTG2_1" and "GL000195.1").
-*********************************************************************/
-
-typedef string chromosome;
 /*****************************************************************//**
 * @brief chromosome position type
 *

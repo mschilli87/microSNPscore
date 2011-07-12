@@ -11,6 +11,8 @@ namespace microSNPscan {
 * @return an empty alignment
 *********************************************************************/
 alignment::alignment() {
+  // Bouml preserved body begin 00022E13
+  // Bouml preserved body end 00022E13
 }
 
 /*****************************************************************//**
@@ -20,6 +22,8 @@ alignment::alignment() {
 *
 *********************************************************************/
 alignment::~alignment() {
+  // Bouml preserved body begin 00022E93
+  // Bouml preserved body end 00022E93
 }
 
 /*****************************************************************//**
@@ -31,6 +35,8 @@ alignment::~alignment() {
 * @return a copy of the source alignment object
 *********************************************************************/
 alignment::alignment(const alignment & source) {
+  // Bouml preserved body begin 00022F13
+  // Bouml preserved body end 00022F13
 }
 
 /*****************************************************************//**
@@ -43,6 +49,8 @@ alignment::alignment(const alignment & source) {
 * @return a copy of the source alignment object
 *********************************************************************/
 alignment & alignment::operator=(const alignment & source) {
+  // Bouml preserved body begin 00022F93
+  // Bouml preserved body end 00022F93
 }
 
 /*****************************************************************//**
@@ -53,6 +61,8 @@ alignment & alignment::operator=(const alignment & source) {
 * @return an empty alignment column
 *********************************************************************/
 alignmentColumn::alignmentColumn() {
+  // Bouml preserved body begin 00022C13
+  // Bouml preserved body end 00022C13
 }
 
 /*****************************************************************//**
@@ -62,6 +72,8 @@ alignmentColumn::alignmentColumn() {
 *
 *********************************************************************/
 alignmentColumn::~alignmentColumn() {
+  // Bouml preserved body begin 00022C93
+  // Bouml preserved body end 00022C93
 }
 
 /*****************************************************************//**
@@ -73,6 +85,8 @@ alignmentColumn::~alignmentColumn() {
 * @return a copy of the source alignmentColumn object
 *********************************************************************/
 alignmentColumn::alignmentColumn(const alignmentColumn & source) {
+  // Bouml preserved body begin 00022D13
+  // Bouml preserved body end 00022D13
 }
 
 /*****************************************************************//**
@@ -85,6 +99,8 @@ alignmentColumn::alignmentColumn(const alignmentColumn & source) {
 * @return a copy of the source alignmentColumn object
 *********************************************************************/
 alignmentColumn & alignmentColumn::operator=(const alignmentColumn & source) {
+  // Bouml preserved body begin 00022D93
+  // Bouml preserved body end 00022D93
 }
 
 

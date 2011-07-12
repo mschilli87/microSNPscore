@@ -2,8 +2,6 @@
 #define MICROSNPSCAN_ALIGNMENT_H
 
 
-#include <vector>
-using namespace std;
 #include "sequence.h"
 
 namespace microSNPscan {
@@ -61,7 +59,7 @@ class alignment {
     *
     * A vector containing the alignment's columns from miRNA 5' to 3'
     *********************************************************************/
-    vector<alignmentColumn> columns;
+    std::vector<alignmentColumn> columns;
 
 };
 /*****************************************************************//**
@@ -110,27 +108,6 @@ class alignmentColumn {
     *********************************************************************/
     alignmentColumn & operator=(const alignmentColumn & source);
 
-
-  private:
-    /*****************************************************************//**
-    * @brief messenger RNA nucleotide
-    *
-    * This is the nucleotide of the messenger RNA that is aligned in that
-    * alignment column
-    *********************************************************************/
-    
-    nucleotide mRNA_nucleotide;
-
-    /*****************************************************************//**
-    * @brief microRNA nucleotide
-    *
-    * This is the nucleotide of the microRNA that is aligned in that
-    * alignment column
-    *********************************************************************/
-    nucleotide miRNA_nucleotide;
-
-
-  public:
     /*****************************************************************//**
     * @brief get method for messenger RNA nucleotide attribute
     *
@@ -152,6 +129,25 @@ class alignmentColumn {
     *********************************************************************/
     
     inline const nucleotide get_miRNA_nucleotide() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief messenger RNA nucleotide
+    *
+    * This is the nucleotide of the messenger RNA that is aligned in that
+    * alignment column
+    *********************************************************************/
+    
+    nucleotide mRNA_nucleotide;
+
+    /*****************************************************************//**
+    * @brief microRNA nucleotide
+    *
+    * This is the nucleotide of the microRNA that is aligned in that
+    * alignment column
+    *********************************************************************/
+    nucleotide miRNA_nucleotide;
 
 };
 /*****************************************************************//**

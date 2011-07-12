@@ -12,6 +12,8 @@ namespace microSNPscan {
 *********************************************************************/
 
 sequence::sequence() {
+  // Bouml preserved body begin 0001F413
+  // Bouml preserved body end 0001F413
 }
 
 /*****************************************************************//**
@@ -22,6 +24,8 @@ sequence::sequence() {
 *********************************************************************/
 
 sequence::~sequence() {
+  // Bouml preserved body begin 0001F493
+  // Bouml preserved body end 0001F493
 }
 
 /*****************************************************************//**
@@ -34,6 +38,8 @@ sequence::~sequence() {
 *********************************************************************/
 
 sequence::sequence(const sequence & source) {
+  // Bouml preserved body begin 0001F513
+  // Bouml preserved body end 0001F513
 }
 
 /*****************************************************************//**
@@ -47,6 +53,74 @@ sequence::sequence(const sequence & source) {
 *********************************************************************/
 
 sequence & sequence::operator=(const sequence & source) {
+  // Bouml preserved body begin 0001F593
+  // Bouml preserved body end 0001F593
+}
+
+/*****************************************************************//**
+* @brief get subsequence from sequence position
+*
+* This method can be used to extract a subsequence of a given length
+* starting (i.e. 5' end) at a given position from the sequence.
+* If the length is too high so that the queried subsequence would
+* reach over the (3') end of the sequence, a shorter subsequence
+* starting at the disired start position and ending at the (3') end of
+* the sequence will be returned.
+* If the given position is not part of the sequence, an empty sequence
+* will be returned.
+*
+* @param from the start position in the sequence of the subsequence
+* @param len the (maximal) length of the subsequence
+* @return the subsequence starting at the given position and ending
+*         after the given length (5' to 3') or at the end of the
+*         sequence
+*********************************************************************/
+
+sequence sequence::get_subsequence_from(const sequencePosition & from, unsigned short len) {
+  // Bouml preserved body begin 0002CF93
+  // Bouml preserved body end 0002CF93
+}
+
+/*****************************************************************//**
+* @brief get subsequence to sequence position
+*
+* This method can be used to extract a subsequence of a given length
+* ending (i.e. 3' end) at a given position from the sequence.
+* If the length is too high so that the queried subsequence would
+* reach over the (5') end of the sequence, a shorter subsequence
+* ending at the disired end position and starting at the (5') end of
+* the sequence will be returned.
+* If the given position is not part of the sequence, an empty sequence
+* will be returned.
+*
+* @param to the end position in the sequence of the subsequence
+* @param len the (maximal) length of the subsequence
+* @return the subsequence ending at the given position and starting
+*         after the given length (3' to 5') or at the start of the
+*         sequence
+*********************************************************************/
+
+sequence sequence::get_subsequence_to(const sequencePosition & to, unsigned short len) {
+  // Bouml preserved body begin 0002D093
+  // Bouml preserved body end 0002D093
+}
+
+/*****************************************************************//**
+* @brief get subsequence between sequence positions
+*
+* This method can be used to extract a subsequence starting (i.e. 5'
+* end) end ending (i.e. 3' end) at given positions from the sequence.
+* If at least one of the given positions is not part of the sequence,
+* an empty sequence will be returned.
+*
+* @param from the start position in the sequence of the subsequence
+* @param to the end position in the sequence of the subsequence
+* @return the subsequence starting and ending at the given positions
+*********************************************************************/
+
+sequence sequence::get_subsequence_from_to(const sequencePosition & from, const sequencePosition & to) {
+  // Bouml preserved body begin 0002D193
+  // Bouml preserved body end 0002D193
 }
 
 /*****************************************************************//**
@@ -70,28 +144,8 @@ sequence & sequence::operator=(const sequence & source) {
 *********************************************************************/
 
 sequence sequence::get_subsequence_chr_from(const chromosomePosition & from, unsigned short len) {
-}
-
-/*****************************************************************//**
-* @brief get subsequence from sequence position
-*
-* This method can be used to extract a subsequence of a given length
-* starting (i.e. 5' end) at a given position from the sequence.
-* If the length is too high so that the queried subsequence would
-* reach over the (3') end of the sequence, a shorter subsequence
-* starting at the disired start position and ending at the (3') end of
-* the sequence will be returned.
-* If the given position is not part of the sequence, an empty sequence
-* will be returned.
-*
-* @param from the start position in the sequence of the subsequence
-* @param len the (maximal) length of the subsequence
-* @return the subsequence starting at the given position and ending
-*         after the given length (5' to 3') or at the end of the
-*         sequence
-*********************************************************************/
-
-sequence sequence::get_subsequence_from(const sequencePosition & from, unsigned short len) {
+  // Bouml preserved body begin 0002CE13
+  // Bouml preserved body end 0002CE13
 }
 
 /*****************************************************************//**
@@ -115,28 +169,8 @@ sequence sequence::get_subsequence_from(const sequencePosition & from, unsigned 
 *********************************************************************/
 
 sequence sequence::get_subsequence_chr_to(const chromosomePosition & to, unsigned short len) {
-}
-
-/*****************************************************************//**
-* @brief get subsequence to sequence position
-*
-* This method can be used to extract a subsequence of a given length
-* ending (i.e. 3' end) at a given position from the sequence.
-* If the length is too high so that the queried subsequence would
-* reach over the (5') end of the sequence, a shorter subsequence
-* ending at the disired end position and starting at the (5') end of
-* the sequence will be returned.
-* If the given position is not part of the sequence, an empty sequence
-* will be returned.
-*
-* @param to the end position in the sequence of the subsequence
-* @param len the (maximal) length of the subsequence
-* @return the subsequence ending at the given position and starting
-*         after the given length (3' to 5') or at the start of the
-*         sequence
-*********************************************************************/
-
-sequence sequence::get_subsequence_to(const sequencePosition & to, unsigned short len) {
+  // Bouml preserved body begin 0002D013
+  // Bouml preserved body end 0002D013
 }
 
 /*****************************************************************//**
@@ -154,22 +188,8 @@ sequence sequence::get_subsequence_to(const sequencePosition & to, unsigned shor
 *********************************************************************/
 
 sequence sequence::get_subsequence_chr_from_to(const chromosomePosition & from, const chromosomePosition & to) {
-}
-
-/*****************************************************************//**
-* @brief get subsequence between sequence positions
-*
-* This method can be used to extract a subsequence starting (i.e. 5'
-* end) end ending (i.e. 3' end) at given positions from the sequence.
-* If at least one of the given positions is not part of the sequence,
-* an empty sequence will be returned.
-*
-* @param from the start position in the sequence of the subsequence
-* @param to the end position in the sequence of the subsequence
-* @return the subsequence starting and ending at the given positions
-*********************************************************************/
-
-sequence sequence::get_subsequence_from_to(const sequencePosition & from, const sequencePosition & to) {
+  // Bouml preserved body begin 0002D113
+  // Bouml preserved body end 0002D113
 }
 
 /*****************************************************************//**
@@ -180,6 +200,8 @@ sequence sequence::get_subsequence_from_to(const sequencePosition & from, const 
 * @return an empty exon
 *********************************************************************/
 exon::exon() {
+  // Bouml preserved body begin 00024913
+  // Bouml preserved body end 00024913
 }
 
 /*****************************************************************//**
@@ -189,6 +211,8 @@ exon::exon() {
 *
 *********************************************************************/
 exon::~exon() {
+  // Bouml preserved body begin 00024993
+  // Bouml preserved body end 00024993
 }
 
 /*****************************************************************//**
@@ -200,6 +224,8 @@ exon::~exon() {
 * @return a copy of the source exon object
 *********************************************************************/
 exon::exon(const exon & source) {
+  // Bouml preserved body begin 00024A13
+  // Bouml preserved body end 00024A13
 }
 
 /*****************************************************************//**
@@ -212,6 +238,8 @@ exon::exon(const exon & source) {
 * @return a copy of the source exon object
 *********************************************************************/
 exon & exon::operator=(const exon & source) {
+  // Bouml preserved body begin 00024A93
+  // Bouml preserved body end 00024A93
 }
 
 /*****************************************************************//**
@@ -222,6 +250,8 @@ exon & exon::operator=(const exon & source) {
 * @return an empty exon
 *********************************************************************/
 nucleotide::nucleotide() {
+  // Bouml preserved body begin 00024B13
+  // Bouml preserved body end 00024B13
 }
 
 /*****************************************************************//**
@@ -231,6 +261,8 @@ nucleotide::nucleotide() {
 *
 *********************************************************************/
 nucleotide::~nucleotide() {
+  // Bouml preserved body begin 00024B93
+  // Bouml preserved body end 00024B93
 }
 
 /*****************************************************************//**
@@ -242,6 +274,8 @@ nucleotide::~nucleotide() {
 * @return a copy of the source nucleotide object
 *********************************************************************/
 nucleotide::nucleotide(const nucleotide & source) {
+  // Bouml preserved body begin 00024C13
+  // Bouml preserved body end 00024C13
 }
 
 /*****************************************************************//**
@@ -254,6 +288,8 @@ nucleotide::nucleotide(const nucleotide & source) {
 * @return a copy of the source nucleotide object
 *********************************************************************/
 nucleotide & nucleotide::operator=(const nucleotide & source) {
+  // Bouml preserved body begin 00024C93
+  // Bouml preserved body end 00024C93
 }
 
 
