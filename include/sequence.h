@@ -68,7 +68,41 @@ class sequence {
     *********************************************************************/
     vector<nucleotide> nucleotides;
 
+    /*****************************************************************//**
+    * @brief strand on chromosome
+    *
+    * This is the chromosome strand (Plus or Minus) the sequence is on.
+    *********************************************************************/
+    
+    strand strand;
+
+
+  public:
+    /*****************************************************************//**
+    * @brief get method for strand attribute
+    *
+    * This method is used to access the strand of the chromosome the
+    * sequence is on.
+    *
+    * @return the strand of the sequence (Plus or Minus)
+    *********************************************************************/
+    
+    inline const strand get_strand() const;
+
 };
+/*****************************************************************//**
+* @brief get method for strand attribute
+*
+* This method is used to access the strand of the chromosome the
+* sequence is on.
+*
+* @return the strand of the sequence (Plus or Minus)
+*********************************************************************/
+
+inline const strand sequence::get_strand() const {
+  return strand;
+}
+
 /*****************************************************************//**
 * @brief exon class
 *
@@ -294,6 +328,15 @@ enum nucleoBase {
   Gap
 
 };
+/*****************************************************************//**
+* @brief strand type
+*
+* This represents the strand of a sequence (Plus or Minus).
+*********************************************************************/
+
+${template}class strand${inherit} {
+${members}};
+${inlines}
 
 } // namespace microSNPscan
 #endif
