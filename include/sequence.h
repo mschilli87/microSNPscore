@@ -2,8 +2,6 @@
 #define MICROSNPSCAN_SEQUENCE_H
 
 
-#include <string>
-
 namespace microSNPscan {
 
 /*****************************************************************//**
@@ -253,7 +251,7 @@ inline const strand sequence::get_strand() const {
 * (like "HSCHR12_3_CTG2_1" and "GL000195.1").
 *********************************************************************/
 
-typedef string chromosome;
+typedef std::string chromosome;
 /*****************************************************************//**
 * @brief strand type
 *
