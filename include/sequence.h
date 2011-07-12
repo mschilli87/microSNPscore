@@ -1,11 +1,11 @@
-#ifndef MICROSNPSCAN_SEQUENCE_H
-#define MICROSNPSCAN_SEQUENCE_H
+#ifndef MICROSNPSCORE_SEQUENCE_H
+#define MICROSNPSCORE_SEQUENCE_H
 
 
 #include <string>
 #include <vector>
 
-namespace microSNPscan {
+namespace microSNPscore {
 
 /*****************************************************************//**
 * @brief chromosome type
@@ -493,5 +493,5 @@ inline const strandType sequence::get_strand() const {
 }
 
 
-} // namespace microSNPscan
+} // namespace microSNPscore
 #endif

@@ -1,10 +1,10 @@
-#ifndef MICROSNPSCAN_MIRNA_H
-#define MICROSNPSCAN_MIRNA_H
+#ifndef MICROSNPSCORE_MIRNA_H
+#define MICROSNPSCORE_MIRNA_H
 
 
 #include "sequence.h"
 
-namespace microSNPscan {
+namespace microSNPscore {
 
 /*****************************************************************//**
 * @brief microRNA class
@@ -55,5 +55,5 @@ class miRNA : public sequence {
 
 };
 
-} // namespace microSNPscan
+} // namespace microSNPscore
 #endif

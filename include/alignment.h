@@ -1,11 +1,11 @@
-#ifndef MICROSNPSCAN_ALIGNMENT_H
-#define MICROSNPSCAN_ALIGNMENT_H
+#ifndef MICROSNPSCORE_ALIGNMENT_H
+#define MICROSNPSCORE_ALIGNMENT_H
 
 
 #include "sequence.h"
 #include <vector>
 
-namespace microSNPscan {
+namespace microSNPscore {
 
 /*****************************************************************//**
 * @brief Alignment column class
@@ -178,5 +178,5 @@ class alignment {
 
 };
 
-} // namespace microSNPscan
+} // namespace microSNPscore
 #endif

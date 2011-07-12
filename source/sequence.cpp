@@ -1,7 +1,7 @@
 
 #include "sequence.h"
 
-namespace microSNPscan {
+namespace microSNPscore {
 
 /*****************************************************************//**
 * @brief standard constructor
@@ -293,4 +293,4 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
 }
 
 
-} // namespace microSNPscan
+} // namespace microSNPscore

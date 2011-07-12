@@ -1,7 +1,7 @@
 
 #include "alignment.h"
 
-namespace microSNPscan {
+namespace microSNPscore {
 
 /*****************************************************************//**
 * @brief standard constructor
@@ -104,4 +104,4 @@ alignment & alignment::operator=(const alignment & source) {
 }
 
 
-} // namespace microSNPscan
+} // namespace microSNPscore

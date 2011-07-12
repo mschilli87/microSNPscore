@@ -1,7 +1,7 @@
 
 #include "mRNA.h"
 
-namespace microSNPscan {
+namespace microSNPscore {
 
 /*****************************************************************//**
 * @brief standard constructor
@@ -54,4 +54,4 @@ mRNA & mRNA::operator=(const mRNA & source) {
 }
 
 
-} // namespace microSNPscan
+} // namespace microSNPscore
