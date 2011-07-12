@@ -13,14 +13,14 @@ namespace microSNPscan {
 * (like "HSCHR12_3_CTG2_1" and "GL000195.1").
 *********************************************************************/
 
-typedef std::string chromosome;
+typedef std::string chromosomeType;
 /*****************************************************************//**
 * @brief strand type
 *
 * This represents the strand of a sequence (Plus or Minus).
 *********************************************************************/
 
-enum strand {
+enum strandType {
   Plus,
   Minus
 
@@ -310,7 +310,7 @@ class sequence {
     * @return the chromosome of the sequence
     *********************************************************************/
     
-    inline const chromosome get_chromosome() const;
+    inline const chromosomeType get_chromosome() const;
 
     /*****************************************************************//**
     * @brief get method for strand attribute
@@ -320,7 +320,7 @@ class sequence {
     *
     * @return the strand of the sequence (Plus or Minus)
     *********************************************************************/
-    inline const strand get_strand() const;
+    inline const strandType get_strand() const;
 
     /*****************************************************************//**
     * @brief get subsequence from sequence position
@@ -447,7 +447,7 @@ class sequence {
     * This is the chromosome the sequence is on.
     *********************************************************************/
     
-    chromosome chromosome;
+    chromosomeType chromosome;
 
     /*****************************************************************//**
     * @brief strand on chromosome
@@ -455,7 +455,7 @@ class sequence {
     * This is the chromosome strand (Plus or Minus) the sequence is on.
     *********************************************************************/
     
-    strand strand;
+    strandType strand;
 
     /*****************************************************************//**
     * @brief nucleotide sequence
@@ -473,7 +473,7 @@ class sequence {
 * @return the chromosome of the sequence
 *********************************************************************/
 
-inline const chromosome sequence::get_chromosome() const {
+inline const chromosomeType sequence::get_chromosome() const {
   return chromosome;
 }
 
@@ -485,7 +485,7 @@ inline const chromosome sequence::get_chromosome() const {
 *
 * @return the strand of the sequence (Plus or Minus)
 *********************************************************************/
-inline const strand sequence::get_strand() const {
+inline const strandType sequence::get_strand() const {
   return strand;
 }
 
