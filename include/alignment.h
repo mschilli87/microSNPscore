@@ -3,6 +3,7 @@
 
 
 #include "sequence.h"
+#include <vector>
 
 namespace microSNPscan {
 

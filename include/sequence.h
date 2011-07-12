@@ -2,6 +2,9 @@
 #define MICROSNPSCAN_SEQUENCE_H
 
 
+#include <string>
+#include <vector>
+
 namespace microSNPscan {
 
 /*****************************************************************//**
