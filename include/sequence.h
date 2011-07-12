@@ -96,7 +96,7 @@ class sequence {
     *         sequence
     *********************************************************************/
     
-    sequence get_subsequence_from(const sequencePosition & from, unsigned short len);
+    sequence get_subsequence_from(sequencePosition from, unsigned short len);
 
     /*****************************************************************//**
     * @brief get subsequence to sequence position
@@ -117,7 +117,7 @@ class sequence {
     *         sequence
     *********************************************************************/
     
-    sequence get_subsequence_to(const sequencePosition & to, unsigned short len);
+    sequence get_subsequence_to(sequencePosition to, unsigned short len);
 
     /*****************************************************************//**
     * @brief get subsequence between sequence positions
@@ -132,7 +132,7 @@ class sequence {
     * @return the subsequence starting and ending at the given positions
     *********************************************************************/
     
-    sequence get_subsequence_from_to(const sequencePosition & from, const sequencePosition & to);
+    sequence get_subsequence_from_to(sequencePosition from, sequencePosition to);
 
     /*****************************************************************//**
     * @brief get subsequence from chromosome position
@@ -154,7 +154,7 @@ class sequence {
     *         sequence
     *********************************************************************/
     
-    sequence get_subsequence_chr_from(const chromosomePosition & from, unsigned short len);
+    sequence get_subsequence_chr_from(chromosomePosition from, unsigned short len);
 
     /*****************************************************************//**
     * @brief get subsequence to chromosome position
@@ -176,7 +176,7 @@ class sequence {
     *         sequence
     *********************************************************************/
     
-    sequence get_subsequence_chr_to(const chromosomePosition & to, unsigned short len);
+    sequence get_subsequence_chr_to(chromosomePosition to, unsigned short len);
 
     /*****************************************************************//**
     * @brief get subsequence between chromosome positions
@@ -192,7 +192,7 @@ class sequence {
     * @return the subsequence starting and ending at the given positions
     *********************************************************************/
     
-    sequence get_subsequence_chr_from_to(const chromosomePosition & from, const chromosomePosition & to);
+    sequence get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to);
 
 
   private:
