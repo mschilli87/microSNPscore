@@ -45,35 +45,6 @@ class exon {
     *********************************************************************/
     exon();
 
-    /*****************************************************************//**
-    * @brief destructor
-    *
-    * This is used to remove an instance of the exon class.
-    *
-    *********************************************************************/
-    ~exon();
-
-    /*****************************************************************//**
-    * @brief const copy constructor
-    *
-    * This is used to copy an instance of the exon class.
-    *
-    * @param source exon object to copy
-    * @return a copy of the source exon object
-    *********************************************************************/
-    exon(const exon & source);
-
-    /*****************************************************************//**
-    * @brief assignment operator
-    *
-    * This is used to copy an instance of  the exon class by
-    * assigning it to another one
-    *
-    * @param source the exon object to be copied
-    * @return a copy of the source exon object
-    *********************************************************************/
-    exon & operator=(const exon & source);
-
 };
 /*****************************************************************//**
 * @brief nucleo base type
@@ -136,35 +107,6 @@ class nucleotide {
     nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position);
 
     /*****************************************************************//**
-    * @brief destructor
-    *
-    * This is used to remove an instance of the nucleotide class.
-    *
-    *********************************************************************/
-    ~nucleotide();
-
-    /*****************************************************************//**
-    * @brief const copy constructor
-    *
-    * This is used to copy an instance of the nucleotide class.
-    *
-    * @param source nucleotide object to copy
-    * @return a copy of the source nucleotide object
-    *********************************************************************/
-    nucleotide(const nucleotide & source);
-
-    /*****************************************************************//**
-    * @brief assignment operator
-    *
-    * This is used to copy an instance of  the nucleotide class by
-    * assigning it to another one
-    *
-    * @param source the nucleotide object to be copied
-    * @return a copy of the source nucleotide object
-    *********************************************************************/
-    nucleotide & operator=(const nucleotide & source);
-
-    /*****************************************************************//**
     * @brief get method for nucleo base attribute
     *
     * This method is used to access the nucleo base of the nucleotide
@@ -205,10 +147,8 @@ class nucleotide {
     * sequence.
     * Calling a standard constructor to create a nucleotide is therefore
     * not intended.
-    * Thus it is declared private.
     *
-    * @todo declare as private and remove this comment when calling
-    * constructors are finished
+    * @todo remove this constructor when calling constructors are finished
     *********************************************************************/
     
     nucleotide();
@@ -300,38 +240,6 @@ class sequence {
     *********************************************************************/
     
     sequence();
-
-    /*****************************************************************//**
-    * @brief destructor
-    *
-    * This is used to remove an instance of the sequence class.
-    *
-    *********************************************************************/
-    
-    ~sequence();
-
-    /*****************************************************************//**
-    * @brief const copy constructor
-    *
-    * This is used to copy an instance of the sequence class.
-    *
-    * @param source sequence object to copy
-    * @return a copy of the source sequence object
-    *********************************************************************/
-    
-    sequence(const sequence & source);
-
-    /*****************************************************************//**
-    * @brief assignment operator
-    *
-    * This is used to copy an instance of  the sequence class by
-    * assigning it to another one
-    *
-    * @param source the sequece object to be copied
-    * @return a copy of the source sequence object
-    *********************************************************************/
-    
-    sequence & operator=(const sequence & source);
 
     /*****************************************************************//**
     * @brief get method for chromosome attribute

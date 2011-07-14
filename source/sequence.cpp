@@ -16,44 +16,6 @@ exon::exon() {
 }
 
 /*****************************************************************//**
-* @brief destructor
-*
-* This is used to remove an instance of the exon class.
-*
-*********************************************************************/
-exon::~exon() {
-  // Bouml preserved body begin 00024993
-  // Bouml preserved body end 00024993
-}
-
-/*****************************************************************//**
-* @brief const copy constructor
-*
-* This is used to copy an instance of the exon class.
-*
-* @param source exon object to copy
-* @return a copy of the source exon object
-*********************************************************************/
-exon::exon(const exon & source) {
-  // Bouml preserved body begin 00024A13
-  // Bouml preserved body end 00024A13
-}
-
-/*****************************************************************//**
-* @brief assignment operator
-*
-* This is used to copy an instance of  the exon class by
-* assigning it to another one
-*
-* @param source the exon object to be copied
-* @return a copy of the source exon object
-*********************************************************************/
-exon & exon::operator=(const exon & source) {
-  // Bouml preserved body begin 00024A93
-  // Bouml preserved body end 00024A93
-}
-
-/*****************************************************************//**
 * @brief constructor
 *
 * This is used to create an instance of the class nucleotide.
@@ -81,54 +43,14 @@ return;
 }
 
 /*****************************************************************//**
-* @brief destructor
-*
-* This is used to remove an instance of the nucleotide class.
-*
-*********************************************************************/
-nucleotide::~nucleotide() {
-  // Bouml preserved body begin 00024B93
-  // Bouml preserved body end 00024B93
-}
-
-/*****************************************************************//**
-* @brief const copy constructor
-*
-* This is used to copy an instance of the nucleotide class.
-*
-* @param source nucleotide object to copy
-* @return a copy of the source nucleotide object
-*********************************************************************/
-nucleotide::nucleotide(const nucleotide & source) {
-  // Bouml preserved body begin 00024C13
-  // Bouml preserved body end 00024C13
-}
-
-/*****************************************************************//**
-* @brief assignment operator
-*
-* This is used to copy an instance of  the nucleotide class by
-* assigning it to another one
-*
-* @param source the nucleotide object to be copied
-* @return a copy of the source nucleotide object
-*********************************************************************/
-nucleotide & nucleotide::operator=(const nucleotide & source) {
-  // Bouml preserved body begin 00024C93
-  // Bouml preserved body end 00024C93
-}
-
-/*****************************************************************//**
 * @brief standard constructor
 *
 * A nucleotide must have a base, and a position on chromosome and in
 * sequence.
 * Calling a standard constructor to create a nucleotide is therefore
 * not intended.
-* Thus it is declared private.
 *
-* @todo declare as private and remove this comment when calling
-* constructors are finished
+* @todo remove this constructor when calling constructors are finished
 *********************************************************************/
 
 nucleotide::nucleotide() {
@@ -147,47 +69,6 @@ nucleotide::nucleotide() {
 sequence::sequence() {
   // Bouml preserved body begin 0001F413
   // Bouml preserved body end 0001F413
-}
-
-/*****************************************************************//**
-* @brief destructor
-*
-* This is used to remove an instance of the sequence class.
-*
-*********************************************************************/
-
-sequence::~sequence() {
-  // Bouml preserved body begin 0001F493
-  // Bouml preserved body end 0001F493
-}
-
-/*****************************************************************//**
-* @brief const copy constructor
-*
-* This is used to copy an instance of the sequence class.
-*
-* @param source sequence object to copy
-* @return a copy of the source sequence object
-*********************************************************************/
-
-sequence::sequence(const sequence & source) {
-  // Bouml preserved body begin 0001F513
-  // Bouml preserved body end 0001F513
-}
-
-/*****************************************************************//**
-* @brief assignment operator
-*
-* This is used to copy an instance of  the sequence class by
-* assigning it to another one
-*
-* @param source the sequece object to be copied
-* @return a copy of the source sequence object
-*********************************************************************/
-
-sequence & sequence::operator=(const sequence & source) {
-  // Bouml preserved body begin 0001F593
-  // Bouml preserved body end 0001F593
 }
 
 /*****************************************************************//**
