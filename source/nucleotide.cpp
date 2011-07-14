@@ -1,4 +1,6 @@
 
+#include <iostream>
+//for std::cerr and std::endl (error stating)
 #include "nucleotide.h"
 
 namespace microSNPscore {
@@ -19,6 +21,9 @@ matchType::matchType(matchIdentifier match_type)
 * @brief score initialization function
 *
 * This is used set the score according to the match identifier.
+* The scoring scheme is taken from miRanda because mirSVR was trained
+* with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
+* Masked: -1, Wobble: -1, Match: +5).
 * Because score is const is has to be initialized before the
 * constructor runs and because the object is not completed at this
 * time, this function is declared static to rule out any side effects.
@@ -31,18 +36,27 @@ matchType::matchType(matchIdentifier match_type)
 
 matchScore matchType::calculate_score(matchIdentifier the_identifier)
 {
-switch(the_identifier){
-   case Match: return 5;
-   case Mismatch: return -3;
-   case IndelExtend: return -4;
-   case IndelOpen: return -9;
-   case Wobble: return -1;
-   case Masked: return -1;
-   default: std::cerr << "microSNPscore::matchType::calculateScore\n";
-            std::cerr << " ==> Undefined match type identifier: " << the_identifier << std:: endl;
-            std::cerr << "  --> assuming Masked --> returning -1\n";
-            return -1;
-}
+   /*****************************************************************\ 
+  | Returning the score corresponding to the match type as used in    |
+  | miRanda. The cases are ordered from common to uncommon to reduce  |
+  | comparisms as much as possible. Of course the default case should |
+  | never be reached. Because return exits the function there is no   |
+  | break statement needed after the cases.                           |
+   \*****************************************************************/
+  switch(the_identifier)
+  {
+    case Match: return 5;
+    case Mismatch: return -3;
+    case IndelExtend: return -4;
+    case IndelOpen: return -9;
+    case Wobble: return -1;
+    case Masked: return -1;
+    default: std::cerr << "microSNPscore::matchType::calculateScore\n";
+             std::cerr << " ==> Undefined match type identifier: ";
+             std::cerr << the_identifier << std:: endl;
+             std::cerr << "  --> assuming Masked --> returning -1\n";
+             return -1;
+  }
 }
 
 /*****************************************************************//**
@@ -79,10 +93,14 @@ return;
 *
 * @param matching_nucleotide const nucleotide reference to the
 *        nucleotide that is paired with this one
+* @param indel_type (optional) indelType telling whether this match
+*        would be the first continuing indel (i.e. Open) if it would be
+*        an indel or if it is directly following an existing indel (i.e.
+*        Extend) - Defaults to Open
 * @return matchType representing the match between this and the given
 *         nucleotide.
 *********************************************************************/
-matchType nucleotide::get_match(const nucleotide & matching_nucleotide) const {
+matchType nucleotide::get_match(const nucleotide & matching_nucleotide, IndelType indel_type) const {
 }
 
 

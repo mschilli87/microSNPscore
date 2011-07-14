@@ -40,7 +40,8 @@ enum nucleoBase {
 * Mismatch, Masked, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
 enum matchIdentifier {
-  Indel,
+  IndelOpen,
+  IndelExtend,
   Mismatch,
   Masked,
   Wobble,
@@ -54,6 +55,16 @@ enum matchIdentifier {
 * Masked, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
 typedef short matchScore;
+/*****************************************************************//**
+* @brief Indel type
+*
+* This represents the type (Open or Extend) of an Indel.
+*********************************************************************/
+enum IndelType {
+  Open,
+  Extend
+
+};
 /*****************************************************************//**
 * @brief match state type
 *
@@ -87,6 +98,9 @@ class matchType {
     * @brief get method for score attribute
     *
     * This method is used to access the score of the match type.
+    * The scoring scheme is taken from miRanda because mirSVR was trained
+    * with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
+    * Masked: -1, Wobble: -1, Match: +5).
     *
     * @return the score of the match type.
     *********************************************************************/
@@ -98,6 +112,9 @@ class matchType {
     * @brief score initialization function
     *
     * This is used set the score according to the match identifier.
+    * The scoring scheme is taken from miRanda because mirSVR was trained
+    * with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
+    * Masked: -1, Wobble: -1, Match: +5).
     * Because score is const is has to be initialized before the
     * constructor runs and because the object is not completed at this
     * time, this function is declared static to rule out any side effects.
@@ -121,7 +138,9 @@ class matchType {
     /*****************************************************************//**
     * @brief match state score
     *
-    * This is the score of the match state.
+    * This is the score of the match state according to the miRanda
+    * scoring scheme (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
+    * Masked: -1, Wobble: -1, Match: +5).
     *********************************************************************/
     const matchScore score;
 
@@ -143,6 +162,9 @@ inline const matchIdentifier matchType::get_identifier() const {
 * @brief get method for score attribute
 *
 * This method is used to access the score of the match type.
+* The scoring scheme is taken from miRanda because mirSVR was trained
+* with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
+* Masked: -1, Wobble: -1, Match: +5).
 *
 * @return the score of the match type.
 *********************************************************************/
@@ -220,10 +242,14 @@ class nucleotide {
     *
     * @param matching_nucleotide const nucleotide reference to the
     *        nucleotide that is paired with this one
+    * @param indel_type (optional) indelType telling whether this match
+    *        would be the first continuing indel (i.e. Open) if it would be
+    *        an indel or if it is directly following an existing indel (i.e.
+    *        Extend) - Defaults to Open
     * @return matchType representing the match between this and the given
     *         nucleotide.
     *********************************************************************/
-    matchType get_match(const nucleotide & matching_nucleotide) const;
+    matchType get_match(const nucleotide & matching_nucleotide, IndelType indel_type = Open) const;
 
 
   private:
