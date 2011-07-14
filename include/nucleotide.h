@@ -104,20 +104,36 @@ class matchType {
 
   private:
     /*****************************************************************//**
+    * @brief score initialization function
+    *
+    * This is used set the score according to the match identifier.
+    * Because score is const is has to be initialized before the
+    * constructor runs and because the object is not completed at this
+    * time, this function is declared static to rule out any side effects.
+    *
+    * @param the_identifier matchIdentifier representing the match type
+    *        (Indel, Mismatch, Masked, Wobble, Match).
+    * @return matchScore representing the score of a match of the given
+    *         type
+    *********************************************************************/
+    
+    static matchScore calculate_score(const matchIdentifier the_identifier);
+
+    /*****************************************************************//**
     * @brief match state identifier
     *
     * This is the identifiers of the match state (Indel, Mismatch, Masked,
     * Wobble, Match).
     *********************************************************************/
     
-    matchIdentifier identifier;
+    const matchIdentifier identifier;
 
     /*****************************************************************//**
     * @brief match state score
     *
     * This is the score of the match state.
     *********************************************************************/
-    matchScore score;
+    const matchScore score;
 
 };
 /*****************************************************************//**
@@ -245,7 +261,7 @@ class nucleotide {
     * This is the nucleo base of the nucleotide.
     *********************************************************************/
     
-    nucleoBase base;
+    const nucleoBase base;
 
     /*****************************************************************//**
     * @brief position in sequence
@@ -254,7 +270,7 @@ class nucleotide {
     * beeing position 1.
     * Gaps are given the position of their predecessors in the alignment.
     *********************************************************************/
-    sequencePosition sequence_position;
+    const sequencePosition sequence_position;
 
     /*****************************************************************//**
     * @brief position on chromosome
@@ -263,7 +279,7 @@ class nucleotide {
     * the + strand (i.e. the 3' end of the - strand) beeing position 1.
     * Gaps are given the position of their predecessors in the alignment.
     *********************************************************************/
-    chromosomePosition chromosome_position;
+    const chromosomePosition chromosome_position;
 
 };
 /*****************************************************************//**
