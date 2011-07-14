@@ -30,7 +30,7 @@ enum nucleoBase {
   Cytosine,
   Guanine,
   Uracil,
-  Masked,
+  Mask,
   Gap
 
 };
@@ -184,12 +184,13 @@ inline const chromosomePosition nucleotide::get_chromosome_position() const {
 * @brief match state identifier type
 *
 * This represents the identifiers of the match states (Indel,
-* Mismatch, Wobble, Match) of a pair of nucleotides.
+* Mismatch, Masked, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
 
 enum matchIdentifier {
   Indel,
   Mismatch,
+  Masked,
   Wobble,
   Match
 
@@ -198,37 +199,36 @@ enum matchIdentifier {
 * @brief match state score type
 *
 * This represents the score of the match states (Indel, Mismatch,
-* Wobble, Match) of a pair of nucleotides.
+* Masked, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
 
 typedef short matchScore;
 /*****************************************************************//**
 * @brief match state type
 *
-* This represents the match states (Indel, Mismatch, Wobble, Match)
-* of a pair of nucleotides.
+* This represents the match states (Indel, Mismatch, Masked, Wobble,
+* Match) of a pair of nucleotides.
 *********************************************************************/
+
 class matchType {
   public:
     /*****************************************************************//**
     * @brief get method for identifier attribute
     *
     * This method is used to access the identifier (Indel, Mismatch,
-    * Wobble, Match) of the match type.
+    * Masked, Wobble, Match) of the match type.
     *
-    * @return the identifier (Indel, Mismatch, Wobble, Match) of the
-    * match type.
+    * @return the identifier (Indel, Mismatch, Masked, Wobble, Match)
+    * of the match type.
     *********************************************************************/
     inline const matchIdentifier get_identifier() const;
 
     /*****************************************************************//**
-    * @brief get method for identifier attribute
+    * @brief get method for score attribute
     *
-    * This method is used to access the identifier (Indel, Mismatch,
-    * Wobble, Match) of the match type.
+    * This method is used to access the score of the match type.
     *
-    * @return the identifier (Indel, Mismatch, Wobble, Match) of the
-    * match type.
+    * @return the score of the match type.
     *********************************************************************/
     inline const matchScore get_score() const;
 
@@ -237,12 +237,17 @@ class matchType {
     /*****************************************************************//**
     * @brief match state identifier
     *
-    * This is the identifiers of the match state (Indel, Mismatch, Wobble,
-    * Match).
+    * This is the identifiers of the match state (Indel, Mismatch, Masked,
+    * Wobble, Match).
     *********************************************************************/
     
     matchIdentifier identifier;
 
+    /*****************************************************************//**
+    * @brief match state score
+    *
+    * This is the score of the match state.
+    *********************************************************************/
     matchScore score;
 
 };
@@ -250,23 +255,21 @@ class matchType {
 * @brief get method for identifier attribute
 *
 * This method is used to access the identifier (Indel, Mismatch,
-* Wobble, Match) of the match type.
+* Masked, Wobble, Match) of the match type.
 *
-* @return the identifier (Indel, Mismatch, Wobble, Match) of the
-* match type.
+* @return the identifier (Indel, Mismatch, Masked, Wobble, Match)
+* of the match type.
 *********************************************************************/
 inline const matchIdentifier matchType::get_identifier() const {
   return identifier;
 }
 
 /*****************************************************************//**
-* @brief get method for identifier attribute
+* @brief get method for score attribute
 *
-* This method is used to access the identifier (Indel, Mismatch,
-* Wobble, Match) of the match type.
+* This method is used to access the score of the match type.
 *
-* @return the identifier (Indel, Mismatch, Wobble, Match) of the
-* match type.
+* @return the score of the match type.
 *********************************************************************/
 inline const matchScore matchType::get_score() const {
   return score;
