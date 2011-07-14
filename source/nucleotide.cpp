@@ -13,8 +13,6 @@ namespace microSNPscore {
 *********************************************************************/
 matchType::matchType(matchIdentifier match_type)
 :identifier(match_type),score(calculate_score(match_type)) {
-  // Bouml preserved body begin 00031F13
-  // Bouml preserved body end 00031F13
 }
 
 /*****************************************************************//**
@@ -33,8 +31,18 @@ matchType::matchType(matchIdentifier match_type)
 
 matchScore matchType::calculate_score(matchIdentifier the_identifier)
 {
-  // Bouml preserved body begin 00033993
-  // Bouml preserved body end 00033993
+switch(the_identifier){
+   case Match: return 5;
+   case Mismatch: return -3;
+   case IndelExtend: return -4;
+   case IndelOpen: return -9;
+   case Wobble: return -1;
+   case Masked: return -1;
+   default: std::cerr << "microSNPscore::matchType::calculateScore\n";
+            std::cerr << " ==> Undefined match type identifier: " << the_identifier << std:: endl;
+            std::cerr << "  --> assuming Masked --> returning -1\n";
+            return -1;
+}
 }
 
 /*****************************************************************//**
@@ -58,9 +66,7 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier)
 *********************************************************************/
 nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position)
 :base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position) {
-  // Bouml preserved body begin 00024B13
 return;
-  // Bouml preserved body end 00024B13
 }
 
 /*****************************************************************//**
@@ -77,8 +83,6 @@ return;
 *         nucleotide.
 *********************************************************************/
 matchType nucleotide::get_match(const nucleotide & matching_nucleotide) const {
-  // Bouml preserved body begin 00032013
-  // Bouml preserved body end 00032013
 }
 
 

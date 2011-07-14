@@ -11,8 +11,6 @@ namespace microSNPscore {
 * @return an empty miRNA
 *********************************************************************/
 miRNA::miRNA() {
-  // Bouml preserved body begin 00021113
-  // Bouml preserved body end 00021113
 }
 
 

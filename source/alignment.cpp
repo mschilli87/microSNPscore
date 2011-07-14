@@ -17,8 +17,6 @@ namespace microSNPscore {
 *********************************************************************/
 alignmentColumn::alignmentColumn(const nucleotide & the_mRNA_nucleotide, const nucleotide & the_miRNA_nucleotide)
 :mRNA_nucleotide(the_mRNA_nucleotide),miRNA_nucleotide(the_miRNA_nucleotide),match(the_mRNA_nucleotide.get_match(the_miRNA_nucleotide)) {
-  // Bouml preserved body begin 00022C13
-  // Bouml preserved body end 00022C13
 }
 
 /*****************************************************************//**
@@ -29,8 +27,6 @@ alignmentColumn::alignmentColumn(const nucleotide & the_mRNA_nucleotide, const n
 * @return an empty alignment
 *********************************************************************/
 alignment::alignment() {
-  // Bouml preserved body begin 00022E13
-  // Bouml preserved body end 00022E13
 }
 
 

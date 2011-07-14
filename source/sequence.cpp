@@ -11,8 +11,6 @@ namespace microSNPscore {
 * @return an empty exon
 *********************************************************************/
 exon::exon() {
-  // Bouml preserved body begin 00024913
-  // Bouml preserved body end 00024913
 }
 
 /*****************************************************************//**
@@ -23,8 +21,6 @@ exon::exon() {
 * @return an empty sequence
 *********************************************************************/
 sequence::sequence() {
-  // Bouml preserved body begin 0001F413
-  // Bouml preserved body end 0001F413
 }
 
 /*****************************************************************//**
@@ -46,8 +42,6 @@ sequence::sequence() {
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_from(sequencePosition from, unsigned short len) const {
-  // Bouml preserved body begin 0002CF93
-  // Bouml preserved body end 0002CF93
 }
 
 /*****************************************************************//**
@@ -69,8 +63,6 @@ sequence sequence::get_subsequence_from(sequencePosition from, unsigned short le
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_to(sequencePosition to, unsigned short len) const {
-  // Bouml preserved body begin 0002D093
-  // Bouml preserved body end 0002D093
 }
 
 /*****************************************************************//**
@@ -86,8 +78,6 @@ sequence sequence::get_subsequence_to(sequencePosition to, unsigned short len) c
 * @return the subsequence starting and ending at the given positions
 *********************************************************************/
 sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePosition to) const {
-  // Bouml preserved body begin 0002D193
-  // Bouml preserved body end 0002D193
 }
 
 /*****************************************************************//**
@@ -110,8 +100,6 @@ sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePositi
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned short len) const {
-  // Bouml preserved body begin 0002CE13
-  // Bouml preserved body end 0002CE13
 }
 
 /*****************************************************************//**
@@ -134,8 +122,6 @@ sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned sh
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_chr_to(chromosomePosition to, unsigned short len) const {
-  // Bouml preserved body begin 0002D013
-  // Bouml preserved body end 0002D013
 }
 
 /*****************************************************************//**
@@ -152,8 +138,6 @@ sequence sequence::get_subsequence_chr_to(chromosomePosition to, unsigned short 
 * @return the subsequence starting and ending at the given positions
 *********************************************************************/
 sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) const {
-  // Bouml preserved body begin 0002D113
-  // Bouml preserved body end 0002D113
 }
 
 
