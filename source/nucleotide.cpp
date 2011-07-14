@@ -18,21 +18,6 @@ matchType::matchType(matchIdentifier match_type)
 }
 
 /*****************************************************************//**
-* @brief standard constructor
-*
-* A match type must have an identifier.
-* Calling a standard constructor to create a match type is therefore
-* not intended.
-*
-* @todo remove this constructor when calling constructors are finished
-*********************************************************************/
-matchType::matchType()
-:identifier(Masked),score(matchType::calculate_score(Masked)) {
-  // Bouml preserved body begin 00031F93
-  // Bouml preserved body end 00031F93
-}
-
-/*****************************************************************//**
 * @brief score initialization function
 *
 * This is used set the score according to the match identifier.
@@ -91,25 +76,9 @@ return;
 * @return matchType representing the match between this and the given
 *         nucleotide.
 *********************************************************************/
-matchType nucleotide::get_match(const nucleotide & matching_nucleotide) {
+matchType nucleotide::get_match(const nucleotide & matching_nucleotide) const {
   // Bouml preserved body begin 00032013
   // Bouml preserved body end 00032013
-}
-
-/*****************************************************************//**
-* @brief standard constructor
-*
-* A nucleotide must have a base, and a position on chromosome and in
-* sequence.
-* Calling a standard constructor to create a nucleotide is therefore
-* not intended.
-*
-* @todo remove this constructor when calling constructors are finished
-*********************************************************************/
-nucleotide::nucleotide()
-:base(Mask),sequence_position(0),chromosome_position(0) {
-  // Bouml preserved body begin 0002EB13
-  // Bouml preserved body end 0002EB13
 }
 
 

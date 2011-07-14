@@ -73,17 +73,6 @@ class matchType {
     matchType(matchIdentifier match_type);
 
     /*****************************************************************//**
-    * @brief standard constructor
-    *
-    * A match type must have an identifier.
-    * Calling a standard constructor to create a match type is therefore
-    * not intended.
-    *
-    * @todo remove this constructor when calling constructors are finished
-    *********************************************************************/
-    matchType();
-
-    /*****************************************************************//**
     * @brief get method for identifier attribute
     *
     * This method is used to access the identifier (Indel, Mismatch,
@@ -234,19 +223,7 @@ class nucleotide {
     * @return matchType representing the match between this and the given
     *         nucleotide.
     *********************************************************************/
-    matchType get_match(const nucleotide & matching_nucleotide);
-
-    /*****************************************************************//**
-    * @brief standard constructor
-    *
-    * A nucleotide must have a base, and a position on chromosome and in
-    * sequence.
-    * Calling a standard constructor to create a nucleotide is therefore
-    * not intended.
-    *
-    * @todo remove this constructor when calling constructors are finished
-    *********************************************************************/
-    nucleotide();
+    matchType get_match(const nucleotide & matching_nucleotide) const;
 
 
   private:

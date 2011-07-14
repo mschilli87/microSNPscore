@@ -45,7 +45,7 @@ sequence::sequence() {
 *         after the given length (5' to 3') or at the end of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_from(sequencePosition from, unsigned short len) {
+sequence sequence::get_subsequence_from(sequencePosition from, unsigned short len) const {
   // Bouml preserved body begin 0002CF93
   // Bouml preserved body end 0002CF93
 }
@@ -68,7 +68,7 @@ sequence sequence::get_subsequence_from(sequencePosition from, unsigned short le
 *         after the given length (3' to 5') or at the start of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_to(sequencePosition to, unsigned short len) {
+sequence sequence::get_subsequence_to(sequencePosition to, unsigned short len) const {
   // Bouml preserved body begin 0002D093
   // Bouml preserved body end 0002D093
 }
@@ -85,7 +85,7 @@ sequence sequence::get_subsequence_to(sequencePosition to, unsigned short len) {
 * @param to the end position in the sequence of the subsequence
 * @return the subsequence starting and ending at the given positions
 *********************************************************************/
-sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePosition to) {
+sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePosition to) const {
   // Bouml preserved body begin 0002D193
   // Bouml preserved body end 0002D193
 }
@@ -109,7 +109,7 @@ sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePositi
 *         after the given length (5' to 3') or at the end of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned short len) {
+sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned short len) const {
   // Bouml preserved body begin 0002CE13
   // Bouml preserved body end 0002CE13
 }
@@ -133,7 +133,7 @@ sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned sh
 *         after the given length (3' to 5') or at the start of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_chr_to(chromosomePosition to, unsigned short len) {
+sequence sequence::get_subsequence_chr_to(chromosomePosition to, unsigned short len) const {
   // Bouml preserved body begin 0002D013
   // Bouml preserved body end 0002D013
 }
@@ -151,7 +151,7 @@ sequence sequence::get_subsequence_chr_to(chromosomePosition to, unsigned short 
 * @param to the end position on the chromosome of the subsequence
 * @return the subsequence starting and ending at the given positions
 *********************************************************************/
-sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) {
+sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) const {
   // Bouml preserved body begin 0002D113
   // Bouml preserved body end 0002D113
 }

@@ -15,13 +15,18 @@ namespace microSNPscore {
 class alignmentColumn {
   public:
     /*****************************************************************//**
-    * @brief standard constructor
+    * @brief constructor
     *
     * This is used to create an instance of the class alignmentColumn.
     *
-    * @return an empty alignment column
+    * @param the_mRNA_nucleotide const nucleotide reference to the
+    *        nucleotide of the messenger RNA in that alignment column
+    * @param the_miRNA_nucleotide const nucleotide reference to the
+    *        nucleotide of the microRNA in that alignment column
+    * @return alignmentColumn representing an alignment column aligning
+    *         the given nucleotides
     *********************************************************************/
-    alignmentColumn();
+    alignmentColumn(const nucleotide & the_mRNA_nucleotide, const nucleotide & the_miRNA_nucleotide);
 
     /*****************************************************************//**
     * @brief get method for messenger RNA nucleotide attribute
@@ -43,6 +48,8 @@ class alignmentColumn {
     *********************************************************************/
     inline const nucleotide get_miRNA_nucleotide() const;
 
+    inline const matchType get_match() const;
+
 
   private:
     /*****************************************************************//**
@@ -51,7 +58,7 @@ class alignmentColumn {
     * This is the nucleotide of the messenger RNA that is aligned in that
     * alignment column
     *********************************************************************/
-    nucleotide mRNA_nucleotide;
+    const nucleotide mRNA_nucleotide;
 
     /*****************************************************************//**
     * @brief microRNA nucleotide
@@ -59,7 +66,7 @@ class alignmentColumn {
     * This is the nucleotide of the microRNA that is aligned in that
     * alignment column
     *********************************************************************/
-    nucleotide miRNA_nucleotide;
+    const nucleotide miRNA_nucleotide;
 
     /*****************************************************************//**
     * @brief match state
@@ -67,7 +74,7 @@ class alignmentColumn {
     * This is the match state (Indel, Mismatch, Wobble, Match) of the
     * alignment column
     *********************************************************************/
-    matchType match;
+    const matchType match;
 
 };
 /*****************************************************************//**
@@ -92,6 +99,10 @@ inline const nucleotide alignmentColumn::get_mRNA_nucleotide() const {
 *********************************************************************/
 inline const nucleotide alignmentColumn::get_miRNA_nucleotide() const {
   return miRNA_nucleotide;
+}
+
+inline const matchType alignmentColumn::get_match() const {
+  return match;
 }
 
 /*****************************************************************//**
