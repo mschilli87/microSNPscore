@@ -12,7 +12,6 @@ namespace microSNPscore {
 *
 * This represent a column of an alignment of mRNA and miRNA.
 *********************************************************************/
-
 class alignmentColumn {
   public:
     /*****************************************************************//**
@@ -32,7 +31,6 @@ class alignmentColumn {
     *
     * @return the mRNA nucleotide aligned in that alignment column
     *********************************************************************/
-    
     inline const nucleotide get_mRNA_nucleotide() const;
 
     /*****************************************************************//**
@@ -43,7 +41,6 @@ class alignmentColumn {
     *
     * @return the miRNA nucleotide aligned in that alignment column
     *********************************************************************/
-    
     inline const nucleotide get_miRNA_nucleotide() const;
 
 
@@ -54,7 +51,6 @@ class alignmentColumn {
     * This is the nucleotide of the messenger RNA that is aligned in that
     * alignment column
     *********************************************************************/
-    
     nucleotide mRNA_nucleotide;
 
     /*****************************************************************//**
@@ -82,7 +78,6 @@ class alignmentColumn {
 *
 * @return the mRNA nucleotide aligned in that alignment column
 *********************************************************************/
-
 inline const nucleotide alignmentColumn::get_mRNA_nucleotide() const {
   return mRNA_nucleotide;
 }
@@ -95,7 +90,6 @@ inline const nucleotide alignmentColumn::get_mRNA_nucleotide() const {
 *
 * @return the miRNA nucleotide aligned in that alignment column
 *********************************************************************/
-
 inline const nucleotide alignmentColumn::get_miRNA_nucleotide() const {
   return miRNA_nucleotide;
 }
@@ -105,7 +99,6 @@ inline const nucleotide alignmentColumn::get_miRNA_nucleotide() const {
 *
 * This represents an alignment of mRNA and miRNA.
 *********************************************************************/
-
 class alignment {
   public:
     /*****************************************************************//**

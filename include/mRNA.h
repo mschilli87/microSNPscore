@@ -12,7 +12,6 @@ namespace microSNPscore {
 * This represents a messenger RNA sequence.
 * It is a specialisation of the sequence class.
 *********************************************************************/
-
 class mRNA : public sequence {
   public:
     /*****************************************************************//**

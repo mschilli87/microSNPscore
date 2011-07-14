@@ -3,6 +3,14 @@
 
 namespace microSNPscore {
 
+/*****************************************************************//**
+* @brief constructor
+*
+* This is used to create an instance of the class match type.
+*
+* @param match_type matchIdentifier representing the match type
+* (Indel, Mismatch, Masked, Wobble, Match)
+*********************************************************************/
 matchType::matchType(matchIdentifier match_type)
 :identifier(match_type),score(calculate_score(match_type)) {
   // Bouml preserved body begin 00031F13
@@ -18,7 +26,6 @@ matchType::matchType(matchIdentifier match_type)
 *
 * @todo remove this constructor when calling constructors are finished
 *********************************************************************/
-
 matchType::matchType()
 :identifier(Masked),score(matchType::calculate_score(Masked)) {
   // Bouml preserved body begin 00031F93
@@ -64,7 +71,6 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier)
 * @return a nucleotide containing the given nucleo base and located at
 *         the given positions on chromosome and in sequence
 *********************************************************************/
-
 nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position)
 :base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position) {
   // Bouml preserved body begin 00024B13
@@ -85,7 +91,6 @@ return;
 * @return matchType representing the match between this and the given
 *         nucleotide.
 *********************************************************************/
-
 matchType nucleotide::get_match(const nucleotide & matching_nucleotide) {
   // Bouml preserved body begin 00032013
   // Bouml preserved body end 00032013
@@ -101,8 +106,8 @@ matchType nucleotide::get_match(const nucleotide & matching_nucleotide) {
 *
 * @todo remove this constructor when calling constructors are finished
 *********************************************************************/
-
-nucleotide::nucleotide() {
+nucleotide::nucleotide()
+:base(Mask),sequence_position(0),chromosome_position(0) {
   // Bouml preserved body begin 0002EB13
   // Bouml preserved body end 0002EB13
 }

@@ -10,7 +10,6 @@ namespace microSNPscore {
 * This represents a position on a chromosome, the 5' end of the
 * + strand (i.e. the 3' end of the - strand) beeing position 1.
 *********************************************************************/
-
 typedef unsigned int chromosomePosition;
 /*****************************************************************//**
 * @brief chromosome position type
@@ -25,7 +24,6 @@ typedef unsigned short sequencePosition;
 * This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
 * as well as a gap or a mask
 *********************************************************************/
-
 enum nucleoBase {
   Adenine,
   Cytosine,
@@ -41,7 +39,6 @@ enum nucleoBase {
 * This represents the identifiers of the match states (Indel,
 * Mismatch, Masked, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
-
 enum matchIdentifier {
   Indel,
   Mismatch,
@@ -56,7 +53,6 @@ enum matchIdentifier {
 * This represents the score of the match states (Indel, Mismatch,
 * Masked, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
-
 typedef short matchScore;
 /*****************************************************************//**
 * @brief match state type
@@ -64,9 +60,16 @@ typedef short matchScore;
 * This represents the match states (Indel, Mismatch, Masked, Wobble,
 * Match) of a pair of nucleotides.
 *********************************************************************/
-
 class matchType {
   public:
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create an instance of the class match type.
+    *
+    * @param match_type matchIdentifier representing the match type
+    * (Indel, Mismatch, Masked, Wobble, Match)
+    *********************************************************************/
     matchType(matchIdentifier match_type);
 
     /*****************************************************************//**
@@ -78,7 +81,6 @@ class matchType {
     *
     * @todo remove this constructor when calling constructors are finished
     *********************************************************************/
-    
     matchType();
 
     /*****************************************************************//**
@@ -125,7 +127,6 @@ class matchType {
     * This is the identifiers of the match state (Indel, Mismatch, Masked,
     * Wobble, Match).
     *********************************************************************/
-    
     const matchIdentifier identifier;
 
     /*****************************************************************//**
@@ -165,7 +166,6 @@ inline const matchScore matchType::get_score() const {
 *
 * This represents a nucleotide.
 *********************************************************************/
-
 class nucleotide {
   public:
     /*****************************************************************//**
@@ -187,7 +187,6 @@ class nucleotide {
     * @return a nucleotide containing the given nucleo base and located at
     *         the given positions on chromosome and in sequence
     *********************************************************************/
-    
     nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position);
 
     /*****************************************************************//**
@@ -208,7 +207,6 @@ class nucleotide {
     *
     * @return the position of the nucleotide in the sequence
     *********************************************************************/
-    
     inline const sequencePosition get_sequence_position() const;
 
     /*****************************************************************//**
@@ -221,7 +219,6 @@ class nucleotide {
     *
     * @return the position of the nucleotide on its chromosome
     *********************************************************************/
-    
     inline const chromosomePosition get_chromosome_position() const;
 
     /*****************************************************************//**
@@ -237,7 +234,6 @@ class nucleotide {
     * @return matchType representing the match between this and the given
     *         nucleotide.
     *********************************************************************/
-    
     matchType get_match(const nucleotide & matching_nucleotide);
 
     /*****************************************************************//**
@@ -250,7 +246,6 @@ class nucleotide {
     *
     * @todo remove this constructor when calling constructors are finished
     *********************************************************************/
-    
     nucleotide();
 
 
@@ -260,7 +255,6 @@ class nucleotide {
     *
     * This is the nucleo base of the nucleotide.
     *********************************************************************/
-    
     const nucleoBase base;
 
     /*****************************************************************//**
@@ -302,7 +296,6 @@ inline const nucleoBase nucleotide::get_base() const {
 *
 * @return the position of the nucleotide in the sequence
 *********************************************************************/
-
 inline const sequencePosition nucleotide::get_sequence_position() const {
   return sequence_position;
 }
@@ -317,7 +310,6 @@ inline const sequencePosition nucleotide::get_sequence_position() const {
 *
 * @return the position of the nucleotide on its chromosome
 *********************************************************************/
-
 inline const chromosomePosition nucleotide::get_chromosome_position() const {
   return chromosome_position;
 }

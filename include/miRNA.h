@@ -12,7 +12,6 @@ namespace microSNPscore {
 * This represents a microRNA sequence.
 * It is a specialisation of the sequence class.
 *********************************************************************/
-
 class miRNA : public sequence {
   public:
     /*****************************************************************//**

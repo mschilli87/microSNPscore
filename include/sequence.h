@@ -18,14 +18,12 @@ namespace microSNPscore {
 * is done without any consistency checking) and special 'chromosomes'
 * (like "HSCHR12_3_CTG2_1" and "GL000195.1").
 *********************************************************************/
-
 typedef std::string chromosomeType;
 /*****************************************************************//**
 * @brief strand type
 *
 * This represents the strand of a sequence (Plus or Minus).
 *********************************************************************/
-
 enum strandType {
   Plus,
   Minus
@@ -36,7 +34,6 @@ enum strandType {
 *
 * This represents an exon as a pair of positions (start/stop).
 *********************************************************************/
-
 class exon {
   public:
     /*****************************************************************//**
@@ -55,7 +52,6 @@ class exon {
 * This shall become the representation for sequences (DNA and RNA)
 * and is used as my first example to generate code with BOUML
 *********************************************************************/
-
 class sequence {
   public:
     /*****************************************************************//**
@@ -65,7 +61,6 @@ class sequence {
     *
     * @return an empty sequence
     *********************************************************************/
-    
     sequence();
 
     /*****************************************************************//**
@@ -75,7 +70,6 @@ class sequence {
     *
     * @return the chromosome of the sequence
     *********************************************************************/
-    
     inline const chromosomeType get_chromosome() const;
 
     /*****************************************************************//**
@@ -106,7 +100,6 @@ class sequence {
     *         after the given length (5' to 3') or at the end of the
     *         sequence
     *********************************************************************/
-    
     sequence get_subsequence_from(sequencePosition from, unsigned short len);
 
     /*****************************************************************//**
@@ -127,7 +120,6 @@ class sequence {
     *         after the given length (3' to 5') or at the start of the
     *         sequence
     *********************************************************************/
-    
     sequence get_subsequence_to(sequencePosition to, unsigned short len);
 
     /*****************************************************************//**
@@ -142,7 +134,6 @@ class sequence {
     * @param to the end position in the sequence of the subsequence
     * @return the subsequence starting and ending at the given positions
     *********************************************************************/
-    
     sequence get_subsequence_from_to(sequencePosition from, sequencePosition to);
 
     /*****************************************************************//**
@@ -164,7 +155,6 @@ class sequence {
     *         after the given length (5' to 3') or at the end of the
     *         sequence
     *********************************************************************/
-    
     sequence get_subsequence_chr_from(chromosomePosition from, unsigned short len);
 
     /*****************************************************************//**
@@ -186,7 +176,6 @@ class sequence {
     *         after the given length (3' to 5') or at the start of the
     *         sequence
     *********************************************************************/
-    
     sequence get_subsequence_chr_to(chromosomePosition to, unsigned short len);
 
     /*****************************************************************//**
@@ -202,7 +191,6 @@ class sequence {
     * @param to the end position on the chromosome of the subsequence
     * @return the subsequence starting and ending at the given positions
     *********************************************************************/
-    
     sequence get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to);
 
 
@@ -212,7 +200,6 @@ class sequence {
     *
     * This is the chromosome the sequence is on.
     *********************************************************************/
-    
     chromosomeType chromosome;
 
     /*****************************************************************//**
@@ -220,7 +207,6 @@ class sequence {
     *
     * This is the chromosome strand (Plus or Minus) the sequence is on.
     *********************************************************************/
-    
     strandType strand;
 
     /*****************************************************************//**
@@ -238,7 +224,6 @@ class sequence {
 *
 * @return the chromosome of the sequence
 *********************************************************************/
-
 inline const chromosomeType sequence::get_chromosome() const {
   return chromosome;
 }
