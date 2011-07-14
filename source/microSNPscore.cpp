@@ -5,5 +5,6 @@ using namespace microSNPscore;
 
 int main(){
    sequence testRNA;
-   std::cout << "Test\n";
+   nucleotide testNuc(Uracil,5,1);
+   std::cout << "Test: " << testNuc.get_chromosome_position() << "/" << testNuc.get_sequence_position() << "-" << testNuc.get_base() << std::endl;
 }
