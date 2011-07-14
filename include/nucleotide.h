@@ -23,6 +23,7 @@ typedef unsigned short sequencePosition;
 * @brief nucleo base type
 *
 * This represents the nucleo bases Adenine, Cytosine, Guanine & Uracil
+* as well as a gap or a mask
 *********************************************************************/
 
 enum nucleoBase {
@@ -212,6 +213,20 @@ typedef short matchScore;
 
 class matchType {
   public:
+    matchType(matchIdentifier match_type);
+
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * A match type must have an identifier.
+    * Calling a standard constructor to create a match type is therefore
+    * not intended.
+    *
+    * @todo remove this constructor when calling constructors are finished
+    *********************************************************************/
+    
+    matchType();
+
     /*****************************************************************//**
     * @brief get method for identifier attribute
     *

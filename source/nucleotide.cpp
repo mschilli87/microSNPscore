@@ -46,5 +46,25 @@ nucleotide::nucleotide() {
   // Bouml preserved body end 0002EB13
 }
 
+matchType::matchType(matchIdentifier match_type) {
+  // Bouml preserved body begin 00031F13
+  // Bouml preserved body end 00031F13
+}
+
+/*****************************************************************//**
+* @brief standard constructor
+*
+* A match type must have an identifier.
+* Calling a standard constructor to create a match type is therefore
+* not intended.
+*
+* @todo remove this constructor when calling constructors are finished
+*********************************************************************/
+
+matchType::matchType() {
+  // Bouml preserved body begin 00031F93
+  // Bouml preserved body end 00031F93
+}
+
 
 } // namespace microSNPscore
