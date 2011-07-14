@@ -180,6 +180,20 @@ inline const chromosomePosition nucleotide::get_chromosome_position() const {
   return chromosome_position;
 }
 
+/*****************************************************************//**
+* @brief match state type
+*
+* This represents the match states (Indel, Mismatch, Wobble, Match) of
+* a pair of nucleotides
+*********************************************************************/
+
+enum matchState {
+  Indel,
+  Mismatch,
+  Wobble,
+  Match
+
+};
 
 } // namespace microSNPscore
 #endif
