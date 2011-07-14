@@ -181,19 +181,97 @@ inline const chromosomePosition nucleotide::get_chromosome_position() const {
 }
 
 /*****************************************************************//**
-* @brief match state type
+* @brief match state identifier type
 *
-* This represents the match states (Indel, Mismatch, Wobble, Match) of
-* a pair of nucleotides
+* This represents the identifiers of the match states (Indel,
+* Mismatch, Wobble, Match) of a pair of nucleotides.
 *********************************************************************/
 
-enum matchState {
+enum matchIdentifier {
   Indel,
   Mismatch,
   Wobble,
   Match
 
 };
+/*****************************************************************//**
+* @brief match state score type
+*
+* This represents the score of the match states (Indel, Mismatch,
+* Wobble, Match) of a pair of nucleotides.
+*********************************************************************/
+
+typedef short matchScore;
+/*****************************************************************//**
+* @brief match state type
+*
+* This represents the match states (Indel, Mismatch, Wobble, Match)
+* of a pair of nucleotides.
+*********************************************************************/
+class matchType {
+  public:
+    /*****************************************************************//**
+    * @brief get method for identifier attribute
+    *
+    * This method is used to access the identifier (Indel, Mismatch,
+    * Wobble, Match) of the match type.
+    *
+    * @return the identifier (Indel, Mismatch, Wobble, Match) of the
+    * match type.
+    *********************************************************************/
+    inline const matchIdentifier get_identifier() const;
+
+    /*****************************************************************//**
+    * @brief get method for identifier attribute
+    *
+    * This method is used to access the identifier (Indel, Mismatch,
+    * Wobble, Match) of the match type.
+    *
+    * @return the identifier (Indel, Mismatch, Wobble, Match) of the
+    * match type.
+    *********************************************************************/
+    inline const matchScore get_score() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief match state identifier
+    *
+    * This is the identifiers of the match state (Indel, Mismatch, Wobble,
+    * Match).
+    *********************************************************************/
+    
+    matchIdentifier identifier;
+
+    matchScore score;
+
+};
+/*****************************************************************//**
+* @brief get method for identifier attribute
+*
+* This method is used to access the identifier (Indel, Mismatch,
+* Wobble, Match) of the match type.
+*
+* @return the identifier (Indel, Mismatch, Wobble, Match) of the
+* match type.
+*********************************************************************/
+inline const matchIdentifier matchType::get_identifier() const {
+  return identifier;
+}
+
+/*****************************************************************//**
+* @brief get method for identifier attribute
+*
+* This method is used to access the identifier (Indel, Mismatch,
+* Wobble, Match) of the match type.
+*
+* @return the identifier (Indel, Mismatch, Wobble, Match) of the
+* match type.
+*********************************************************************/
+inline const matchScore matchType::get_score() const {
+  return score;
+}
+
 
 } // namespace microSNPscore
 #endif

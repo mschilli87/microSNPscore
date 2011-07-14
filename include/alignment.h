@@ -65,6 +65,14 @@ class alignmentColumn {
     *********************************************************************/
     nucleotide miRNA_nucleotide;
 
+    /*****************************************************************//**
+    * @brief match state
+    *
+    * This is the match state (Indel, Mismatch, Wobble, Match) of the
+    * alignment column
+    *********************************************************************/
+    matchType match;
+
 };
 /*****************************************************************//**
 * @brief get method for messenger RNA nucleotide attribute
