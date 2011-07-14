@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sequence.h>
+#include <nucleotide.h>
 
 using namespace microSNPscore;
 

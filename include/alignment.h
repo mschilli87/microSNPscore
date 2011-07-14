@@ -2,7 +2,7 @@
 #define MICROSNPSCORE_ALIGNMENT_H
 
 
-#include "sequence.h"
+#include "nucleotide.h"
 #include <vector>
 
 namespace microSNPscore {
