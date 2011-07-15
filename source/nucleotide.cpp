@@ -51,11 +51,12 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier)
     case IndelOpen: return -9;
     case Wobble: return -1;
     case Masked: return -1;
-    default: std::cerr << "microSNPscore::matchType::calculateScore\n";
-             std::cerr << " ==> Undefined match type identifier: ";
-             std::cerr << the_identifier << std:: endl;
-             std::cerr << "  --> assuming Masked --> returning -1\n";
-             return -1;
+    default:
+     std::cerr << "microSNPscore::matchType::calculateScore\n";
+     std::cerr << " ==> Undefined match type identifier: ";
+     std::cerr << the_identifier << std:: endl;
+     std::cerr << "  --> assuming Masked --> returning -1\n";
+     return -1;
   }
 }
 
@@ -101,6 +102,92 @@ return;
 *         nucleotide.
 *********************************************************************/
 matchType nucleotide::get_match(const nucleotide & matching_nucleotide, IndelType indel_type) const {
+   /****************************************************************\ 
+  | Calling both get methods only once and deciding by switch which  |
+  | match type to return because this allows short runtime by due to |
+  | large code fragments beeing skipped. The cases are ordered from  |
+  | common to uncommon to reduce comparisms as much as possible. Of  |
+  | course the default case should never be reached. Because return  |
+  | exits the function there is no break statement needed after the  |
+  | cases.                                                           |
+   \****************************************************************/
+  nucleoBase this_base(this->get_base());
+  nucleoBase match_base(matching_nucleotide.get_base());
+  switch(this_base)
+  {
+    case Uracil:
+      switch(match_base)
+      {
+        case Uracil: return Mismatch;
+        case Adenine: return Match;
+        case Guanine: return Wobble;
+        case Cytosine: return Mismatch;
+        case Gap: return (indel_type==Open ? IndelOpen : IndelExtend);
+        case Mask: return Masked;
+        default:
+          std::cerr << "microSNPscore::nucleotide::get_match\n";
+          std::cerr << " ==> Undefined nucleo base: ";
+          std::cerr << match_base << std:: endl;
+          std::cerr << "  --> assuming Masked\n";
+          return Masked;
+      }
+    case Adenine:
+      switch(match_base)
+      {
+        case Uracil: return Match;
+        case Adenine: return Mismatch;
+        case Guanine: return Mismatch;
+        case Cytosine: return Mismatch;
+        case Gap: return (indel_type==Open ? IndelOpen : IndelExtend);
+        case Mask: return Masked;
+        default:
+          std::cerr << "microSNPscore::nucleotide::get_match\n";
+          std::cerr << " ==> Undefined nucleo base: ";
+          std::cerr << match_base << std:: endl;
+          std::cerr << "  --> assuming Masked\n";
+          return Masked;
+      }
+    case Guanine:
+      switch(match_base)
+      {
+        case Uracil: return Wobble;
+        case Adenine: return Mismatch;
+        case Guanine: return Mismatch;
+        case Cytosine: return Match;
+        case Gap: return (indel_type==Open ? IndelOpen : IndelExtend);
+        case Mask: return Masked;
+        default:
+          std::cerr << "microSNPscore::nucleotide::get_match\n";
+          std::cerr << " ==> Undefined nucleo base: ";
+          std::cerr << match_base << std:: endl;
+          std::cerr << "  --> assuming Masked\n";
+          return Masked;
+      }
+    case Cytosine:
+      switch(match_base)
+      {
+        case Uracil: return Mismatch;
+        case Adenine: return Mismatch;
+        case Guanine: return Match;
+        case Cytosine: return Mismatch;
+        case Gap: return (indel_type==Open ? IndelOpen : IndelExtend);
+        case Mask: return Masked;
+        default:
+          std::cerr << "microSNPscore::nucleotide::get_match\n";
+          std::cerr << " ==> Undefined nucleo base: ";
+          std::cerr << match_base << std:: endl;
+          std::cerr << "  --> assuming Masked\n";
+          return Masked;
+      }
+    case Gap: return (indel_type==Open ? IndelOpen : IndelExtend);
+    case Mask: return Masked;
+    default:
+      std::cerr << "microSNPscore::nucleotide::get_match\n";
+      std::cerr << " ==> Undefined nucleo base: ";
+      std::cerr << match_base << std:: endl;
+      std::cerr << "  --> assuming Masked\n";
+      return Masked;
+  }
 }
 
 
