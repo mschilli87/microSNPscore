@@ -66,6 +66,16 @@ enum IndelType {
 
 };
 /*****************************************************************//**
+* @brief match position type
+*
+* This represents the positon (Seed or ThreePrime) of a match.
+*********************************************************************/
+enum matchPosition {
+  Seed,
+  ThreePrime
+
+};
+/*****************************************************************//**
 * @brief match state type
 *
 * This represents the match states (Indel, Mismatch, Masked, Wobble,
@@ -80,8 +90,11 @@ class matchType {
     *
     * @param match_type matchIdentifier representing the match type
     * (Indel, Mismatch, Masked, Wobble, Match)
+    * @param position matchPosition indicating whether the match occurs in
+    *        the seed (Seed) or in the 3' region of the miRNA (ThreePrime)
     *********************************************************************/
-    matchType(matchIdentifier match_type);
+    
+    matchType(matchIdentifier match_type, matchPosition position);
 
     /*****************************************************************//**
     * @brief get method for identifier attribute
@@ -114,18 +127,20 @@ class matchType {
     * This is used set the score according to the match identifier.
     * The scoring scheme is taken from miRanda because mirSVR was trained
     * with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
-    * Masked: -1, Wobble: -1, Match: +5).
+    * Masked: -1, Wobble: -1, Match: +5, Seed: *4).
     * Because score is const is has to be initialized before the
     * constructor runs and because the object is not completed at this
     * time, this function is declared static to rule out any side effects.
     *
     * @param the_identifier matchIdentifier representing the match type
     *        (Indel, Mismatch, Masked, Wobble, Match).
+    * @param position matchPosition indicating whether the match occurs in
+    *        the seed (Seed) or in the 3' region of the miRNA (ThreePrime)
     * @return matchScore representing the score of a match of the given
     *         type
     *********************************************************************/
     
-    static matchScore calculate_score(const matchIdentifier the_identifier);
+    static matchScore calculate_score(const matchIdentifier the_identifier, matchPosition position);
 
     /*****************************************************************//**
     * @brief match state identifier
@@ -242,14 +257,18 @@ class nucleotide {
     *
     * @param matching_nucleotide const nucleotide reference to the
     *        nucleotide that is paired with this one
+    * @param position (optional) matchPosition indicating whether the
+    *        match occurs in the seed (Seed) or in the 3' region of the
+    *        miRNA (ThreePrime) - Defaults to ThreePrime
     * @param indel_type (optional) indelType telling whether this match
-    *        would be the first continuing indel (i.e. Open) if it would be
-    *        an indel or if it is directly following an existing indel (i.e.
-    *        Extend) - Defaults to Open
+    *        would be the first continuing indel (i.e. Open) if it would
+    *        be an indel or if it is directly following an existing indel
+    *        (i.e. Extend) - Defaults to Open
     * @return matchType representing the match between this and the given
     *         nucleotide.
     *********************************************************************/
-    matchType get_match(const nucleotide & matching_nucleotide, IndelType indel_type = Open) const;
+    
+    matchType get_match(const nucleotide & matching_nucleotide, matchPosition position = ThreePrime, IndelType indel_type = Open) const;
 
 
   private:
