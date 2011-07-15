@@ -90,114 +90,133 @@ nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_positi
 return;
 }
 
-/*****************************************************************//**
-* @brief match calculation
-*
-* This method returns the match type of the nucleotide and a given
-* other one.
-* This operation is commutative, meaning that n1.get_match(n2) is
-* always the same as n2.get_match(n1).
-*
-* @param matching_nucleotide const nucleotide reference to the
-*        nucleotide that is paired with this one
-* @param position (optional) matchPosition indicating whether the
-*        match occurs in the seed (Seed) or in the 3' region of the
-*        miRNA (ThreePrime) - Defaults to ThreePrime
-* @param indel_type (optional) indelType telling whether this match
-*        would be the first continuing indel (i.e. Open) if it would
-*        be an indel or if it is directly following an existing indel
-*        (i.e. Extend) - Defaults to Open
-* @return matchType representing the match between this and the given
-*         nucleotide.
-*********************************************************************/
+    /*****************************************************************//**
+    * @brief match calculation
+    * 
+    * This method returns the match type of the nucleotide and a given
+    * other one.
+    * This operation is commutative, meaning that n1.get_match(n2) is
+    * always the same as n2.get_match(n1).
+    * 
+    * @param matching_nucleotide const nucleotide reference to the
+    *     nucleotide that is paired with this one
+    * @param position (optional) matchPosition indicating whether the
+    *     match occurs in the seed (Seed) or in the 3' region of the miRNA
+    *     (ThreePrime) - Defaults to ThreePrime
+    * @param indel_type (optional) indelType telling whether this match
+    *     would be the first continuing indel (i.e. Open) if it would be
+    *     an indel or if it is directly following an existing indel (i.e.
+    *     Extend) - Defaults to Open
+    * @return matchType representing the match between this and the given
+    *     nucleotide.
+    *********************************************************************/
+    matchType nucleotide::get_match(const nucleotide & matching_nucleotide, matchPosition position, IndelType indel_type) const {
+       /****************************************************************\ 
+      | Calling both get methods only once and deciding by switch which  |
+      | match type to return because this allows short runtime by due to |
+      | large code fragments beeing skipped. The cases are ordered from  |
+      | common to uncommon to reduce comparisms as much as possible. Of  |
+      | course the default case should never be reached. Because return  |
+      | exits the function there is no break statement needed after the  |
+      | cases.                                                           |
+       \****************************************************************/
+      nucleoBase this_base(this->get_base());
+      nucleoBase match_base(matching_nucleotide.get_base());
+      switch(this_base)
+      {
+        case Uracil:
+          switch(match_base)
+          {
+            case Uracil: return matchType(Mismatch,position);
+            case Adenine: return matchType(Match,position);
+            case Guanine: return matchType(Wobble,position);
+            case Cytosine: return matchType(Mismatch,position);
+            case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
+            case Mask: return matchType(Masked,position);
+            default:
+              std::cerr << "microSNPscore::nucleotide::get_match\n";
+              std::cerr << " ==> Undefined nucleo base: ";
+              std::cerr << match_base << std:: endl;
+              std::cerr << "  --> assuming Masked\n";
+              return matchType(Masked,position);
+          }
+        case Adenine:
+          switch(match_base)
+          {
+            case Uracil: return matchType(Match,position);
+            case Adenine: return matchType(Mismatch,position);
+            case Guanine: return matchType(Mismatch,position);
+            case Cytosine: return matchType(Mismatch,position);
+            case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
+            case Mask: return matchType(Masked,position);
+            default:
+              std::cerr << "microSNPscore::nucleotide::get_match\n";
+              std::cerr << " ==> Undefined nucleo base: ";
+              std::cerr << match_base << std:: endl;
+              std::cerr << "  --> assuming Masked\n";
+              return matchType(Masked,position);
+          }
+        case Guanine:
+          switch(match_base)
+          {
+            case Uracil: return matchType(Wobble,position);
+            case Adenine: return matchType(Mismatch,position);
+            case Guanine: return matchType(Mismatch,position);
+            case Cytosine: return matchType(Match,position);
+            case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
+            case Mask: return matchType(Masked,position);
+            default:
+              std::cerr << "microSNPscore::nucleotide::get_match\n";
+              std::cerr << " ==> Undefined nucleo base: ";
+              std::cerr << match_base << std:: endl;
+              std::cerr << "  --> assuming Masked\n";
+              return matchType(Masked,position);
+          }
+        case Cytosine:
+          switch(match_base)
+          {
+            case Uracil: return matchType(Mismatch,position);
+            case Adenine: return matchType(Mismatch,position);
+            case Guanine: return matchType(Match,position);
+            case Cytosine: return matchType(Mismatch,position);
+            case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
+            case Mask: return matchType(Masked,position);
+            default:
+              std::cerr << "microSNPscore::nucleotide::get_match\n";
+              std::cerr << " ==> Undefined nucleo base: ";
+              std::cerr << match_base << std:: endl;
+              std::cerr << "  --> assuming Masked\n";
+              return matchType(Masked,position);
+          }
+        case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
+        case Mask: return matchType(Masked,position);
+        default:
+          std::cerr << "microSNPscore::nucleotide::get_match\n";
+          std::cerr << " ==> Undefined nucleo base: ";
+          std::cerr << match_base << std:: endl;
+          std::cerr << "  --> assuming Masked\n";
+          return matchType(Masked,position);
+      }
+}
 
-matchType nucleotide::get_match(const nucleotide & matching_nucleotide, matchPosition position, IndelType indel_type) const {
-   /****************************************************************\ 
-  | Calling both get methods only once and deciding by switch which  |
-  | match type to return because this allows short runtime by due to |
-  | large code fragments beeing skipped. The cases are ordered from  |
-  | common to uncommon to reduce comparisms as much as possible. Of  |
-  | course the default case should never be reached. Because return  |
-  | exits the function there is no break statement needed after the  |
-  | cases.                                                           |
-   \****************************************************************/
-  nucleoBase this_base(this->get_base());
-  nucleoBase match_base(matching_nucleotide.get_base());
-  switch(this_base)
-  {
-    case Uracil:
-      switch(match_base)
-      {
-        case Uracil: return matchType(Mismatch,position);
-        case Adenine: return matchType(Match,position);
-        case Guanine: return matchType(Wobble,position);
-        case Cytosine: return matchType(Mismatch,position);
-        case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
-        case Mask: return matchType(Masked,position);
-        default:
-          std::cerr << "microSNPscore::nucleotide::get_match\n";
-          std::cerr << " ==> Undefined nucleo base: ";
-          std::cerr << match_base << std:: endl;
-          std::cerr << "  --> assuming Masked\n";
-          return matchType(Masked,position);
-      }
-    case Adenine:
-      switch(match_base)
-      {
-        case Uracil: return matchType(Match,position);
-        case Adenine: return matchType(Mismatch,position);
-        case Guanine: return matchType(Mismatch,position);
-        case Cytosine: return matchType(Mismatch,position);
-        case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
-        case Mask: return matchType(Masked,position);
-        default:
-          std::cerr << "microSNPscore::nucleotide::get_match\n";
-          std::cerr << " ==> Undefined nucleo base: ";
-          std::cerr << match_base << std:: endl;
-          std::cerr << "  --> assuming Masked\n";
-          return matchType(Masked,position);
-      }
-    case Guanine:
-      switch(match_base)
-      {
-        case Uracil: return matchType(Wobble,position);
-        case Adenine: return matchType(Mismatch,position);
-        case Guanine: return matchType(Mismatch,position);
-        case Cytosine: return matchType(Match,position);
-        case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
-        case Mask: return matchType(Masked,position);
-        default:
-          std::cerr << "microSNPscore::nucleotide::get_match\n";
-          std::cerr << " ==> Undefined nucleo base: ";
-          std::cerr << match_base << std:: endl;
-          std::cerr << "  --> assuming Masked\n";
-          return matchType(Masked,position);
-      }
-    case Cytosine:
-      switch(match_base)
-      {
-        case Uracil: return matchType(Mismatch,position);
-        case Adenine: return matchType(Mismatch,position);
-        case Guanine: return matchType(Match,position);
-        case Cytosine: return matchType(Mismatch,position);
-        case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
-        case Mask: return matchType(Masked,position);
-        default:
-          std::cerr << "microSNPscore::nucleotide::get_match\n";
-          std::cerr << " ==> Undefined nucleo base: ";
-          std::cerr << match_base << std:: endl;
-          std::cerr << "  --> assuming Masked\n";
-          return matchType(Masked,position);
-      }
-    case Gap: return matchType((indel_type==Open ? IndelOpen : IndelExtend),position);
-    case Mask: return matchType(Masked,position);
-    default:
-      std::cerr << "microSNPscore::nucleotide::get_match\n";
-      std::cerr << " ==> Undefined nucleo base: ";
-      std::cerr << match_base << std:: endl;
-      std::cerr << "  --> assuming Masked\n";
-      return matchType(Masked,position);
-  }
+    /*****************************************************************//**
+    * @brief standard constructor - do not use directly!
+    *
+    * This is used to create an instance of the nucleotide class which is
+    * not initialzed.
+    * This should never be used directly.
+    * It is only provided to allow array allocation but you will need to
+    * assign a valid object created by the parameterized constructor to
+    * actually use it. This is done by containers like std::vector and the
+    * reason for providing this constructor is to allow using containers
+    * containing objects of this class.
+    *
+    * @return an uninitialized nucleotide object
+    *
+    * @see nucleotide(nucleoBase,sequencePosition,chromosomePosition)
+    *********************************************************************/
+    nucleotide::nucleotide()
+    :base(Mask),sequence_position(0),chromosome_position(0) {
 }
 
 

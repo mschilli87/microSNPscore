@@ -249,26 +249,43 @@ class nucleotide {
 
     /*****************************************************************//**
     * @brief match calculation
-    *
+    * 
     * This method returns the match type of the nucleotide and a given
     * other one.
     * This operation is commutative, meaning that n1.get_match(n2) is
     * always the same as n2.get_match(n1).
-    *
+    * 
     * @param matching_nucleotide const nucleotide reference to the
-    *        nucleotide that is paired with this one
+    *     nucleotide that is paired with this one
     * @param position (optional) matchPosition indicating whether the
-    *        match occurs in the seed (Seed) or in the 3' region of the
-    *        miRNA (ThreePrime) - Defaults to ThreePrime
+    *     match occurs in the seed (Seed) or in the 3' region of the miRNA
+    *     (ThreePrime) - Defaults to ThreePrime
     * @param indel_type (optional) indelType telling whether this match
-    *        would be the first continuing indel (i.e. Open) if it would
-    *        be an indel or if it is directly following an existing indel
-    *        (i.e. Extend) - Defaults to Open
+    *     would be the first continuing indel (i.e. Open) if it would be
+    *     an indel or if it is directly following an existing indel (i.e.
+    *     Extend) - Defaults to Open
     * @return matchType representing the match between this and the given
-    *         nucleotide.
+    *     nucleotide.
     *********************************************************************/
-    
     matchType get_match(const nucleotide & matching_nucleotide, matchPosition position = ThreePrime, IndelType indel_type = Open) const;
+
+    /*****************************************************************//**
+    * @brief standard constructor - do not use directly!
+    *
+    * This is used to create an instance of the nucleotide class which is
+    * not initialzed.
+    * This should never be used directly.
+    * It is only provided to allow array allocation but you will need to
+    * assign a valid object created by the parameterized constructor to
+    * actually use it. This is done by containers like std::vector and the
+    * reason for providing this constructor is to allow using containers
+    * containing objects of this class.
+    *
+    * @return an uninitialized nucleotide object
+    *
+    * @see nucleotide(nucleoBase,sequencePosition,chromosomePosition)
+    *********************************************************************/
+    nucleotide();
 
 
   private:
@@ -276,8 +293,20 @@ class nucleotide {
     * @brief nucleo base
     *
     * This is the nucleo base of the nucleotide.
+    * It should be const but because nucleotides shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therfore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
+    *
+    * @see nucleotide()
     *********************************************************************/
-    const nucleoBase base;
+    
+    nucleoBase base;
 
     /*****************************************************************//**
     * @brief position in sequence
@@ -285,8 +314,19 @@ class nucleotide {
     * This is the nucleotide's position in the sequence, the 5' end
     * beeing position 1.
     * Gaps are given the position of their predecessors in the alignment.
+    * It should be const but because nucleotides shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therfore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which
+    * is in fact not designed to be used directly but only provided to
+    * allow array allocation which is needed to create containers, too.
+    *
+    * @see nucleotide()
     *********************************************************************/
-    const sequencePosition sequence_position;
+    sequencePosition sequence_position;
 
     /*****************************************************************//**
     * @brief position on chromosome
@@ -294,8 +334,19 @@ class nucleotide {
     * This is the nucleotide's position on its chromosome, the 5' end of
     * the + strand (i.e. the 3' end of the - strand) beeing position 1.
     * Gaps are given the position of their predecessors in the alignment.
+    * It should be const but because nucleotides shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therfore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which
+    * is in fact not designed to be used directly but only provided to
+    * allow array allocation which is needed to create containers, too.
+    *
+    * @see nucleotide()
     *********************************************************************/
-    const chromosomePosition chromosome_position;
+    chromosomePosition chromosome_position;
 
 };
 /*****************************************************************//**
