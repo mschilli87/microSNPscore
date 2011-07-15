@@ -23,10 +23,17 @@ class alignmentColumn {
     *        nucleotide of the messenger RNA in that alignment column
     * @param the_miRNA_nucleotide const nucleotide reference to the
     *        nucleotide of the microRNA in that alignment column
+    * @param position (optional) matchPosition indicating whether the
+    *     match occurs in the seed (Seed) or in the 3' region of the miRNA
+    *     (ThreePrime) - Defaults to ThreePrime
+    * @param indel_type (optional) indelType telling whether this match
+    *     would be the first continuing indel (i.e. Open) if it would be
+    *     an indel or if it is directly following an existing indel (i.e.
+    *     Extend) - Defaults to Open
     * @return alignmentColumn representing an alignment column aligning
     *         the given nucleotides
     *********************************************************************/
-    alignmentColumn(const nucleotide & the_mRNA_nucleotide, const nucleotide & the_miRNA_nucleotide);
+    alignmentColumn(const nucleotide & the_mRNA_nucleotide, const nucleotide & the_miRNA_nucleotide, matchPosition position = ThreePrime, IndelType indel_type = Open);
 
     /*****************************************************************//**
     * @brief get method for messenger RNA nucleotide attribute

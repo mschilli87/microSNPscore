@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "nucleotide.h"
+#include "alignment.h"
 
 using namespace microSNPscore;
 
@@ -17,17 +18,17 @@ int main(){
   {
     nucleoBase test_base(testNuc.get_base());
     nucleoBase match_base(match_it->get_base());
-    matchIdentifier the_match(testNuc.get_match(*match_it,Seed,Open).get_identifier());
-    matchScore the_score=testNuc.get_match(*match_it,Seed,Open).get_score();
+    matchIdentifier the_match(alignmentColumn(testNuc,*match_it,Seed,Open).get_match().get_identifier());
+    matchScore the_score(alignmentColumn(testNuc,*match_it,Seed,Open).get_match().get_score());
     std::cout << "Aligning " << test_base << " and " << match_base  << " in seed with no open indel: " << the_match << ":" << the_score << std::endl;
-    the_match=testNuc.get_match(*match_it,Seed,Extend).get_identifier();
-    the_score=testNuc.get_match(*match_it,Seed,Extend).get_score();
+    the_match=alignmentColumn(testNuc,*match_it,Seed,Extend).get_match().get_identifier();
+    the_score=alignmentColumn(testNuc,*match_it,Seed,Extend).get_match().get_score();
     std::cout << "Aligning " << test_base << " and " << match_base  << " in seed with open indel: " << the_match << ":" << the_score << std::endl;
-    the_match=testNuc.get_match(*match_it,ThreePrime,Open).get_identifier();
-    the_score=testNuc.get_match(*match_it,ThreePrime,Open).get_score();
+    the_match=alignmentColumn(testNuc,*match_it,ThreePrime,Open).get_match().get_identifier();
+    the_score=alignmentColumn(testNuc,*match_it,ThreePrime,Open).get_match().get_score();
     std::cout << "Aligning " << test_base << " and " << match_base  << " in miRNA 3' with no open indel: " << the_match << ":" << the_score << std::endl;
-    the_match=testNuc.get_match(*match_it,ThreePrime,Extend).get_identifier();
-    the_score=testNuc.get_match(*match_it,ThreePrime,Extend).get_score();
+    the_match=alignmentColumn(testNuc,*match_it,ThreePrime,Extend).get_match().get_identifier();
+    the_score=alignmentColumn(testNuc,*match_it,ThreePrime,Extend).get_match().get_score();
     std::cout << "Aligning " << test_base << " and " << match_base  << " in miRNA 3' with open indel: " << the_match << ":" << the_score << std::endl;
   }
 }
