@@ -31,4 +31,6 @@ int main(){
     the_score=alignmentColumn(testNuc,*match_it,ThreePrime,Extend).get_match().get_score();
     std::cout << "Aligning " << test_base << " and " << match_base  << " in miRNA 3' with open indel: " << the_match << ":" << the_score << std::endl;
   }
+  alignmentColumn dummy_col;
+  std::cout << "Dummy alignment column: " << dummy_col.get_match().get_identifier() << ":" << dummy_col.get_match().get_score() << std::endl;
 }

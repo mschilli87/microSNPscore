@@ -15,14 +15,25 @@ namespace microSNPscore {
 class alignmentColumn {
   public:
     /*****************************************************************//**
-    * @brief constructor
+    * @brief constructor - Do not use without parameter values!
     *
     * This is used to create an instance of the class alignmentColumn.
+    * The default values for @p the_mRNA_nucleotide and
+    * @p the_miRNA_nucleotide are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
     *
-    * @param the_mRNA_nucleotide const nucleotide reference to the
-    *        nucleotide of the messenger RNA in that alignment column
-    * @param the_miRNA_nucleotide const nucleotide reference to the
-    *        nucleotide of the microRNA in that alignment column
+    * @param the_mRNA_nucleotide (pseudo-optional) const nucleotide
+    *     reference to the nucleotide of the messenger RNA in that
+    *     alignment column - Defaults to uninitialized nucleotide
+    *     constructed without parameters
+    * @param the_miRNA_nucleotide (pseudo-optional) const nucleotide
+    *     reference to the nucleotide of the microRNA in that alignment
+    *     column - Defaults to uninitialized nucleotide constructed
+    *     without parameters
     * @param position (optional) matchPosition indicating whether the
     *     match occurs in the seed (Seed) or in the 3' region of the miRNA
     *     (ThreePrime) - Defaults to ThreePrime
@@ -30,10 +41,15 @@ class alignmentColumn {
     *     would be the first continuing indel (i.e. Open) if it would be
     *     an indel or if it is directly following an existing indel (i.e.
     *     Extend) - Defaults to Open
+    *
     * @return alignmentColumn representing an alignment column aligning
-    *         the given nucleotides
+    *     the given nucleotides
+    *
+    * @see nucleotide::nucleotide(nucleoBase,sequencePosition,
+    *    chromosomePosition)
     *********************************************************************/
-    alignmentColumn(const nucleotide & the_mRNA_nucleotide, const nucleotide & the_miRNA_nucleotide, matchPosition position = ThreePrime, IndelType indel_type = Open);
+    
+    alignmentColumn(const nucleotide & the_mRNA_nucleotide = nucleotide(), const nucleotide & the_miRNA_nucleotide = nucleotide(), matchPosition position = ThreePrime, IndelType indel_type = Open);
 
     /*****************************************************************//**
     * @brief get method for messenger RNA nucleotide attribute
@@ -55,6 +71,14 @@ class alignmentColumn {
     *********************************************************************/
     inline const nucleotide get_miRNA_nucleotide() const;
 
+    /*****************************************************************//**
+    * @brief get method for microRNA nucleotide attribute
+    *
+    * This method is used to access the nucleotide of the microRNA
+    * that is aligned in that alignment column.
+    *
+    * @return the miRNA nucleotide aligned in that alignment column
+    *********************************************************************/
     inline const matchType get_match() const;
 
 
@@ -63,54 +87,96 @@ class alignmentColumn {
     * @brief messenger RNA nucleotide
     *
     * This is the nucleotide of the messenger RNA that is aligned in that
-    * alignment column
+    * alignment column.
+    * It should be const but because alignmentColumns shall be used in a
+    * vector and std::vector tries to assign its elements to an internal
+    * array it needs a working assignment operator which has to change the
+    * object's members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
+    *
+    * @see alignmentColumn()
     *********************************************************************/
-    const nucleotide mRNA_nucleotide;
+    nucleotide mRNA_nucleotide;
 
     /*****************************************************************//**
     * @brief microRNA nucleotide
     *
     * This is the nucleotide of the microRNA that is aligned in that
-    * alignment column
+    * alignment column.
+    * It should be const but because alignmentColumns shall be used in a
+    * vector and std::vector tries to assign its elements to an internal
+    * array it needs a working assignment operator which has to change the
+    * object's members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
+    *
+    * @see alignmentColumn()
     *********************************************************************/
-    const nucleotide miRNA_nucleotide;
+    nucleotide miRNA_nucleotide;
 
     /*****************************************************************//**
     * @brief match state
     *
-    * This is the match state (Indel, Mismatch, Wobble, Match) of the
-    * alignment column
+    * This is the match state (IndelOpen, IndelExtend, Mismatch, Masked,
+    * Wobble, Match) of the alignment column.
+    * It should be const but because alignmentColumns shall be used in a
+    * vector and std::vector tries to assign its elements to an internal
+    * array it needs a working assignment operator which has to change the
+    * object's members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
+    *
+    * @see alignmentColumn()
     *********************************************************************/
-    const matchType match;
+    
+    matchType match;
 
 };
-/*****************************************************************//**
-* @brief get method for messenger RNA nucleotide attribute
-*
-* This method is used to access the nucleotide of the messenger RNA
-* that is aligned in that alignment column.
-*
-* @return the mRNA nucleotide aligned in that alignment column
-*********************************************************************/
-inline const nucleotide alignmentColumn::get_mRNA_nucleotide() const {
-  return mRNA_nucleotide;
-}
+    /*****************************************************************//**
+    * @brief get method for messenger RNA nucleotide attribute
+    *
+    * This method is used to access the nucleotide of the messenger RNA
+    * that is aligned in that alignment column.
+    *
+    * @return the mRNA nucleotide aligned in that alignment column
+    *********************************************************************/
+    inline const nucleotide alignmentColumn::get_mRNA_nucleotide() const {
+      return mRNA_nucleotide;
+    }
 
-/*****************************************************************//**
-* @brief get method for microRNA nucleotide attribute
-*
-* This method is used to access the nucleotide of the microRNA
-* that is aligned in that alignment column.
-*
-* @return the miRNA nucleotide aligned in that alignment column
-*********************************************************************/
-inline const nucleotide alignmentColumn::get_miRNA_nucleotide() const {
-  return miRNA_nucleotide;
-}
+    /*****************************************************************//**
+    * @brief get method for microRNA nucleotide attribute
+    *
+    * This method is used to access the nucleotide of the microRNA
+    * that is aligned in that alignment column.
+    *
+    * @return the miRNA nucleotide aligned in that alignment column
+    *********************************************************************/
+    inline const nucleotide alignmentColumn::get_miRNA_nucleotide() const {
+      return miRNA_nucleotide;
+    }
 
-inline const matchType alignmentColumn::get_match() const {
-  return match;
-}
+    /*****************************************************************//**
+    * @brief get method for microRNA nucleotide attribute
+    *
+    * This method is used to access the nucleotide of the microRNA
+    * that is aligned in that alignment column.
+    *
+    * @return the miRNA nucleotide aligned in that alignment column
+    *********************************************************************/
+    inline const matchType alignmentColumn::get_match() const {
+      return match;
+    }
 
 /*****************************************************************//**
 * @brief mRNA:miRNA alignment class

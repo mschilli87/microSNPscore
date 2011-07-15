@@ -195,25 +195,33 @@ inline const matchScore matchType::get_score() const {
 class nucleotide {
   public:
     /*****************************************************************//**
-    * @brief constructor
+    * @brief constructor - Do not call without parameter values.
     *
     * This is used to create an instance of the class nucleotide.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
     *
-    * @param the_base nucleoBase that represents the nucleo base of the
-    *        nucleotide
-    * @param the_sequence_position sequencePosition that represents the
-    *        position in sequence of the nucleotide, the 5' end beeing
-    *	 position 1 (gaps should be given the position of their
-    *        predecessor in the alignment)
-    * @param the_chromosome_position chromosomePosition that represents
-    *        the position on the chromosome of the nucleotide, the 5' end
-    *        of the + strand (i.e. the 3' end of the - strand) beeing
-    *	 position 1 (gaps should be given the position of their
-    *        predecessor in the alignment)
+    * @param the_base (pseudo-opional) nucleoBase that represents the
+    *     nucleo base of the nucleotide - Defaults to Mask
+    * @param the_sequence_position (pseudo-opional) sequencePosition that
+    *     represents the position in sequence of the nucleotide, the 5'
+    *     end beeing position 1 (gaps should be given the position of
+    *     their predecessor in the alignment) - Defaults to 0
+    * @param the_chromosome_position (pseudo-opional) chromosomePosition
+    *     that represents the position on the chromosome of th
+    *     nucleotide, the 5' end of the + strand (i.e. the 3' end of
+    *     the - strand) beeing position 1 (gaps should be given the
+    *     position of their predecessor in the alignment) - Defaults to 0
+    *
     * @return a nucleotide containing the given nucleo base and located at
-    *         the given positions on chromosome and in sequence
+    *     the given positions on chromosome and in sequence
     *********************************************************************/
-    nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position);
+    
+    nucleotide(nucleoBase the_base = Mask, sequencePosition the_sequence_position = 0, chromosomePosition the_chromosome_position = 0);
 
     /*****************************************************************//**
     * @brief get method for nucleo base attribute
@@ -269,24 +277,6 @@ class nucleotide {
     *********************************************************************/
     matchType get_match(const nucleotide & matching_nucleotide, matchPosition position = ThreePrime, IndelType indel_type = Open) const;
 
-    /*****************************************************************//**
-    * @brief standard constructor - do not use directly!
-    *
-    * This is used to create an instance of the nucleotide class which is
-    * not initialzed.
-    * This should never be used directly.
-    * It is only provided to allow array allocation but you will need to
-    * assign a valid object created by the parameterized constructor to
-    * actually use it. This is done by containers like std::vector and the
-    * reason for providing this constructor is to allow using containers
-    * containing objects of this class.
-    *
-    * @return an uninitialized nucleotide object
-    *
-    * @see nucleotide(nucleoBase,sequencePosition,chromosomePosition)
-    *********************************************************************/
-    nucleotide();
-
 
   private:
     /*****************************************************************//**
@@ -296,7 +286,7 @@ class nucleotide {
     * It should be const but because nucleotides shall be used in a vector
     * and std::vector tries to assign its elements to an internal array it
     * needs a working assignment operator which has to change the object's
-    * members and therfore they cannot be declared const.
+    * members and therefore they cannot be declared const.
     * Nevertheless this attribute is not intended to be changed in any
     * other context than assigning an initialized object to an unitialized
     * one produced by the standard constructor which is in fact not
@@ -317,7 +307,7 @@ class nucleotide {
     * It should be const but because nucleotides shall be used in a vector
     * and std::vector tries to assign its elements to an internal array it
     * needs a working assignment operator which has to change the object's
-    * members and therfore they cannot be declared const.
+    * members and therefore they cannot be declared const.
     * Nevertheless this attribute is not intended to be changed in any
     * other context than assigning an initialized object to an unitialized
     * one produced by the standard constructor which
@@ -337,7 +327,7 @@ class nucleotide {
     * It should be const but because nucleotides shall be used in a vector
     * and std::vector tries to assign its elements to an internal array it
     * needs a working assignment operator which has to change the object's
-    * members and therfore they cannot be declared const.
+    * members and therefore they cannot be declared const.
     * Nevertheless this attribute is not intended to be changed in any
     * other context than assigning an initialized object to an unitialized
     * one produced by the standard constructor which
@@ -349,43 +339,43 @@ class nucleotide {
     chromosomePosition chromosome_position;
 
 };
-/*****************************************************************//**
-* @brief get method for nucleo base attribute
-*
-* This method is used to access the nucleo base of the nucleotide
-*
-* @return the nucleo base of the nucleotide
-*********************************************************************/
-inline const nucleoBase nucleotide::get_base() const {
-  return base;
-}
+    /*****************************************************************//**
+    * @brief get method for nucleo base attribute
+    *
+    * This method is used to access the nucleo base of the nucleotide
+    *
+    * @return the nucleo base of the nucleotide
+    *********************************************************************/
+    inline const nucleoBase nucleotide::get_base() const {
+      return base;
+    }
 
-/*****************************************************************//**
-* @brief get method for sequence position attribute
-*
-* This method is used to access the position of the nucleotide in the
-* sequence, the 5' end beeing position 1. Gaps will return the
-* position of their predecessor in the alignment.
-*
-* @return the position of the nucleotide in the sequence
-*********************************************************************/
-inline const sequencePosition nucleotide::get_sequence_position() const {
-  return sequence_position;
-}
+    /*****************************************************************//**
+    * @brief get method for sequence position attribute
+    *
+    * This method is used to access the position of the nucleotide in the
+    * sequence, the 5' end beeing position 1. Gaps will return the
+    * position of their predecessor in the alignment.
+    *
+    * @return the position of the nucleotide in the sequence
+    *********************************************************************/
+    inline const sequencePosition nucleotide::get_sequence_position() const {
+      return sequence_position;
+    }
 
-/*****************************************************************//**
-* @brief get method for chromosome position attribute
-*
-* This method is used to access the position of the nucleotide on its
-* chromosome, the 5' end of the + strand (i.e. the 3' end of the -
-* strand) beeing position 1. Gaps will return the position of their
-* predecessor in the alignment.
-*
-* @return the position of the nucleotide on its chromosome
-*********************************************************************/
-inline const chromosomePosition nucleotide::get_chromosome_position() const {
-  return chromosome_position;
-}
+    /*****************************************************************//**
+    * @brief get method for chromosome position attribute
+    *
+    * This method is used to access the position of the nucleotide on its
+    * chromosome, the 5' end of the + strand (i.e. the 3' end of the -
+    * strand) beeing position 1. Gaps will return the position of their
+    * predecessor in the alignment.
+    *
+    * @return the position of the nucleotide on its chromosome
+    *********************************************************************/
+    inline const chromosomePosition nucleotide::get_chromosome_position() const {
+      return chromosome_position;
+    }
 
 
 } // namespace microSNPscore

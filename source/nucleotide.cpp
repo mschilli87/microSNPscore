@@ -67,24 +67,32 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier, matchPosit
 }
 
 /*****************************************************************//**
-* @brief constructor
+* @brief constructor - Do not call without parameter values.
 *
 * This is used to create an instance of the class nucleotide.
+* The default values are not intended to be used directly.
+* They are only provided to allow array allocation but you will need
+* to assign a valid object created by giving those parameters a value
+* to actually use it. This is done by containers like std::vector and
+* the reason for providing those default values is to allow using
+* containers containing objects of this class.
 *
-* @param the_base nucleoBase that represents the nucleo base of the
-*        nucleotide
-* @param the_sequence_position sequencePosition that represents the
-*        position in sequence of the nucleotide, the 5' end beeing
-*	 position 1 (gaps should be given the position of their
-*        predecessor in the alignment)
-* @param the_chromosome_position chromosomePosition that represents
-*        the position on the chromosome of the nucleotide, the 5' end
-*        of the + strand (i.e. the 3' end of the - strand) beeing
-*	 position 1 (gaps should be given the position of their
-*        predecessor in the alignment)
+* @param the_base (pseudo-opional) nucleoBase that represents the
+*     nucleo base of the nucleotide - Defaults to Mask
+* @param the_sequence_position (pseudo-opional) sequencePosition that
+*     represents the position in sequence of the nucleotide, the 5'
+*     end beeing position 1 (gaps should be given the position of
+*     their predecessor in the alignment) - Defaults to 0
+* @param the_chromosome_position (pseudo-opional) chromosomePosition
+*     that represents the position on the chromosome of th
+*     nucleotide, the 5' end of the + strand (i.e. the 3' end of
+*     the - strand) beeing position 1 (gaps should be given the
+*     position of their predecessor in the alignment) - Defaults to 0
+*
 * @return a nucleotide containing the given nucleo base and located at
-*         the given positions on chromosome and in sequence
+*     the given positions on chromosome and in sequence
 *********************************************************************/
+
 nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position)
 :base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position) {
 return;
@@ -197,26 +205,6 @@ return;
           std::cerr << "  --> assuming Masked\n";
           return matchType(Masked,position);
       }
-}
-
-    /*****************************************************************//**
-    * @brief standard constructor - do not use directly!
-    *
-    * This is used to create an instance of the nucleotide class which is
-    * not initialzed.
-    * This should never be used directly.
-    * It is only provided to allow array allocation but you will need to
-    * assign a valid object created by the parameterized constructor to
-    * actually use it. This is done by containers like std::vector and the
-    * reason for providing this constructor is to allow using containers
-    * containing objects of this class.
-    *
-    * @return an uninitialized nucleotide object
-    *
-    * @see nucleotide(nucleoBase,sequencePosition,chromosomePosition)
-    *********************************************************************/
-    nucleotide::nucleotide()
-    :base(Mask),sequence_position(0),chromosome_position(0) {
 }
 
 
