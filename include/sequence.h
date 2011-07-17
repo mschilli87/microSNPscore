@@ -186,18 +186,50 @@ class exon {
 class sequence {
   public:
     /*****************************************************************//**
-    * @brief standard constructor
+    * @brief constructor
     *
     * This is used to create an instance of the class sequence.
+    * Lowercase letters are treated as uppercase ones.
+    * T is understood as Thymine and is treated as Uracil (simulating
+    * transscription) raising an error message.
+    * Dashes (-) are understood as Gaps and are omitted.
+    * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
+    * and are treated as Mask.
+    * The ordering of exon starts and ends does not matter.
+    * Overlapping exons are be merged (reporting an error).
+    * If the count of exon starts does not match the count of exon ends
+    * an error is raised and the additional starts or ends are omitted.
+    * If the calculated sequence length (as defined by the exons) does
+    * not match the count of nucleotides an error message is raised and
+    * the additional nucleotides are omitted or the missing nucleotides
+    * are treated as masked, respectively.
     *
-    * @return an empty sequence
+    * @param sequence_string String representing the nucleotide sequence
+    *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
+    * @param the_chromosome chromosomeType representing the chromosome the
+    *     sequence is located on
+    * @param the_strand strandType representing the strand (Plus/Minus) on
+    *     which the sequence is located
+    * @param exon_starts: String representing the start positions (i.e.
+    *     the end with the smaller distance to the chromosome start beeing
+    *     the 5' end of the + strand and accordingly the 3' end of
+    *     the - strand) of the exons containing the sequence as
+    *     comma-separated list.
+    * @param exon_ends: String representing the end positions (i.e.
+    *     the end with the smaller distance to the chromosome end beeing
+    *     the 3' end of the + strand and accordingly the 5' end of
+    *     the - strand) of the exons containing the sequence as
+    *     comma-separated list.
+    * @return a sequence containing the given nucleotides located on the
+    *     given chromosome, strand and positions.
     *********************************************************************/
-    sequence();
+    sequence(std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
 
     /*****************************************************************//**
     * @brief get method for chromosome attribute
     *
-    * This method is used to access the chromosome the sequence is on.
+    * This method is used to access the chromosome the sequence is
+    * located on.
     *
     * @return the chromosome of the sequence
     *********************************************************************/
@@ -213,9 +245,26 @@ class sequence {
     *********************************************************************/
     inline const strandType get_strand() const;
 
+    /*****************************************************************//**
+    * @brief get method for exons attribute
+    *
+    * This method is used to access the sequence's exons sorted by start
+    * position (i.e. the end with the smaller distance to the chromosome
+    * start beeing the 5' end of the + strand and accordingly the 3' end
+    * of the - strand) on the chromosome
+    *
+    * @return a vector containing the sequence's exons
+    *********************************************************************/
     inline const std::vector<exon> & get_exons() const;
 
-    sequenceLength get_length();
+    /*****************************************************************//**
+    * @brief get method for length attribute
+    *
+    * This method is used to access the length of the sequence.
+    *
+    * @return the length of the sequence.
+    *********************************************************************/
+    inline const sequenceLength get_length() const;
 
     /*****************************************************************//**
     * @brief get subsequence from sequence position
@@ -328,57 +377,108 @@ class sequence {
     *********************************************************************/
     sequence get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) const;
 
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to create an instance of the class sequence.
+    * It is just created as dummy for mRNA and miRNA.
+    *
+    * @return an empty sequence
+    *
+    * @todo delete when mRNA and miRNA constructors are done.
+    *********************************************************************/
+    sequence();
+
 
   private:
+    static sequenceLength initialize_exons_and_get_length(std::string starts, std::string ends);
+
     /*****************************************************************//**
     * @brief chromosome
     *
-    * This is the chromosome the sequence is on.
+    * This is the chromosome the sequence is located on.
     *********************************************************************/
-    chromosomeType chromosome;
+    const chromosomeType chromosome;
 
     /*****************************************************************//**
     * @brief strand on chromosome
     *
     * This is the chromosome strand (Plus or Minus) the sequence is on.
     *********************************************************************/
-    strandType strand;
+    const strandType strand;
 
     /*****************************************************************//**
     * @brief nucleotide sequence
     *
     * A vector containing the sequence's nucleotides from 5' to 3'
     *********************************************************************/
-    std::vector<nucleotide> nucleotides;
+    const std::vector<nucleotide> nucleotides;
 
-    std::vector<exon> exons;
+    /*****************************************************************//**
+    * @brief exon segmentation
+    *
+    * A vector containing the sequence's exons sorted by start position
+    * (i.e. the end with the smaller distance to the chromosome start
+    * beeing the 5' end of the + strand and accordingly the 3' end of
+    * the - strand) on the chromosome
+    *********************************************************************/
+    const std::vector<exon> exons;
+
+    /*****************************************************************//**
+    * @brief sequence length
+    *
+    * This is the length of the sequence.
+    *********************************************************************/
+    sequenceLength length;
 
 };
-/*****************************************************************//**
-* @brief get method for chromosome attribute
-*
-* This method is used to access the chromosome the sequence is on.
-*
-* @return the chromosome of the sequence
-*********************************************************************/
-inline const chromosomeType sequence::get_chromosome() const {
-  return chromosome;
-}
+    /*****************************************************************//**
+    * @brief get method for chromosome attribute
+    *
+    * This method is used to access the chromosome the sequence is
+    * located on.
+    *
+    * @return the chromosome of the sequence
+    *********************************************************************/
+    inline const chromosomeType sequence::get_chromosome() const {
+      return chromosome;
+    }
 
-/*****************************************************************//**
-* @brief get method for strand attribute
-*
-* This method is used to access the strand of the chromosome the
-* sequence is on.
-*
-* @return the strand of the sequence (Plus or Minus)
-*********************************************************************/
-inline const strandType sequence::get_strand() const {
-  return strand;
-}
+    /*****************************************************************//**
+    * @brief get method for strand attribute
+    *
+    * This method is used to access the strand of the chromosome the
+    * sequence is on.
+    *
+    * @return the strand of the sequence (Plus or Minus)
+    *********************************************************************/
+    inline const strandType sequence::get_strand() const {
+      return strand;
+    }
 
+    /*****************************************************************//**
+    * @brief get method for exons attribute
+    *
+    * This method is used to access the sequence's exons sorted by start
+    * position (i.e. the end with the smaller distance to the chromosome
+    * start beeing the 5' end of the + strand and accordingly the 3' end
+    * of the - strand) on the chromosome
+    *
+    * @return a vector containing the sequence's exons
+    *********************************************************************/
     inline const std::vector<exon> & sequence::get_exons() const {
       return exons;
+    }
+
+    /*****************************************************************//**
+    * @brief get method for length attribute
+    *
+    * This method is used to access the length of the sequence.
+    *
+    * @return the length of the sequence.
+    *********************************************************************/
+    inline const sequenceLength sequence::get_length() const {
+      return length;
     }
 
 
