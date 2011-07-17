@@ -2,6 +2,7 @@
 #include <vector>
 #include "nucleotide.h"
 #include "alignment.h"
+#include "sequence.h"
 
 using namespace microSNPscore;
 
@@ -33,4 +34,10 @@ int main(){
   }
   alignmentColumn dummy_col;
   std::cout << "Dummy alignment column: " << dummy_col.get_match().get_identifier() << ":" << dummy_col.get_match().get_score() << std::endl;
+  exon test_exon(123,128);
+  std::cout << "Testing exon: Length from " << test_exon.get_start() << " to " << test_exon.get_end() << " is " << test_exon.get_length() << std::endl;
+  exon test_exon_neg(128,123);
+  std::cout << "Testing negative length exon: Length from " << test_exon_neg.get_start() << " to " << test_exon_neg.get_end() << " is " << test_exon_neg.get_length() << std::endl;
+  exon test_exon_dummy;
+  std::cout << "Testing dummy exon: Length from " << test_exon_dummy.get_start() << " to " << test_exon_dummy.get_end() << " is " << test_exon_dummy.get_length() << std::endl;
 }

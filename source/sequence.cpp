@@ -37,7 +37,7 @@ namespace microSNPscore {
        \*********************************************************/
       if (end_position<start_position)
       {
-        std::cerr << "microSNPscore::exon::exon\m";
+        std::cerr << "microSNPscore::exon::exon\n";
         std::cerr << " ==> negative length exon range: ";
         std::cerr << start_position << "-" << end_position << std::endl;
         std::cerr << "  --> setting to zero-length: ";
