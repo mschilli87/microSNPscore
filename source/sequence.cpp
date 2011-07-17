@@ -103,7 +103,7 @@ namespace microSNPscore {
     *     given chromosome, strand and positions.
     *********************************************************************/
     sequence::sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
-    :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(exon_starts,exon_ends)),length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,length)) {
+    :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends))),length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,length)) {
 }
 
 /*****************************************************************//**
@@ -259,11 +259,38 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *
     * @return a vector containing exons with the given coordinates
     *********************************************************************/
-    std::vector<exon> sequence::initialize_exons(std::string starts, std::string ends)
+    std::vector<exon> sequence::initialize_exons(const std::vector<chromosomePosition> & starts, const std::vector<chromosomePosition> & ends)
     {
-       /*******************************************************\ 
-      | Split the strings, convert to numbers and sort vectors: |
-       \*******************************************************/
+       /***************************************************************\ 
+      | Pair each start with the next unpaired end (skipping those less |
+      | than the start) to build the first exon vector and ther iterate |
+      | over that vector merging overlapping exons to build the final   |
+      | exon vector:                                                    |
+       \***************************************************************/
+      std::vector<chromosomePosition>::const_iterator start_it(starts.begin());
+      std::vector<chromosomePosition>::const_iterator end_it(ends.begin());
+      std::vector<exon> unmerged_exon_vector;
+      while(start_it != starts.end() && end_it != ends.end())
+      {
+        while(*end_it < *start_it && end_it != ends.end()) ++end_it;
+        unmerged_exon_vector.push_back(exon(*start_it,*end_it));
+        ++start_it;
+        ++end_it;
+      }
+      std::vector<exon> exon_vector;
+      for(std::vector<exon>::const_iterator exon_it(unmerged_exon_vector.begin());exon_it != unmerged_exon_vector.end();)
+      {
+        chromosomePosition start(exon_it->get_start());
+        chromosomePosition end(exon_it->get_end());
+        ++exon_it;
+        while (exon_it->get_start() <= end && exon_it != unmerged_exon_vector.end())
+        {
+          end=exon_it->get_end();
+          ++exon_it;
+        }
+        exon_vector.push_back(exon(start,end));
+      }
+      return exon_vector;
 }
 
     /*****************************************************************//**
@@ -319,7 +346,7 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     * @return a sorted vector containing the converted positions
     *********************************************************************/
     
-    std::vector<chromosomePosition> sequence::position_string_to_position_vector(std::string string_list)
+    std::vector<chromosomePosition> sequence::position_string_to_vector(std::string string_list)
     {
        /****************************************************************\ 
       | Put the string in a stream, split at comma, put each part in its |

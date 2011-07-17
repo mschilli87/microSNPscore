@@ -413,7 +413,7 @@ class sequence {
     *
     * @return a vector containing exons with the given coordinates
     *********************************************************************/
-    static std::vector<exon> initialize_exons(std::string starts, std::string ends);
+    static std::vector<exon> initialize_exons(const std::vector<chromosomePosition> & starts, const std::vector<chromosomePosition> & ends);
 
     /*****************************************************************//**
     * @brief length calculation
@@ -464,7 +464,7 @@ class sequence {
     * @return a sorted vector containing the converted positions
     *********************************************************************/
     
-    static std::vector<chromosomePosition> position_string_to_position_vector(std::string string_list);
+    static std::vector<chromosomePosition> position_string_to_vector(std::string string_list);
 
     /*****************************************************************//**
     * @brief chromosome
