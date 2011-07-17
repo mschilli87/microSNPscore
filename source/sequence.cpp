@@ -13,6 +13,9 @@ namespace microSNPscore {
 exon::exon() {
 }
 
+    sequenceLength exon::get_length() {
+}
+
 /*****************************************************************//**
 * @brief standard constructor
 *
@@ -21,6 +24,9 @@ exon::exon() {
 * @return an empty sequence
 *********************************************************************/
 sequence::sequence() {
+}
+
+    sequenceLength sequence::get_length() {
 }
 
 /*****************************************************************//**
@@ -41,7 +47,7 @@ sequence::sequence() {
 *         after the given length (5' to 3') or at the end of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_from(sequencePosition from, unsigned short len) const {
+sequence sequence::get_subsequence_from(sequencePosition from, const sequenceLength & len) const {
 }
 
 /*****************************************************************//**
@@ -62,7 +68,7 @@ sequence sequence::get_subsequence_from(sequencePosition from, unsigned short le
 *         after the given length (3' to 5') or at the start of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_to(sequencePosition to, unsigned short len) const {
+sequence sequence::get_subsequence_to(sequencePosition to, const sequenceLength & len) const {
 }
 
 /*****************************************************************//**
@@ -99,7 +105,7 @@ sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePositi
 *         after the given length (5' to 3') or at the end of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned short len) const {
+sequence sequence::get_subsequence_chr_from(chromosomePosition from, const sequenceLength & len) const {
 }
 
 /*****************************************************************//**
@@ -121,7 +127,7 @@ sequence sequence::get_subsequence_chr_from(chromosomePosition from, unsigned sh
 *         after the given length (3' to 5') or at the start of the
 *         sequence
 *********************************************************************/
-sequence sequence::get_subsequence_chr_to(chromosomePosition to, unsigned short len) const {
+sequence sequence::get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const {
 }
 
 /*****************************************************************//**

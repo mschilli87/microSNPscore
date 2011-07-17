@@ -29,6 +29,7 @@ enum strandType {
   Minus
 
 };
+typedef unsigned short sequenceLength;
 /*****************************************************************//**
 * @brief exon class
 *
@@ -45,7 +46,27 @@ class exon {
     *********************************************************************/
     exon();
 
+    inline const chromosomePosition get_start() const;
+
+    inline const chromosomePosition get_end() const;
+
+    sequenceLength get_length();
+
+
+  private:
+    chromosomePosition start;
+
+    chromosomePosition end;
+
 };
+    inline const chromosomePosition exon::get_start() const {
+      return start;
+    }
+
+    inline const chromosomePosition exon::get_end() const {
+      return end;
+    }
+
 /*****************************************************************//**
 * @brief sequence class
 *
@@ -82,6 +103,10 @@ class sequence {
     *********************************************************************/
     inline const strandType get_strand() const;
 
+    inline const std::vector<exon> & get_exons() const;
+
+    sequenceLength get_length();
+
     /*****************************************************************//**
     * @brief get subsequence from sequence position
     *
@@ -100,7 +125,7 @@ class sequence {
     *         after the given length (5' to 3') or at the end of the
     *         sequence
     *********************************************************************/
-    sequence get_subsequence_from(sequencePosition from, unsigned short len) const;
+    sequence get_subsequence_from(sequencePosition from, const sequenceLength & len) const;
 
     /*****************************************************************//**
     * @brief get subsequence to sequence position
@@ -120,7 +145,7 @@ class sequence {
     *         after the given length (3' to 5') or at the start of the
     *         sequence
     *********************************************************************/
-    sequence get_subsequence_to(sequencePosition to, unsigned short len) const;
+    sequence get_subsequence_to(sequencePosition to, const sequenceLength & len) const;
 
     /*****************************************************************//**
     * @brief get subsequence between sequence positions
@@ -155,7 +180,7 @@ class sequence {
     *         after the given length (5' to 3') or at the end of the
     *         sequence
     *********************************************************************/
-    sequence get_subsequence_chr_from(chromosomePosition from, unsigned short len) const;
+    sequence get_subsequence_chr_from(chromosomePosition from, const sequenceLength & len) const;
 
     /*****************************************************************//**
     * @brief get subsequence to chromosome position
@@ -176,7 +201,7 @@ class sequence {
     *         after the given length (3' to 5') or at the start of the
     *         sequence
     *********************************************************************/
-    sequence get_subsequence_chr_to(chromosomePosition to, unsigned short len) const;
+    sequence get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const;
 
     /*****************************************************************//**
     * @brief get subsequence between chromosome positions
@@ -216,6 +241,8 @@ class sequence {
     *********************************************************************/
     std::vector<nucleotide> nucleotides;
 
+    std::vector<exon> exons;
+
 };
 /*****************************************************************//**
 * @brief get method for chromosome attribute
@@ -239,6 +266,10 @@ inline const chromosomeType sequence::get_chromosome() const {
 inline const strandType sequence::get_strand() const {
   return strand;
 }
+
+    inline const std::vector<exon> & sequence::get_exons() const {
+      return exons;
+    }
 
 
 } // namespace microSNPscore
