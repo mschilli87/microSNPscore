@@ -19,10 +19,10 @@ namespace microSNPscore {
     * the reason for providing those default values is to allow using
     * containers containing objects of this class.
     *
-    * @param start_position (pseudo-opional) chromosomePosition that
+    * @param start_position (pseudo-optional) chromosomePosition that
     *     represents the start position of the exon on the chromosome -
     *     Defaults to 0
-    * @param end_position (pseudo-opional) chromosomePosition that
+    * @param end_position (pseudo-optional) chromosomePosition that
     *     represents the end position of the exon on the chromosome -
     *     Defaults to 0
     *

@@ -37,7 +37,6 @@ typedef unsigned short sequenceLength;
 * All exons are defined by their position on the + strand in 5' --> 3'
 * direction, no matter which strand they are placed on.
 *********************************************************************/
-
 class exon {
   public:
     /*****************************************************************//**
@@ -54,10 +53,10 @@ class exon {
     * the reason for providing those default values is to allow using
     * containers containing objects of this class.
     *
-    * @param start_position (pseudo-opional) chromosomePosition that
+    * @param start_position (pseudo-optional) chromosomePosition that
     *     represents the start position of the exon on the chromosome -
     *     Defaults to 0
-    * @param end_position (pseudo-opional) chromosomePosition that
+    * @param end_position (pseudo-optional) chromosomePosition that
     *     represents the end position of the exon on the chromosome -
     *     Defaults to 0
     *
@@ -77,7 +76,6 @@ class exon {
     *
     * @return the start position of the exon on the chromosome
     *********************************************************************/
-    
     inline const chromosomePosition get_start() const;
 
     /*****************************************************************//**
@@ -124,7 +122,6 @@ class exon {
     *
     * @see exon()
     *********************************************************************/
-    
     chromosomePosition start;
 
     /*****************************************************************//**
@@ -161,7 +158,6 @@ class exon {
     *
     * @return the start position of the exon on the chromosome
     *********************************************************************/
-    
     inline const chromosomePosition exon::get_start() const {
       return start;
     }

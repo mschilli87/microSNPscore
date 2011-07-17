@@ -205,13 +205,13 @@ class nucleotide {
     * the reason for providing those default values is to allow using
     * containers containing objects of this class.
     *
-    * @param the_base (pseudo-opional) nucleoBase that represents the
+    * @param the_base (pseudo-optional) nucleoBase that represents the
     *     nucleo base of the nucleotide - Defaults to Mask
-    * @param the_sequence_position (pseudo-opional) sequencePosition that
+    * @param the_sequence_position (pseudo-optional) sequencePosition that
     *     represents the position in sequence of the nucleotide, the 5'
     *     end beeing position 1 (gaps should be given the position of
     *     their predecessor in the alignment) - Defaults to 0
-    * @param the_chromosome_position (pseudo-opional) chromosomePosition
+    * @param the_chromosome_position (pseudo-optional) chromosomePosition
     *     that represents the position on the chromosome of th
     *     nucleotide, the 5' end of the + strand (i.e. the 3' end of
     *     the - strand) beeing position 1 (gaps should be given the
