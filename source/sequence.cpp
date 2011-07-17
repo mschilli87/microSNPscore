@@ -103,7 +103,7 @@ namespace microSNPscore {
     *     given chromosome, strand and positions.
     *********************************************************************/
     sequence::sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
-    :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends))),length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,length)) {
+    :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends))),length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons,length)) {
 }
 
 /*****************************************************************//**
@@ -333,11 +333,16 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *
     * @param the_sequence String representing the nucleotide sequence
     *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
+    * @param the_chromosome chromosomeType representing the chromosome the
+    *     sequence is located on
+    * @param the_strand strandType representing the strand (Plus/Minus) on
+    *     which the sequence is located
+    * @param the_exons a vector containing the sequence's exons
     * @param the_length the requested length of the sequence
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
-    std::vector<nucleotide> sequence::initialize_nucleotides(std::string the_sequence, const sequenceLength & the_length)
+    std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const std::vector<exon> & the_exons, sequenceLength the_length)
     {
 }
 

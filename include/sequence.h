@@ -444,11 +444,16 @@ class sequence {
     *
     * @param the_sequence String representing the nucleotide sequence
     *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
+    * @param the_chromosome chromosomeType representing the chromosome the
+    *     sequence is located on
+    * @param the_strand strandType representing the strand (Plus/Minus) on
+    *     which the sequence is located
+    * @param the_exons a vector containing the sequence's exons
     * @param the_length the requested length of the sequence
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
-    static std::vector<nucleotide> initialize_nucleotides(std::string the_sequence, const sequenceLength & the_length);
+    static std::vector<nucleotide> initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const std::vector<exon> & the_exons, sequenceLength the_length);
 
     /*****************************************************************//**
     * @brief string to position vector conversion
