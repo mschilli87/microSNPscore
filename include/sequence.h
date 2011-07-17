@@ -223,7 +223,7 @@ class sequence {
     * @return a sequence containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    sequence(std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
+    sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
 
     /*****************************************************************//**
     * @brief get method for chromosome attribute
@@ -391,7 +391,80 @@ class sequence {
 
 
   private:
-    static sequenceLength initialize_exons_and_get_length(std::string starts, std::string ends);
+    /*****************************************************************//**
+    * @brief exon initialisation
+    *
+    * This method is used to create the exon vector of a sequence.
+    * The ordering of exon starts and ends does not matter.
+    * Overlapping exons are be merged (reporting an error).
+    * If the count of exon starts does not match the count of exon ends
+    * an error is raised and the additional starts or ends are omitted.
+    *
+    * @param starts: String representing the start positions (i.e.
+    *     the end with the smaller distance to the chromosome start beeing
+    *     the 5' end of the + strand and accordingly the 3' end of
+    *     the - strand) of the exons containing the sequence as
+    *     comma-separated list.
+    * @param ends: String representing the end positions (i.e.
+    *     the end with the smaller distance to the chromosome end beeing
+    *     the 3' end of the + strand and accordingly the 5' end of
+    *     the - strand) of the exons containing the sequence as
+    *     comma-separated list.
+    *
+    * @return a vector containing exons with the given coordinates
+    *********************************************************************/
+    static std::vector<exon> initialize_exons(std::string starts, std::string ends);
+
+    /*****************************************************************//**
+    * @brief length calculation
+    *
+    * This method is used to calculate the length of a sequence.
+    *
+    * @param exon_vector const std::vector<exon> reference to a vector
+    *     containing the sequence's exons
+    *
+    * @return the sequence's length
+    *********************************************************************/
+    static sequenceLength initialize_length(const std::vector<exon> & exon_vector);
+
+    /*****************************************************************//**
+    * @brief nucleotide initialization
+    *
+    * This method is used to calculate the nucleotide vector of a sequence.
+    * Lowercase letters are treated as uppercase ones.
+    * T is understood as Thymine and is treated as Uracil (simulating
+    * transscription) raising an error message.
+    * Dashes (-) are understood as Gaps and are omitted.
+    * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
+    * and are treated as Mask.
+    * If the given sequence length does
+    * not match the count of nucleotides an error message is raised and
+    * the additional nucleotides are omitted or the missing nucleotides
+    * are treated as masked, respectively.
+    *
+    * @param the_sequence String representing the nucleotide sequence
+    *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
+    * @param the_length the requested length of the sequence
+    *
+    * @return a vector containing the sequence's nucleotides
+    *********************************************************************/
+    static std::vector<nucleotide> initialize_nucleotides(std::string the_sequence, const sequenceLength & the_length);
+
+    /*****************************************************************//**
+    * @brief string to position vector conversion
+    *
+    * This method is used to convert a string containing chromosome
+    * positions as comma-separated list to a sorted vector of
+    * chromosomePositions.
+    * Illegal values raise an error message and are omitted.
+    *
+    * @param string_list: String representing positions on a chromosome as
+    *     comma-separated list.
+    *
+    * @return a sorted vector containing the converted positions
+    *********************************************************************/
+    
+    static std::vector<chromosomePosition> position_string_to_position_vector(std::string string_list);
 
     /*****************************************************************//**
     * @brief chromosome
@@ -408,13 +481,6 @@ class sequence {
     const strandType strand;
 
     /*****************************************************************//**
-    * @brief nucleotide sequence
-    *
-    * A vector containing the sequence's nucleotides from 5' to 3'
-    *********************************************************************/
-    const std::vector<nucleotide> nucleotides;
-
-    /*****************************************************************//**
     * @brief exon segmentation
     *
     * A vector containing the sequence's exons sorted by start position
@@ -429,7 +495,14 @@ class sequence {
     *
     * This is the length of the sequence.
     *********************************************************************/
-    sequenceLength length;
+    const sequenceLength length;
+
+    /*****************************************************************//**
+    * @brief nucleotide sequence
+    *
+    * A vector containing the sequence's nucleotides from 5' to 3'
+    *********************************************************************/
+    const std::vector<nucleotide> nucleotides;
 
 };
     /*****************************************************************//**

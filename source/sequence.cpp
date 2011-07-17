@@ -1,6 +1,10 @@
 
 #include <iostream>
 //for std::cerr and std::endl (error stating)
+#include <sstream>
+//for std::istringstream (type conversion)
+#include <algorithm>
+//for std::sort (exon sorting)
 #include "sequence.h"
 
 namespace microSNPscore {
@@ -98,8 +102,8 @@ namespace microSNPscore {
     * @return a sequence containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    sequence::sequence(std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
-    :chromosome(the_chromosome),strand(the_strand),nucleotides(std::vector<nucleotide>()),exons(std::vector<exon>()),length(initialize_exons_and_get_length(exon_starts,exon_ends)) {
+    sequence::sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
+    :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(exon_starts,exon_ends)),length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,length)) {
 }
 
 /*****************************************************************//**
@@ -233,8 +237,118 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     :strand(Plus),chromosome(""),length(0) {
 }
 
-    sequenceLength sequence::initialize_exons_and_get_length(std::string starts, std::string ends)
+    /*****************************************************************//**
+    * @brief exon initialisation
+    *
+    * This method is used to create the exon vector of a sequence.
+    * The ordering of exon starts and ends does not matter.
+    * Overlapping exons are be merged (reporting an error).
+    * If the count of exon starts does not match the count of exon ends
+    * an error is raised and the additional starts or ends are omitted.
+    *
+    * @param starts: String representing the start positions (i.e.
+    *     the end with the smaller distance to the chromosome start beeing
+    *     the 5' end of the + strand and accordingly the 3' end of
+    *     the - strand) of the exons containing the sequence as
+    *     comma-separated list.
+    * @param ends: String representing the end positions (i.e.
+    *     the end with the smaller distance to the chromosome end beeing
+    *     the 3' end of the + strand and accordingly the 5' end of
+    *     the - strand) of the exons containing the sequence as
+    *     comma-separated list.
+    *
+    * @return a vector containing exons with the given coordinates
+    *********************************************************************/
+    std::vector<exon> sequence::initialize_exons(std::string starts, std::string ends)
     {
+       /*******************************************************\ 
+      | Split the strings, convert to numbers and sort vectors: |
+       \*******************************************************/
+}
+
+    /*****************************************************************//**
+    * @brief length calculation
+    *
+    * This method is used to calculate the length of a sequence.
+    *
+    * @param exon_vector const std::vector<exon> reference to a vector
+    *     containing the sequence's exons
+    *
+    * @return the sequence's length
+    *********************************************************************/
+    sequenceLength sequence::initialize_length(const std::vector<exon> & exon_vector)
+    {
+}
+
+    /*****************************************************************//**
+    * @brief nucleotide initialization
+    *
+    * This method is used to calculate the nucleotide vector of a sequence.
+    * Lowercase letters are treated as uppercase ones.
+    * T is understood as Thymine and is treated as Uracil (simulating
+    * transscription) raising an error message.
+    * Dashes (-) are understood as Gaps and are omitted.
+    * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
+    * and are treated as Mask.
+    * If the given sequence length does
+    * not match the count of nucleotides an error message is raised and
+    * the additional nucleotides are omitted or the missing nucleotides
+    * are treated as masked, respectively.
+    *
+    * @param the_sequence String representing the nucleotide sequence
+    *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
+    * @param the_length the requested length of the sequence
+    *
+    * @return a vector containing the sequence's nucleotides
+    *********************************************************************/
+    std::vector<nucleotide> sequence::initialize_nucleotides(std::string the_sequence, const sequenceLength & the_length)
+    {
+}
+
+    /*****************************************************************//**
+    * @brief string to position vector conversion
+    *
+    * This method is used to convert a string containing chromosome
+    * positions as comma-separated list to a sorted vector of
+    * chromosomePositions.
+    * Illegal values raise an error message and are omitted.
+    *
+    * @param string_list: String representing positions on a chromosome as
+    *     comma-separated list.
+    *
+    * @return a sorted vector containing the converted positions
+    *********************************************************************/
+    
+    std::vector<chromosomePosition> sequence::position_string_to_position_vector(std::string string_list)
+    {
+       /****************************************************************\ 
+      | Put the string in a stream, split at comma, put each part in its |
+      | own stream, try to read a chromosomePosition from that stream,   |
+      | append to vector and sort the result:                            |
+       \****************************************************************/
+      std::vector<chromosomePosition> position_vector;
+      char string_to_split_at=',';
+      std::istringstream string_to_be_splitted(string_list);
+      std::string splitted_string;
+      while(std::getline(string_to_be_splitted,splitted_string,string_to_split_at))
+      {
+        std::istringstream string_to_be_converted(splitted_string);
+        chromosomePosition converted_string;
+        string_to_be_converted >> converted_string;
+        if(! converted_string)
+        {
+          std::cerr << "microSNPscore::sequence::position_string_to_position_vector\n";
+          std::cerr << " ==> illegal chromosome position: ";
+          std::cerr << splitted_string << std::endl;
+          std::cerr << "  --> omitting position\n";
+        }
+        else
+        {
+           position_vector.push_back(converted_string);
+        }
+      }
+      std::sort(position_vector.begin(),position_vector.end());
+      return position_vector;
 }
 
 
