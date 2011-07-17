@@ -1,19 +1,63 @@
 
+#include <iostream>
+//for std::cerr and std::endl (error stating)
 #include "sequence.h"
 
 namespace microSNPscore {
 
-/*****************************************************************//**
-* @brief standard constructor
-*
-* This is used to create an instance of the class exon.
-*
-* @return an empty exon
-*********************************************************************/
-exon::exon() {
+    /*****************************************************************//**
+    * @brief constructor - Do not call without parameter values!
+    *
+    * This is used to create an instance of the exon class.
+    * If @p end_position < @p start_position then a zero-sized exon
+    * reaching from @p start_position to @p start_position - 1 is
+    * created.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
+    *
+    * @param start_position (pseudo-opional) chromosomePosition that
+    *     represents the start position of the exon on the chromosome -
+    *     Defaults to 0
+    * @param end_position (pseudo-opional) chromosomePosition that
+    *     represents the end position of the exon on the chromosome -
+    *     Defaults to 0
+    *
+    * @return an exon located at the given positions on chromosome
+    *********************************************************************/
+    
+    exon::exon(sequencePosition start_position, sequencePosition end_position)
+    :start(start_position),end(end_position) {
+       /*********************************************************\ 
+      | Check for negative length and if so set to zero length by |
+      | changing end position (after reporting the error):        |
+       \*********************************************************/
+      if (end_position<start_position)
+      {
+        std::cerr << "microSNPscore::exon::exon\m";
+        std::cerr << " ==> negative length exon range: ";
+        std::cerr << start_position << "-" << end_position << std::endl;
+        std::cerr << "  --> setting to zero-length: ";
+        std::cerr << start_position << "-" << start_position-1 << std::endl;
+        end=start_position-1;
+      }
 }
 
-    sequenceLength exon::get_length() {
+    /*****************************************************************//**
+    * @brief length calculation
+    *
+    * This method is used to calculate the length of the exon.
+    *
+    * @return  the exon's length
+    *********************************************************************/
+    sequenceLength exon::get_length() const {
+       /******************************************************\ 
+      | Calculate the length (start end end position included) |
+       \******************************************************/
+      return (get_end()-get_start()+1);
 }
 
 /*****************************************************************//**

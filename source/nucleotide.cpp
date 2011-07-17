@@ -67,7 +67,7 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier, matchPosit
 }
 
 /*****************************************************************//**
-* @brief constructor - Do not call without parameter values.
+* @brief constructor - Do not call without parameter values!
 *
 * This is used to create an instance of the class nucleotide.
 * The default values are not intended to be used directly.
@@ -92,7 +92,6 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier, matchPosit
 * @return a nucleotide containing the given nucleo base and located at
 *     the given positions on chromosome and in sequence
 *********************************************************************/
-
 nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position)
 :base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position) {
 return;

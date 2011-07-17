@@ -195,7 +195,7 @@ inline const matchScore matchType::get_score() const {
 class nucleotide {
   public:
     /*****************************************************************//**
-    * @brief constructor - Do not call without parameter values.
+    * @brief constructor - Do not call without parameter values!
     *
     * This is used to create an instance of the class nucleotide.
     * The default values are not intended to be used directly.
@@ -220,7 +220,6 @@ class nucleotide {
     * @return a nucleotide containing the given nucleo base and located at
     *     the given positions on chromosome and in sequence
     *********************************************************************/
-    
     nucleotide(nucleoBase the_base = Mask, sequencePosition the_sequence_position = 0, chromosomePosition the_chromosome_position = 0);
 
     /*****************************************************************//**

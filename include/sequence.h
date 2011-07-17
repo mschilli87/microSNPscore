@@ -33,36 +33,150 @@ typedef unsigned short sequenceLength;
 /*****************************************************************//**
 * @brief exon class
 *
-* This represents an exon as a pair of positions (start/stop).
+* This represents an exon as a pair of positions (start/end).
+* All exons are defined by their position on the + strand in 5' --> 3'
+* direction, no matter which strand they are placed on.
 *********************************************************************/
+
 class exon {
   public:
     /*****************************************************************//**
-    * @brief standard constructor
+    * @brief constructor - Do not call without parameter values!
     *
-    * This is used to create an instance of the class exon.
+    * This is used to create an instance of the exon class.
+    * If @p end_position < @p start_position then a zero-sized exon
+    * reaching from @p start_position to @p start_position - 1 is
+    * created.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
     *
-    * @return an empty exon
+    * @param start_position (pseudo-opional) chromosomePosition that
+    *     represents the start position of the exon on the chromosome -
+    *     Defaults to 0
+    * @param end_position (pseudo-opional) chromosomePosition that
+    *     represents the end position of the exon on the chromosome -
+    *     Defaults to 0
+    *
+    * @return an exon located at the given positions on chromosome
     *********************************************************************/
-    exon();
+    
+    exon(sequencePosition start_position = 0, sequencePosition end_position = 0);
 
+    /*****************************************************************//**
+    * @brief get method for start position attribute
+    *
+    * This method is used to access the start position of the exon on the
+    * chromosome (i.e. the end with the smaller distance to the chromosome
+    * start beeing the 5' end of the + strand and accordingly the 3' end
+    * of the - strand), the 5' end of the + strand (i.e. the 3' end of
+    * the - strand) beeing position 1.
+    *
+    * @return the start position of the exon on the chromosome
+    *********************************************************************/
+    
     inline const chromosomePosition get_start() const;
 
+    /*****************************************************************//**
+    * @brief get method for end position attribute
+    *
+    * This method is used to access the end position of the exon on the
+    * chromosome (i.e. the end with the smaller distance to the chromosome
+    * end beeing the 3' end of the + strand and accordingly the 5' end
+    * of the - strand), the 5' end of the + strand (i.e. the 3' end of
+    * the - strand) beeing position 1.
+    *
+    * @return the end position of the exon on the chromosome
+    *********************************************************************/
     inline const chromosomePosition get_end() const;
 
-    sequenceLength get_length();
+    /*****************************************************************//**
+    * @brief length calculation
+    *
+    * This method is used to calculate the length of the exon.
+    *
+    * @return  the exon's length
+    *********************************************************************/
+    sequenceLength get_length() const;
 
 
   private:
+    /*****************************************************************//**
+    * @brief start position
+    *
+    * This is the start position of the exon on the chromosome (i.e. the
+    * end with the smaller distance to the chromosome start beeing the 5'
+    * end of the + strand and accordingly the 3' end of the - strand), the
+    * 5' end of the + strand (i.e. the 3' end of the - strand) beeing
+    * position 1.
+    * It should be const but because exons shall be used in a vector and
+    * std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
+    *
+    * @see exon()
+    *********************************************************************/
+    
     chromosomePosition start;
 
+    /*****************************************************************//**
+    * @brief start position
+    *
+    * This is the end position of the exon on the chromosome (i.e. the
+    * end with the smaller distance to the chromosome end beeing the 3'
+    * end of the + strand and accordingly the 5' end of the - strand), the
+    * 5' end of the + strand (i.e. the 3' end of the - strand) beeing
+    * position 1.
+    * It should be const but because exons shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
+    *
+    * @see exon()
+    *********************************************************************/
     chromosomePosition end;
 
 };
+    /*****************************************************************//**
+    * @brief get method for start position attribute
+    *
+    * This method is used to access the start position of the exon on the
+    * chromosome (i.e. the end with the smaller distance to the chromosome
+    * start beeing the 5' end of the + strand and accordingly the 3' end
+    * of the - strand), the 5' end of the + strand (i.e. the 3' end of
+    * the - strand) beeing position 1.
+    *
+    * @return the start position of the exon on the chromosome
+    *********************************************************************/
+    
     inline const chromosomePosition exon::get_start() const {
       return start;
     }
 
+    /*****************************************************************//**
+    * @brief get method for end position attribute
+    *
+    * This method is used to access the end position of the exon on the
+    * chromosome (i.e. the end with the smaller distance to the chromosome
+    * end beeing the 3' end of the + strand and accordingly the 5' end
+    * of the - strand), the 5' end of the + strand (i.e. the 3' end of
+    * the - strand) beeing position 1.
+    *
+    * @return the end position of the exon on the chromosome
+    *********************************************************************/
     inline const chromosomePosition exon::get_end() const {
       return end;
     }
