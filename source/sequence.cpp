@@ -305,6 +305,15 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *********************************************************************/
     sequenceLength sequence::initialize_length(const std::vector<exon> & exon_vector)
     {
+       /**********************************************\ 
+      | Iterate over the exons summing up the lengths: |
+       \**********************************************/ 
+      sequenceLength the_length;
+      for(std::vector<exon>::const_iterator exon_it(exon_vector.begin());exon_it != exon_vector.end();++exon_it)
+      {
+        the_length += exon_it->get_length();
+      }
+      return the_length;
 }
 
     /*****************************************************************//**
