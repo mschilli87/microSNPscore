@@ -344,6 +344,103 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *********************************************************************/
     std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const std::vector<exon> & the_exons, sequenceLength the_length)
     {
+      std::vector<nucleotide> nucleotide_vector;
+      std::string::const_iterator sequence_it(the_strand == Plus ?
+                                              the_sequence.begin() :
+                                              the_sequence.end());
+      std::vector<exon>::const_iterator exon_it(the_exons.begin());
+      chromosomePosition position_on_chromosome(exon_it != the_exons.end() ? 
+                                                exon_it->get_start() : 0);
+      sequenceLength length_of_sequence(0);
+      sequenceLength length_of_exon(0);
+      char the_base_char(the_sequence.begin() != the_sequence.end() ?
+                         *sequence_it : '\0');
+      while(length_of_sequence != the_length &&
+           (length_of_exon != exon_it->get_length() ||
+            exon_it != the_exons.end()))
+      {
+        if(the_base_char != '-')
+        {
+          nucleoBase nucleo_base(Adenine);
+          switch(the_base_char)
+          {
+            case 'a':
+            case 'A':
+              break;
+            case 't':
+            case 'T':
+              std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
+              std::cerr << " ==> illegal nucleo base character: \n";
+              std::cerr << the_base_char << std::endl;
+              std::cerr << "  --> assuming Uracil\n";
+            case 'u':
+            case 'U':
+              nucleo_base=Uracil;
+              break;
+            case 'c':
+            case 'C':
+              nucleo_base=Cytosine;
+              break;
+            case 'g':
+            case 'G':
+              nucleo_base=Guanine;
+              break;
+            case '\0':
+              std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
+              std::cerr << " ==> missing nucleo base character\n";
+              std::cerr << "  --> assuming Mask\n";
+            case 'x':
+            case 'X':
+              nucleo_base=Mask;
+              break;
+            default:
+              std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
+              std::cerr << " ==> illegal nucleo base character: \n";
+              std::cerr << the_base_char << std::endl;
+              std::cerr << "  --> assuming Mask\n";
+              nucleo_base=Mask;
+          }
+          nucleotide_vector.push_back(nucleotide(nucleo_base,
+                                                 length_of_sequence++,
+                                                 position_on_chromosome));
+          if(position_on_chromosome != exon_it->get_end())
+          {
+            ++position_on_chromosome;
+            ++length_of_exon;
+          }
+          else
+          {
+            ++exon_it;
+            position_on_chromosome = exon_it->get_start();
+            length_of_exon = 0;
+          }
+        }
+        else
+        {
+          std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
+          std::cerr << " ==> illegal nucleo base character: \n";
+          std::cerr << the_base_char << std::endl;
+          std::cerr << "  --> assuming Gap --> omitting\n";
+        }
+        sequence_it += (the_base_char != '\0' ? 
+                       (the_strand == Plus ? 1 : -1) : 0);
+        the_base_char = (((sequence_it != the_sequence.begin() ||
+                           the_strand == Plus) &&
+                          (sequence_it != the_sequence.end() ||
+                           the_strand == Minus)) ? *sequence_it : '\0');
+      }
+      if((the_strand == Plus && sequence_it != the_sequence.end()) ||
+         (the_strand == Minus && sequence_it != the_sequence.begin()))
+      {
+            std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
+            std::cerr << " ==> additional nucleo base characters: \n";
+            std::cerr << (the_strand == Plus ?
+                          the_sequence.substr(sequence_it - the_sequence.begin(),
+                                              the_sequence.end() -  sequence_it +1) :
+                          the_sequence.substr(0,sequence_it - the_sequence.begin() + 1)) << std::endl;
+            std::cerr << "  --> omitting\n";
+      }
+      return nucleotide_vector;
 }
 
     /*****************************************************************//**
