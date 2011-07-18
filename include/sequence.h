@@ -311,10 +311,28 @@ class sequence {
     *
     * @param position position of the queried nucleotide in the sequence
     *
-    * @return const_iterator pointing to the queried sequence if it exists
-    *     or behind the last nucleotide otherwise
+    * @return const_iterator pointing to the queried nucleotide if it
+    *     exists or behind the last nucleotide otherwise
     *********************************************************************/
+    
     inline const_iterator get_nucleotide(const sequencePosition & position) const;
+
+    /*****************************************************************//**
+    * @brief get nucleotide by chromosome position
+    *
+    * This method is used to access a nucleotide by chromosome position,
+    * the 5' end  of the + strand (i.e. the 3' end of the - strand) beeing
+    * position 1.
+    * If the position is not part of the sequence, the sequence's end is
+    * returned.
+    *
+    * @param position position of the queried nucleotide on chromosome
+    *
+    * @return const_iterator pointing to the queried nucleotide if its
+    *     exists or behind the last nucleotide otherwise
+    *********************************************************************/
+    
+    inline const_iterator get_nucleotide_chr(const chromosomePosition & position) const;
 
     /*****************************************************************//**
     * @brief exon vector begin
@@ -682,11 +700,31 @@ class sequence {
     *
     * @param position position of the queried nucleotide in the sequence
     *
-    * @return const_iterator pointing to the queried sequence if it exists
-    *     or behind the last nucleotide otherwise
+    * @return const_iterator pointing to the queried nucleotide if it
+    *     exists or behind the last nucleotide otherwise
     *********************************************************************/
+    
     inline sequence::const_iterator sequence::get_nucleotide(const sequencePosition & position) const {
       return position <= get_length() ? begin()+(position-1) : end();
+}
+
+    /*****************************************************************//**
+    * @brief get nucleotide by chromosome position
+    *
+    * This method is used to access a nucleotide by chromosome position,
+    * the 5' end  of the + strand (i.e. the 3' end of the - strand) beeing
+    * position 1.
+    * If the position is not part of the sequence, the sequence's end is
+    * returned.
+    *
+    * @param position position of the queried nucleotide on chromosome
+    *
+    * @return const_iterator pointing to the queried nucleotide if its
+    *     exists or behind the last nucleotide otherwise
+    *********************************************************************/
+    
+    inline sequence::const_iterator sequence::get_nucleotide_chr(const chromosomePosition & position) const {
+      return get_nucleotide(chromosome_position_to_sequence_position(position));
 }
 
     /*****************************************************************//**
