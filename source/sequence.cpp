@@ -104,7 +104,7 @@ namespace microSNPscore {
     *********************************************************************/
     sequence::sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
     :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends)))
-    ,length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_stringthe_chromosome,the_strand,exons,length)) {
+    ,length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons,length)) {
 }
 
 /*****************************************************************//**
