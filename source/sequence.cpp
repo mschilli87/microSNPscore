@@ -352,18 +352,17 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
       std::vector<nucleotide> nucleotide_vector;
       std::string::const_iterator sequence_it(the_strand == Plus ?
                                               the_sequence.begin() :
-                                              the_sequence.end());
+                                              (the_sequence.end()-1));
       std::vector<exon>::const_iterator exon_it(the_exons.begin());
       chromosomePosition position_on_chromosome(exon_it != the_exons.end() ? 
                                                 exon_it->get_start() :
                                                 0);
       sequenceLength length_of_sequence(0);
-      sequenceLength length_of_exon(0);
       char the_base_char(the_sequence.begin() != the_sequence.end() ?
                          *sequence_it :
                          '\0');
       while(length_of_sequence != the_length &&
-           (length_of_exon != exon_it->get_length() || exon_it != the_exons.end()))
+           (position_on_chromosome <= exon_it->get_end() || exon_it != the_exons.end()))
       {
          /**************************************************************\ 
         | For every nucleobase that is no gap: add nucleotide, increment |
@@ -410,17 +409,15 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
               std::cerr << "  --> assuming Mask\n";
               nucleo_base=Mask;
           } // switch(the_base_char)
-          nucleotide_vector.push_back(nucleotide(nucleo_base,length_of_sequence++,position_on_chromosome));
+          nucleotide_vector.push_back(nucleotide(nucleo_base,++length_of_sequence,position_on_chromosome));
           if(position_on_chromosome != exon_it->get_end())
           {
             ++position_on_chromosome;
-            ++length_of_exon;
           }
           else
           {
             ++exon_it;
             position_on_chromosome = exon_it->get_start();
-            length_of_exon = 0;
           }
         }  // if(the_base_char != '-')
         else
@@ -434,20 +431,31 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
         | Move on in given sequence and a append zero-chars if the given |
         | sequece is too short:                                          |
          \**************************************************************/
-        if(the_base_char != '\0')
+        if(sequence_it != the_sequence.end()) // already out of range?
         {
-          ++sequence_it;
+          if(the_strand == Plus) 
+          {
+            ++sequence_it;
+          }
+          else
+          {
+            if(sequence_it != the_sequence.begin()) // bases remaining?
+            {
+              --sequence_it;
+            }
+            else // last base read?
+            {
+              sequence_it = the_sequence.end(); // set out of range
+            }
+          }
         }
-        the_base_char = (((sequence_it != the_sequence.begin() || the_strand == Plus) && (sequence_it != the_sequence.end() || the_strand == Minus)) ?
-                         *sequence_it :
-                         '\0');
+        the_base_char = (sequence_it != the_sequence.end() ? *sequence_it : '\0');
       } // while-loop
        /*****************************************************************\ 
       | Check for additional characters in given sequence that have to be |
       | omitted and return constructed nucleotide vector:                 |
        \*****************************************************************/
-      if((the_strand == Plus && sequence_it != the_sequence.end()) ||
-         (the_strand == Minus && sequence_it != the_sequence.begin()))
+      if(sequence_it != the_sequence.end())
       {
             std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
             std::cerr << " ==> additional nucleo base characters: \n";
