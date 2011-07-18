@@ -193,6 +193,13 @@ class sequence {
     typedef std::vector<nucleotide>::const_iterator const_iterator;
 
     /*****************************************************************//**
+    * @brief const iterartor type
+    *
+    * This type is used to access the sequence's exons.
+    *********************************************************************/
+    typedef std::vector<exon>::const_iterator const_exon_iterator;
+
+    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create an instance of the class sequence.
@@ -253,18 +260,6 @@ class sequence {
     inline const strandType get_strand() const;
 
     /*****************************************************************//**
-    * @brief get method for exons attribute
-    *
-    * This method is used to access the sequence's exons sorted by start
-    * position (i.e. the end with the smaller distance to the chromosome
-    * start beeing the 5' end of the + strand and accordingly the 3' end
-    * of the - strand) on the chromosome
-    *
-    * @return a vector containing the sequence's exons
-    *********************************************************************/
-    inline const std::vector<exon> & get_exons() const;
-
-    /*****************************************************************//**
     * @brief get method for length attribute
     *
     * This method is used to access the length of the sequence.
@@ -320,6 +315,24 @@ class sequence {
     *     or behind the last nucleotide otherwise
     *********************************************************************/
     inline const_iterator get_nucleotide(const sequencePosition & position) const;
+
+    /*****************************************************************//**
+    * @brief exon vector begin
+    *
+    * This is used to get the first exon of the sequence.
+    *
+    * @return const_iterator pointing to the first exon
+    *********************************************************************/
+    inline const_exon_iterator exons_begin() const;
+
+    /*****************************************************************//**
+    * @brief exon vector end
+    *
+    * This is used to get the end of the sequence's exon vector.
+    *
+    * @return const_iterator pointing behind the last exon
+    *********************************************************************/
+    inline const_exon_iterator exons_end() const;
 
     /*****************************************************************//**
     * @brief get subsequence from sequence position
@@ -475,12 +488,15 @@ class sequence {
     *
     * This method is used to calculate the length of a sequence.
     *
-    * @param exon_vector const std::vector<exon> reference to a vector
-    *     containing the sequence's exons
+    * @param begin_of_exons const_exon_iterator pointing the sequence's
+    *     first exon
+    * @param end_of_exons const_exon_iterator pointing behind the
+    *     sequence's exon vector
     *
     * @return the sequence's length
     *********************************************************************/
-    static sequenceLength initialize_length(const std::vector<exon> & exon_vector);
+    
+    static sequenceLength initialize_length(const const_exon_iterator & begin_of_exons, const const_exon_iterator & end_of_exons);
 
     /*****************************************************************//**
     * @brief nucleotide initialization
@@ -503,12 +519,15 @@ class sequence {
     *     sequence is located on
     * @param the_strand strandType representing the strand (Plus/Minus) on
     *     which the sequence is located
-    * @param the_exons a vector containing the sequence's exons
+    * @param begin_of_exons const_exon_iterator pointing the sequence's
+    *     first exon
+    * @param end_of_exons const_exon_iterator pointing behind the
+    *     sequence's exon vector
     * @param the_length the requested length of the sequence
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
-    static std::vector<nucleotide> initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const std::vector<exon> & the_exons, sequenceLength the_length);
+    static std::vector<nucleotide> initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const const_exon_iterator & begin_of_exons, const const_exon_iterator & end_of_exons, sequenceLength the_length);
 
     /*****************************************************************//**
     * @brief string to position vector conversion
@@ -590,20 +609,6 @@ class sequence {
     }
 
     /*****************************************************************//**
-    * @brief get method for exons attribute
-    *
-    * This method is used to access the sequence's exons sorted by start
-    * position (i.e. the end with the smaller distance to the chromosome
-    * start beeing the 5' end of the + strand and accordingly the 3' end
-    * of the - strand) on the chromosome
-    *
-    * @return a vector containing the sequence's exons
-    *********************************************************************/
-    inline const std::vector<exon> & sequence::get_exons() const {
-      return exons;
-    }
-
-    /*****************************************************************//**
     * @brief get method for length attribute
     *
     * This method is used to access the length of the sequence.
@@ -668,6 +673,28 @@ class sequence {
     *********************************************************************/
     inline sequence::const_iterator sequence::get_nucleotide(const sequencePosition & position) const {
       return position <= get_length() ? begin()+(position-1) : end();
+}
+
+    /*****************************************************************//**
+    * @brief exon vector begin
+    *
+    * This is used to get the first exon of the sequence.
+    *
+    * @return const_iterator pointing to the first exon
+    *********************************************************************/
+    inline sequence::const_exon_iterator sequence::exons_begin() const {
+      return exons.begin();
+}
+
+    /*****************************************************************//**
+    * @brief exon vector end
+    *
+    * This is used to get the end of the sequence's exon vector.
+    *
+    * @return const_iterator pointing behind the last exon
+    *********************************************************************/
+    inline sequence::const_exon_iterator sequence::exons_end() const {
+      return exons.begin();
 }
 
 

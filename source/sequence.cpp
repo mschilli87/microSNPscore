@@ -104,7 +104,7 @@ namespace microSNPscore {
     *********************************************************************/
     sequence::sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
     :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends)))
-    ,length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons,length)) {
+    ,length(initialize_length(exons.begin(),exons.end())),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons.begin(),exons.end(),length)) {
 }
 
 /*****************************************************************//**
@@ -299,18 +299,21 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *
     * This method is used to calculate the length of a sequence.
     *
-    * @param exon_vector const std::vector<exon> reference to a vector
-    *     containing the sequence's exons
+    * @param begin_of_exons const_exon_iterator pointing the sequence's
+    *     first exon
+    * @param end_of_exons const_exon_iterator pointing behind the
+    *     sequence's exon vector
     *
     * @return the sequence's length
     *********************************************************************/
-    sequenceLength sequence::initialize_length(const std::vector<exon> & exon_vector)
+    
+    sequenceLength sequence::initialize_length(const sequence::const_exon_iterator & begin_of_exons, const sequence::const_exon_iterator & end_of_exons)
     {
        /**********************************************\ 
       | Iterate over the exons summing up the lengths: |
        \**********************************************/ 
-      sequenceLength the_length;
-      for(std::vector<exon>::const_iterator exon_it(exon_vector.begin());exon_it != exon_vector.end();++exon_it)
+      sequenceLength the_length(0);
+      for(const_exon_iterator exon_it(begin_of_exons);exon_it != end_of_exons;++exon_it)
       {
         the_length += exon_it->get_length();
       }
@@ -338,12 +341,15 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *     sequence is located on
     * @param the_strand strandType representing the strand (Plus/Minus) on
     *     which the sequence is located
-    * @param the_exons a vector containing the sequence's exons
+    * @param begin_of_exons const_exon_iterator pointing the sequence's
+    *     first exon
+    * @param end_of_exons const_exon_iterator pointing behind the
+    *     sequence's exon vector
     * @param the_length the requested length of the sequence
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
-    std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const std::vector<exon> & the_exons, sequenceLength the_length)
+    std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const sequence::const_exon_iterator & begin_of_exons, const sequence::const_exon_iterator & end_of_exons, sequenceLength the_length)
     {
        /**************************************************************\ 
       | Initialize empty nucleotide vector, counters and iterators and |
@@ -353,8 +359,8 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
       std::string::const_iterator sequence_it(the_strand == Plus ?
                                               the_sequence.begin() :
                                               (the_sequence.end()-1));
-      std::vector<exon>::const_iterator exon_it(the_exons.begin());
-      chromosomePosition position_on_chromosome(exon_it != the_exons.end() ? 
+      const_exon_iterator exon_it(begin_of_exons);
+      chromosomePosition position_on_chromosome(exon_it != end_of_exons ? 
                                                 exon_it->get_start() :
                                                 0);
       sequenceLength length_of_sequence(0);
@@ -362,7 +368,7 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
                          *sequence_it :
                          '\0');
       while(length_of_sequence != the_length &&
-           (position_on_chromosome <= exon_it->get_end() || exon_it != the_exons.end()))
+           (position_on_chromosome <= exon_it->get_end() || exon_it != end_of_exons))
       {
          /**************************************************************\ 
         | For every nucleobase that is no gap: add nucleotide, increment |
