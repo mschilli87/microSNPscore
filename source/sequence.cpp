@@ -519,5 +519,45 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
       return position_vector;
 }
 
+    /*****************************************************************//**
+    * @brief chromosome position to sequence position conversion
+    *
+    * This method is used to convert a position on chromosome to the
+    * corresponding position in the sequence.
+    * If the given position is not part of the sequence, 0 is returned.
+    *
+    * @param chromosome_position the position on chromosome to convert
+    *
+    * @return the position in the sequence that corresponds to the given
+    *     position on chromosome
+    *********************************************************************/
+    sequencePosition sequence::chromosome_position_to_sequence_position(chromosomePosition chromosome_position) const {
+       /****************************************************************\ 
+      | Iterating over the exons, finding the one containing the given   |
+      | position while summing up the lengths and calculate the          |
+      | corresponding position in the found exon before returning the    |
+      | result.                                                          |
+      | If the given position lies before, between or after the exons of |
+      | the sequence, return 0:                                          |
+       \****************************************************************/
+      sequencePosition sequence_position(0);
+      for(const_exon_iterator exon_it(exons_begin());exon_it!=exons_end();++exon_it)
+      {
+        if(exon_it->get_start()<=chromosome_position)
+        {
+          if(exon_it->get_end()>=chromosome_position)
+          {
+            return sequence_position + chromosome_position - exon_it->get_start() + 1;
+          }
+          sequence_position += exon_it->get_length();
+        }
+        else
+        {
+          break;
+        }
+      }
+      return 0;
+}
+
 
 } // namespace microSNPscore

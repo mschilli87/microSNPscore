@@ -546,6 +546,20 @@ class sequence {
     static std::vector<chromosomePosition> position_string_to_vector(std::string string_list);
 
     /*****************************************************************//**
+    * @brief chromosome position to sequence position conversion
+    *
+    * This method is used to convert a position on chromosome to the
+    * corresponding position in the sequence.
+    * If the given position is not part of the sequence, 0 is returned.
+    *
+    * @param chromosome_position the position on chromosome to convert
+    *
+    * @return the position in the sequence that corresponds to the given
+    *     position on chromosome
+    *********************************************************************/
+    sequencePosition chromosome_position_to_sequence_position(chromosomePosition chromosome_position) const;
+
+    /*****************************************************************//**
     * @brief chromosome
     *
     * This is the chromosome the sequence is located on.
