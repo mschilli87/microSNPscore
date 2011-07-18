@@ -107,6 +107,28 @@ namespace microSNPscore {
     ,length(initialize_length(exons)),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons,length)) {
 }
 
+    /*****************************************************************//**
+    * @brief nucleotide vector begin
+    *
+    * This is used to get the first nucleotide of the sequence's vector.
+    *
+    * @return const_iterator pointing to the first nucleotide
+    *********************************************************************/
+    sequence::const_iterator sequence::begin() {
+      return nucleotides.begin();
+}
+
+    /*****************************************************************//**
+    * @brief nucleotide vector end
+    *
+    * This is used to get the end of the sequence's nucleotide vector.
+    *
+    * @return const_iterator pointing behind the last nucleotide
+    *********************************************************************/
+    sequence::const_iterator sequence::end() {
+      return nucleotides.end();
+}
+
 /*****************************************************************//**
 * @brief get subsequence from sequence position
 *

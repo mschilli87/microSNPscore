@@ -186,6 +186,13 @@ class exon {
 class sequence {
   public:
     /*****************************************************************//**
+    * @brief const iterartor type
+    *
+    * This type is used to access the sequence's nucleotide.
+    *********************************************************************/
+    typedef std::vector<nucleotide>::const_iterator const_iterator;
+
+    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create an instance of the class sequence.
@@ -274,6 +281,24 @@ class sequence {
     * @return a vector containing the sequence's nucleotides from 5' to 3'
     *********************************************************************/
     inline const std::vector<nucleotide> & get_nucleotides() const;
+
+    /*****************************************************************//**
+    * @brief nucleotide vector begin
+    *
+    * This is used to get the first nucleotide of the sequence's vector.
+    *
+    * @return const_iterator pointing to the first nucleotide
+    *********************************************************************/
+    const_iterator begin();
+
+    /*****************************************************************//**
+    * @brief nucleotide vector end
+    *
+    * This is used to get the end of the sequence's nucleotide vector.
+    *
+    * @return const_iterator pointing behind the last nucleotide
+    *********************************************************************/
+    const_iterator end();
 
     /*****************************************************************//**
     * @brief get subsequence from sequence position
