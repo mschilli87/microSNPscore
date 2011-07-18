@@ -66,10 +66,10 @@ UACAUGGUUAAGGUAAAGUAAGUCUCCAGUUGGCCACCAUUAGCUAUAAUGGCACUUUGUUUGUGUUGUUGGAAAAAGUC
 AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << "Length of miR195: " << miR195.get_length() << std::endl;
   std::cout << "BCL2 is transcribed from the " << (BCL2.get_strand() == Plus ? "+" : "-") << " strand.\n";
-  std::cout << "First nucleotide of BCL2 is " << base2str(BCL2.get_nucleotides().begin()->get_base());
-  std::cout << " and is located at position " << BCL2.get_nucleotides().begin()->get_chromosome_position();
+  std::cout << "First nucleotide of BCL2 is " << base2str(BCL2.begin()->get_base());
+  std::cout << " and is located at position " << BCL2.begin()->get_chromosome_position();
   std::cout << " on the chromosome " << BCL2.get_chromosome() << ".\n";
-  std::cout << "Under no special conditions aligning it with the third nucleotide of miR169, which is a ";
-  std::cout << base2str((miR195.get_nucleotides().begin()+2)->get_base()) << ", would result in a score of ";
-  std::cout << BCL2.get_nucleotides().begin()->get_match(*(miR195.get_nucleotides().begin()+2)).get_score() << ".\n";
+  std::cout << "Under no special conditions aligning it with the third nucleotide of miR195, which is a ";
+  std::cout << base2str((miR195.begin()+2)->get_base()) << ", would result in a score of ";
+  std::cout << BCL2.begin()->get_match(*(miR195.begin()+2)).get_score() << ".\n";
 }

@@ -274,15 +274,6 @@ class sequence {
     inline const sequenceLength get_length() const;
 
     /*****************************************************************//**
-    * @brief get method for nucleotides attribute
-    *
-    * This method is used to access the sequence's nucleotides
-    *
-    * @return a vector containing the sequence's nucleotides from 5' to 3'
-    *********************************************************************/
-    inline const std::vector<nucleotide> & get_nucleotides() const;
-
-    /*****************************************************************//**
     * @brief nucleotide vector begin
     *
     * This is used to get the first nucleotide of the sequence's vector.
@@ -591,17 +582,6 @@ class sequence {
     *********************************************************************/
     inline const sequenceLength sequence::get_length() const {
       return length;
-    }
-
-    /*****************************************************************//**
-    * @brief get method for nucleotides attribute
-    *
-    * This method is used to access the sequence's nucleotides
-    *
-    * @return a vector containing the sequence's nucleotides from 5' to 3'
-    *********************************************************************/
-    inline const std::vector<nucleotide> & sequence::get_nucleotides() const {
-      return nucleotides;
     }
 
 
