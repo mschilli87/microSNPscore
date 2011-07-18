@@ -280,7 +280,7 @@ class sequence {
     *
     * @return const_iterator pointing to the first nucleotide
     *********************************************************************/
-    const_iterator begin();
+    inline const_iterator begin() const;
 
     /*****************************************************************//**
     * @brief nucleotide vector end
@@ -289,7 +289,7 @@ class sequence {
     *
     * @return const_iterator pointing behind the last nucleotide
     *********************************************************************/
-    const_iterator end();
+    inline const_iterator end() const;
 
     /*****************************************************************//**
     * @brief get subsequence from sequence position
@@ -583,6 +583,28 @@ class sequence {
     inline const sequenceLength sequence::get_length() const {
       return length;
     }
+
+    /*****************************************************************//**
+    * @brief nucleotide vector begin
+    *
+    * This is used to get the first nucleotide of the sequence's vector.
+    *
+    * @return const_iterator pointing to the first nucleotide
+    *********************************************************************/
+    inline sequence::const_iterator sequence::begin() const {
+      return nucleotides.begin();
+}
+
+    /*****************************************************************//**
+    * @brief nucleotide vector end
+    *
+    * This is used to get the end of the sequence's nucleotide vector.
+    *
+    * @return const_iterator pointing behind the last nucleotide
+    *********************************************************************/
+    inline sequence::const_iterator sequence::end() const {
+      return nucleotides.end();
+}
 
 
 } // namespace microSNPscore
