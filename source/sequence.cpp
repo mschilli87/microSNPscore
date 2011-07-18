@@ -344,6 +344,10 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *********************************************************************/
     std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const std::vector<exon> & the_exons, sequenceLength the_length)
     {
+       /**************************************************************\ 
+      | Initialize empty nucleotide vector, counters and iterators and |
+      | loop up to requested length:                                   |
+       \**************************************************************/
       std::vector<nucleotide> nucleotide_vector;
       std::string::const_iterator sequence_it(the_strand == Plus ?
                                               the_sequence.begin() :
@@ -359,6 +363,10 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
            (length_of_exon != exon_it->get_length() ||
             exon_it != the_exons.end()))
       {
+         /**************************************************************\ 
+        | For every nucleobase that is no gap: add nucleotide, increment |
+        | counters and if needed move on to next exon:                   |
+         \**************************************************************/
         if(the_base_char != '-')
         {
           nucleoBase nucleo_base(Adenine);
@@ -399,7 +407,7 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
               std::cerr << the_base_char << std::endl;
               std::cerr << "  --> assuming Mask\n";
               nucleo_base=Mask;
-          }
+          } // switch(the_base_char)
           nucleotide_vector.push_back(nucleotide(nucleo_base,
                                                  length_of_sequence++,
                                                  position_on_chromosome));
@@ -414,7 +422,7 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
             position_on_chromosome = exon_it->get_start();
             length_of_exon = 0;
           }
-        }
+        }  // if(the_base_char != '-')
         else
         {
           std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
@@ -422,22 +430,34 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
           std::cerr << the_base_char << std::endl;
           std::cerr << "  --> assuming Gap --> omitting\n";
         }
+         /**************************************************************\ 
+        | Move on in given sequence and a append zero-chars if the given |
+        | sequece is too short:                                          |
+         \**************************************************************/
         sequence_it += (the_base_char != '\0' ? 
                        (the_strand == Plus ? 1 : -1) : 0);
         the_base_char = (((sequence_it != the_sequence.begin() ||
                            the_strand == Plus) &&
                           (sequence_it != the_sequence.end() ||
                            the_strand == Minus)) ? *sequence_it : '\0');
-      }
+      } // while-loop
+       /*****************************************************************\ 
+      | Check for additional characters in given sequence that have to be |
+      | omitted and return constructed nucleotide vector:                 |
+       \*****************************************************************/
       if((the_strand == Plus && sequence_it != the_sequence.end()) ||
          (the_strand == Minus && sequence_it != the_sequence.begin()))
       {
             std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
             std::cerr << " ==> additional nucleo base characters: \n";
             std::cerr << (the_strand == Plus ?
-                          the_sequence.substr(sequence_it - the_sequence.begin(),
-                                              the_sequence.end() -  sequence_it +1) :
-                          the_sequence.substr(0,sequence_it - the_sequence.begin() + 1)) << std::endl;
+                          the_sequence.substr(sequence_it -
+                                              the_sequence.begin(),
+                                              the_sequence.end() -
+                                              sequence_it +1) :
+                          the_sequence.substr(0,sequence_it -
+                                                the_sequence.begin() + 1))
+                          << std::endl;
             std::cerr << "  --> omitting\n";
       }
       return nucleotide_vector;
