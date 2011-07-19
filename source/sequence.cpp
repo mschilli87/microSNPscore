@@ -65,20 +65,6 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
-    * @brief standard constructor
-    *
-    * This is used to create an instance of the class sequence.
-    * It is just created as dummy for mRNA and miRNA.
-    *
-    * @return an empty sequence
-    *
-    * @todo delete when mRNA and miRNA constructors are done.
-    *********************************************************************/
-    sequence::sequence()
-    :strand(Plus),chromosome(""),length(0) {
-}
-
-    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create an instance of the class sequence.
@@ -122,60 +108,76 @@ namespace microSNPscore {
 }
 
 /*****************************************************************//**
-* @brief get subsequence from sequence position
-*
-* This method can be used to extract a subsequence of a given length
-* starting (i.e. 5' end) at a given position from the sequence.
-* If the length is too high so that the queried subsequence would
-* reach over the (3') end of the sequence, a shorter subsequence
-* starting at the disired start position and ending at the (3') end of
-* the sequence will be returned.
-* If the given position is not part of the sequence, an empty sequence
-* will be returned.
-*
-* @param from the start position in the sequence of the subsequence
-* @param len the (maximal) length of the subsequence
-* @return the subsequence starting at the given position and ending
-*         after the given length (5' to 3') or at the end of the
-*         sequence
-*********************************************************************/
-sequence sequence::get_subsequence_from(sequencePosition from, const sequenceLength & len) const {
-}
-
-/*****************************************************************//**
-* @brief get subsequence to sequence position
-*
-* This method can be used to extract a subsequence of a given length
-* ending (i.e. 3' end) at a given position from the sequence.
-* If the length is too high so that the queried subsequence would
-* reach over the (5') end of the sequence, a shorter subsequence
-* ending at the disired end position and starting at the (5') end of
-* the sequence will be returned.
-* If the given position is not part of the sequence, an empty sequence
-* will be returned.
-*
-* @param to the end position in the sequence of the subsequence
-* @param len the (maximal) length of the subsequence
-* @return the subsequence ending at the given position and starting
-*         after the given length (3' to 5') or at the start of the
-*         sequence
-*********************************************************************/
-sequence sequence::get_subsequence_to(sequencePosition to, const sequenceLength & len) const {
-}
-
-/*****************************************************************//**
 * @brief get subsequence between sequence positions
 *
 * This method can be used to extract a subsequence starting (i.e. 5'
 * end) end ending (i.e. 3' end) at given positions from the sequence.
-* If at least one of the given positions is not part of the sequence,
-* an empty sequence will be returned.
+* If one of the given positions is not part of the sequence the,
+* corresponding end will be used instead to delimit the subsequence.
+* If from >= to an empty sequence will be returned.
 *
 * @param from the start position in the sequence of the subsequence
 * @param to the end position in the sequence of the subsequence
 * @return the subsequence starting and ending at the given positions
 *********************************************************************/
 sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePosition to) const {
+ /*************************************************************\ 
+| Only extract non-empty subsequences from non-empty sequences: |
+ \*************************************************************/
+std::vector<exon> exon_vector;
+sequenceLength sequence_length(0);
+std::vector<nucleotide> nucleotide_vector;
+if(get_length()!=0 && from<to)
+{
+   /****************************************************************\ 
+  | Check borders and move them to the respective ends if not valid: |
+   \****************************************************************/
+  if(from>get_length() || from<1)
+  {
+    from=1;
+  }
+  if(to>get_length() || to<1)
+  {
+    to=get_length();
+  }
+   /******************************************************************\ 
+  | Iterate forward over + strand sequences or backward over - strand  |
+  | sequences looking for non-successive chromosome positions to build |
+  | up the exon vector:                                                |
+   \******************************************************************/
+  chromosomePosition exon_start(get_nucleotide(get_strand()==Plus ? from : to)->get_chromosome_position());
+  chromosomePosition exon_end(exon_start);
+  for(const_iterator nucleotide_it(get_strand()==Plus ?
+                                   get_nucleotide(from+1) :
+                                   get_nucleotide(to-1));get_strand()==Plus ?
+                                                         nucleotide_it<=get_nucleotide(to) :
+                                                         nucleotide_it>=get_nucleotide(from);nucleotide_it += get_strand()==Plus ?
+                                                                                                              1 :
+                                                                                                              -1)
+  {
+    if(nucleotide_it->get_chromosome_position()!=++exon_end)
+    {
+      exon_vector.push_back(exon(exon_start,exon_end-1));
+      exon_start=nucleotide_it->get_chromosome_position();
+      exon_end=exon_start;
+    }
+  }
+   /***************************************************************\ 
+  | Iterate forward over sequence to build up the nucleotide vector |
+  | while counting the subsequence's length:                        |
+   \***************************************************************/
+  exon_vector.push_back(exon(exon_start,exon_end));
+  for(const_iterator nucleotide_it(get_nucleotide(from));nucleotide_it<=get_nucleotide(to);++nucleotide_it)
+  {
+    nucleotide_vector.push_back(*nucleotide_it);
+    ++sequence_length; 
+  }
+   /*************************************************************\ 
+  | Return a sequence on the same chromosome and strand, with the |
+  | calculated exon and nucleotide vectors and length:            |
+   \*************************************************************/
+}  // if(get_length()!=0 && from<to)
+return sequence(get_chromosome(),get_strand(),exon_vector,sequence_length,nucleotide_vector);
 }
 
 /*****************************************************************//**
@@ -198,6 +200,18 @@ sequence sequence::get_subsequence_from_to(sequencePosition from, sequencePositi
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_chr_from(chromosomePosition from, const sequenceLength & len) const {
+ /****************************************************************\
+| Invert border position for - strand sequences and map chromosome |
+| position to sequence position:                                   |
+ \****************************************************************/
+if(get_strand()==Plus)
+{
+  return get_subsequence_from(chromosome_position_to_sequence_position(from),len);
+}
+else
+{
+  return get_subsequence_to(chromosome_position_to_sequence_position(from),len);
+}
 }
 
 /*****************************************************************//**
@@ -220,6 +234,18 @@ sequence sequence::get_subsequence_chr_from(chromosomePosition from, const seque
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const {
+ /****************************************************************\
+| Invert border position for - strand sequences and map chromosome |
+| position to sequence position:                                   |
+ \****************************************************************/
+if(get_strand()==Plus)
+{
+  return get_subsequence_to(chromosome_position_to_sequence_position(to),len);
+}
+else
+{
+  return get_subsequence_from(chromosome_position_to_sequence_position(to),len);
+}
 }
 
 /*****************************************************************//**
@@ -228,14 +254,27 @@ sequence sequence::get_subsequence_chr_to(chromosomePosition to, const sequenceL
 * This method can be used to extract a subsequence starting (i.e. 5'
 * end) end ending (i.e. 3' end) at given chromosome positions from the
 * sequence.
-* If at least one of the given chromosome positions is not part of the
-* sequence, an empty sequence will be returned.
+* If one of the given positions is not part of the sequence the,
+* corresponding end will be used instead to delimit the subsequence.
+* If from >= to an empty sequence will be returned.
 *
 * @param from the start position on the chromosome of the subsequence
 * @param to the end position on the chromosome of the subsequence
 * @return the subsequence starting and ending at the given positions
 *********************************************************************/
 sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) const {
+ /******************************************************************\ 
+| Invert borders for - strand sequences and map chromosome positions |
+| to sequence positions:                                             |
+ \******************************************************************/
+if(get_strand()==Minus)
+{
+  chromosomePosition tmp(from);
+  from=to;
+  to=tmp;
+}
+return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
+                               chromosome_position_to_sequence_position(to));
 }
 
     /*****************************************************************//**
