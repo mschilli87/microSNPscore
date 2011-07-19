@@ -247,12 +247,12 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     * If the count of exon starts does not match the count of exon ends
     * an error is raised and the additional starts or ends are omitted.
     *
-    * @param starts: String representing the start positions (i.e.
+    * @param starts String representing the start positions (i.e.
     *     the end with the smaller distance to the chromosome start beeing
     *     the 5' end of the + strand and accordingly the 3' end of
     *     the - strand) of the exons containing the sequence as
     *     comma-separated list.
-    * @param ends: String representing the end positions (i.e.
+    * @param ends String representing the end positions (i.e.
     *     the end with the smaller distance to the chromosome end beeing
     *     the 3' end of the + strand and accordingly the 5' end of
     *     the - strand) of the exons containing the sequence as
@@ -349,7 +349,8 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
-    std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand, const sequence::const_exon_iterator & begin_of_exons, const sequence::const_exon_iterator & end_of_exons, sequenceLength the_length)
+    std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand
+    , const sequence::const_exon_iterator & begin_of_exons, const sequence::const_exon_iterator & end_of_exons, sequenceLength the_length)
     {
        /**************************************************************\ 
       | Initialize empty nucleotide vector, counters and iterators and |
