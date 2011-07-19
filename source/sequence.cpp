@@ -65,6 +65,20 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to create an instance of the class sequence.
+    * It is just created as dummy for mRNA and miRNA.
+    *
+    * @return an empty sequence
+    *
+    * @todo delete when mRNA and miRNA constructors are done.
+    *********************************************************************/
+    sequence::sequence()
+    :strand(Plus),chromosome(""),length(0) {
+}
+
+    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create an instance of the class sequence.
@@ -225,17 +239,15 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
 }
 
     /*****************************************************************//**
-    * @brief standard constructor
+    * @brief internal constructor
     *
-    * This is used to create an instance of the class sequence.
-    * It is just created as dummy for mRNA and miRNA.
+    * This is used to create an instance of the class sequence from
+    * another one (e.g. to construct subsequences).
     *
-    * @return an empty sequence
-    *
-    * @todo delete when mRNA and miRNA constructors are done.
+    * @return a sequence with the given attributes
     *********************************************************************/
-    sequence::sequence()
-    :strand(Plus),chromosome(""),length(0) {
+    sequence::sequence(chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides)
+    :chromosome(the_chromosome),strand(the_strand),exons(the_exons),length(the_length),nucleotides(the_nucleotides) {
 }
 
     /*****************************************************************//**

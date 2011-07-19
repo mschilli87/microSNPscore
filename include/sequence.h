@@ -200,6 +200,18 @@ class sequence {
     typedef std::vector<exon>::const_iterator const_exon_iterator;
 
     /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to create an instance of the class sequence.
+    * It is just created as dummy for mRNA and miRNA.
+    *
+    * @return an empty sequence
+    *
+    * @todo delete when mRNA and miRNA constructors are done.
+    *********************************************************************/
+    sequence();
+
+    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create an instance of the class sequence.
@@ -463,20 +475,18 @@ class sequence {
     *********************************************************************/
     sequence get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) const;
 
-    /*****************************************************************//**
-    * @brief standard constructor
-    *
-    * This is used to create an instance of the class sequence.
-    * It is just created as dummy for mRNA and miRNA.
-    *
-    * @return an empty sequence
-    *
-    * @todo delete when mRNA and miRNA constructors are done.
-    *********************************************************************/
-    sequence();
-
 
   private:
+    /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This is used to create an instance of the class sequence from
+    * another one (e.g. to construct subsequences).
+    *
+    * @return a sequence with the given attributes
+    *********************************************************************/
+    sequence(chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides);
+
     /*****************************************************************//**
     * @brief exon initialisation
     *
