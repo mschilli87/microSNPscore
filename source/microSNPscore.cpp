@@ -81,6 +81,8 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << miR195.begin()->get_chromosome_position() << ".\n";
   std::cout << "And of course chromosome position 6920934 should be position 1 in miR195 and is ";
   std::cout << miR195.get_nucleotide_chr(6920934)->get_sequence_position() << ".\n";
+  std::cout << "At least chromosome position 6920934 should be position 6920934 on chromosome and is ";
+  std::cout << miR195.get_nucleotide_chr(6920934)->get_chromosome_position() << ".\n";
   std::cout << "The first exon of miR195 starts at chromosome position ";
   std::cout << miR195.exons_begin()->get_start() << ".\n";
 }

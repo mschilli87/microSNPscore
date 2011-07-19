@@ -747,7 +747,7 @@ class sequence {
     * @return const_iterator pointing behind the last exon
     *********************************************************************/
     inline sequence::const_exon_iterator sequence::exons_end() const {
-      return exons.begin();
+      return exons.end();
 }
 
 

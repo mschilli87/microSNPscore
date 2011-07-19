@@ -94,7 +94,6 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier, matchPosit
 *********************************************************************/
 nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position)
 :base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position) {
-return;
 }
 
     /*****************************************************************//**

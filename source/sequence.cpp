@@ -550,7 +550,10 @@ sequence sequence::get_subsequence_chr_from_to(chromosomePosition from, chromoso
           {
             return sequence_position + chromosome_position - exon_it->get_start() + 1;
           }
-          sequence_position += exon_it->get_length();
+          else
+          {
+            sequence_position += exon_it->get_length();
+          }
         }
         else
         {
