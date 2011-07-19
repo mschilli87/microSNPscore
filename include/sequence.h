@@ -426,7 +426,7 @@ class sequence {
     *         after the given length (5' to 3') or at the end of the
     *         sequence
     *********************************************************************/
-    sequence get_subsequence_chr_from(chromosomePosition from, const sequenceLength & len) const;
+    virtual sequence get_subsequence_chr_from(chromosomePosition from, const sequenceLength & len) const;
 
     /*****************************************************************//**
     * @brief get subsequence to chromosome position
@@ -447,7 +447,7 @@ class sequence {
     *         after the given length (3' to 5') or at the start of the
     *         sequence
     *********************************************************************/
-    sequence get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const;
+    inline sequence get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const;
 
     /*****************************************************************//**
     * @brief get subsequence between chromosome positions
@@ -792,6 +792,29 @@ return get_subsequence_from_to(from,from+len-1);
 *********************************************************************/
 inline sequence sequence::get_subsequence_to(sequencePosition to, const sequenceLength & len) const {
 return get_subsequence_from_to(to-len+1,to);
+}
+
+/*****************************************************************//**
+* @brief get subsequence to chromosome position
+*
+* This method can be used to extract a subsequence of a given length
+* ending (i.e. 3' end) at a given chromosome position from the
+* sequence.
+* If the length is too high so that the queried subsequence would
+* reach over the (5') end of the sequence, a shorter subsequence
+* ending at the disired end position and starting at the (5') end of
+* the sequence will be returned.
+* If the given chromosome position is not part of the sequence, an
+* empty sequence will be returned.
+*
+* @param to the end position on the chromosome of the subsequence
+* @param len the (maximal) length of the subsequence
+* @return the subsequence ending at the given position and starting
+*         after the given length (3' to 5') or at the start of the
+*         sequence
+*********************************************************************/
+inline sequence sequence::get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const {
+return get_subsequence_to(chromosome_position_to_sequence_position(to),len);
 }
 
 

@@ -169,8 +169,7 @@ if(get_length()!=0 && from<to)
   exon_vector.push_back(exon(exon_start,exon_end));
   for(const_iterator nucleotide_it(get_nucleotide(from));nucleotide_it<=get_nucleotide(to);++nucleotide_it)
   {
-    nucleotide_vector.push_back(*nucleotide_it);
-    ++sequence_length; 
+    nucleotide_vector.push_back(nucleotide(nucleotide_it->get_base(),++sequence_length,nucleotide_it->get_chromosome_position()));
   }
    /*************************************************************\ 
   | Return a sequence on the same chromosome and strand, with the |
@@ -200,52 +199,7 @@ return sequence(get_chromosome(),get_strand(),exon_vector,sequence_length,nucleo
 *         sequence
 *********************************************************************/
 sequence sequence::get_subsequence_chr_from(chromosomePosition from, const sequenceLength & len) const {
- /****************************************************************\
-| Invert border position for - strand sequences and map chromosome |
-| position to sequence position:                                   |
- \****************************************************************/
-if(get_strand()==Plus)
-{
-  return get_subsequence_from(chromosome_position_to_sequence_position(from),len);
-}
-else
-{
-  return get_subsequence_to(chromosome_position_to_sequence_position(from),len);
-}
-}
-
-/*****************************************************************//**
-* @brief get subsequence to chromosome position
-*
-* This method can be used to extract a subsequence of a given length
-* ending (i.e. 3' end) at a given chromosome position from the
-* sequence.
-* If the length is too high so that the queried subsequence would
-* reach over the (5') end of the sequence, a shorter subsequence
-* ending at the disired end position and starting at the (5') end of
-* the sequence will be returned.
-* If the given chromosome position is not part of the sequence, an
-* empty sequence will be returned.
-*
-* @param to the end position on the chromosome of the subsequence
-* @param len the (maximal) length of the subsequence
-* @return the subsequence ending at the given position and starting
-*         after the given length (3' to 5') or at the start of the
-*         sequence
-*********************************************************************/
-sequence sequence::get_subsequence_chr_to(chromosomePosition to, const sequenceLength & len) const {
- /****************************************************************\
-| Invert border position for - strand sequences and map chromosome |
-| position to sequence position:                                   |
- \****************************************************************/
-if(get_strand()==Plus)
-{
-  return get_subsequence_to(chromosome_position_to_sequence_position(to),len);
-}
-else
-{
-  return get_subsequence_from(chromosome_position_to_sequence_position(to),len);
-}
+return get_subsequence_from(chromosome_position_to_sequence_position(from),len);
 }
 
 /*****************************************************************//**

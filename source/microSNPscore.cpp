@@ -94,6 +94,7 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).begin()->get_sequence_position() << " in sequence.\n";
   std::cout << "This sequence has a length of ";
   std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).get_length() << " and its last exon ends at position ";
-  std::cout << (BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).exons_end()-1)->get_end() << " on chromosome beeing ";
-  std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).get_length() << " nucleotides long.\n";
+  std::cout << (BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).exons_end()-1)->get_end() << " on chromosome which is the ";
+  std::cout << (BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).end()-1)->get_sequence_position();
+  std::cout << "th nucleotide of the subsequence.\n";
 }
