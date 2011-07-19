@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
-#include "sequence.h"
+#include "mRNA.h"
+#include "miRNA.h"
 
 using namespace microSNPscore;
 
@@ -29,8 +30,8 @@ std::ostream & operator<<(std::ostream & the_stream,const nucleoBase & the_base)
 }
 
 int main(){
-  sequence miR195("aGCTTCCCUGGCUCUAGCAGCACAGAAAUAUUGGCACAGGGAAGCGAGUCUGCCAAUAUUGGCUGUGCUGCUCCAGGCAGGGUGGUG","chr17",Plus,"6920934","6921020");
-  sequence BCL2("AGUCAACAUGCCUGCCCCAAACAAAUAUGCAAAAGGUUCACUAAAGCAGUAGAAAUAAUAUGCAUUGUCAGUGAUGUACCAUGAAACAAAGCUGCAGGCUGUUUAAGAAAAAAUAACACACA\
+  miRNA miR195("aGCTTCCCUGGCUCUAGCAGCACAGAAAUAUUGGCACAGGGAAGCGAGUCUGCCAAUAUUGGCUGUGCUGCUCCAGGCAGGGUGGUG","chr17",Plus,"6920934","6921020");
+  mRNA BCL2("AGUCAACAUGCCUGCCCCAAACAAAUAUGCAAAAGGUUCACUAAAGCAGUAGAAAUAAUAUGCAUUGUCAGUGAUGUACCAUGAAACAAAGCUGCAGGCUGUUUAAGAAAAAAUAACACACA\
 UAUAAACAUCACACACACAGACAGACACACACACACACAACAAUUAACAGUCUUCAGGCAAAACGUCGAAUCAGCUAUUUACUGCCAAAGGGAAAUAUCAUUUAUUUUUUACAUUAUUAAGAAAAAAAGAUUUAUUUAU\
 UUAAGACAGUCCCAUCAAAACUCCUGUCUUUGGAAAUCCGACCACUAAUUGCCAAGCACCGCUUCGUGUGGCUCCACCUGGAUGUUCUGUGCCUGUAAACAUAGAUUCGCUUUCCAUGUUGUUGGCCGGAUCACCAUCU\
 GAAGAGCAGACGGAUGGAAAAAGGACCUGAUCAUUGGGGAAGCUGGCUUUCUGGCUGCUGGAGGCUGGGGAGAAGGUGUUCAUUCACUUGCAUUUCUUUGCCCUGGGGGCUGUGAUAUUAACAGAGGGAGGGUUCCUGU\
@@ -85,4 +86,14 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << miR195.get_nucleotide_chr(6920934)->get_chromosome_position() << ".\n";
   std::cout << "The first exon of miR195 starts at chromosome position ";
   std::cout << miR195.exons_begin()->get_start() << ".\n";
+  std::cout << "The 27th nucleotide of BCL2 is at chromosome position ";
+  std::cout << BCL2[27]->get_chromosome_position() << " and on sequence position ";
+  std::cout << BCL2[27]->get_sequence_position() << ".\n";
+  std::cout << "The first nucleotide of the 10 nucleotide BCL2 subsequence starting at that chromosome position is on chromosome position ";
+  std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).begin()->get_chromosome_position() << " and on position ";
+  std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).begin()->get_sequence_position() << " in sequence.\n";
+  std::cout << "This sequence has a length of ";
+  std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).get_length() << " and its last exon ends at position ";
+  std::cout << (BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).exons_end()-1)->get_end() << " on chromosome beeing ";
+  std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).get_length() << " nucleotides long.\n";
 }
