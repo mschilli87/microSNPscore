@@ -63,7 +63,7 @@ class exon {
     * @return an exon located at the given positions on chromosome
     *********************************************************************/
     
-    exon(sequencePosition start_position = 0, sequencePosition end_position = 0);
+    exon(const chromosomePosition & start_position, const chromosomePosition & end_position);
 
     /*****************************************************************//**
     * @brief get method for start position attribute

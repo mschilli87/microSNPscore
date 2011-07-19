@@ -33,7 +33,7 @@ namespace microSNPscore {
     * @return an exon located at the given positions on chromosome
     *********************************************************************/
     
-    exon::exon(sequencePosition start_position, sequencePosition end_position)
+    exon::exon(const chromosomePosition & start_position, const chromosomePosition & end_position)
     :start(start_position),end(end_position) {
        /*********************************************************\ 
       | Check for negative length and if so set to zero length by |
