@@ -548,26 +548,25 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     *     position on chromosome
     *********************************************************************/
     sequencePosition sequence::chromosome_position_to_sequence_position(chromosomePosition chromosome_position) const {
-       /****************************************************************\ 
-      | Iterating over the exons, finding the one containing the given   |
-      | position while summing up the lengths and calculate the          |
-      | corresponding position in the found exon before returning the    |
-      | result.                                                          |
-      | If the given position lies before, between or after the exons of |
-      | the sequence, return 0:                                          |
-       \****************************************************************/
-      sequencePosition sequence_position(0);
+       /**************************************************************\ 
+      | Iterating over the exons, finding the one containing the given |
+      | position while summing up the lengths and calculate the        |
+      | corresponding position in the found exon.                      |
+      | On + stranded sequences that's the predessecor's position, on  |
+      | - stranded sequences that the distance to the last position:   |
+       \**************************************************************/
+      sequenceLength prefix_length(0);
       for(const_exon_iterator exon_it(exons_begin());exon_it!=exons_end();++exon_it)
       {
         if(exon_it->get_start()<=chromosome_position)
         {
           if(exon_it->get_end()>=chromosome_position)
           {
-            return sequence_position + chromosome_position - exon_it->get_start() + 1;
+            prefix_length += chromosome_position - exon_it->get_start();
           }
           else
           {
-            sequence_position += exon_it->get_length();
+            prefix_length += exon_it->get_length();
           }
         }
         else
@@ -575,7 +574,9 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
           break;
         }
       }
-      return 0;
+      return get_strand() == Plus ?
+             prefix_length + 1 :
+             get_length() - prefix_length;
 }
 
 
