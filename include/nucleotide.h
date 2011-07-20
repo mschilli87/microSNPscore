@@ -2,6 +2,8 @@
 #define MICROSNPSCORE_NUCLEOTIDE_H
 
 
+#include <iostream>
+//for std::ostream (operator<<)
 namespace microSNPscore {
 
 /*****************************************************************//**
@@ -376,6 +378,20 @@ class nucleotide {
       return chromosome_position;
     }
 
+/*****************************************************************//**
+* @brief output stream insertion operator
+*
+* This operator is used to insert a nucleotide to an output stream
+* (e.g. to print it on screen).
+* The nucleotide will be represented by its letter code (Adenine: A,
+* Cytosine: C, Guanine: G, Uracil: U, Masked: X).
+*
+* @param the_stream output stream the sequence should be inserted in
+* @param the_nucleotide nucleotide to be inserted in the output stream
+*
+* @return output stream with the inserted nucleotide
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const nucleotide & the_nucleotide);
 
 } // namespace microSNPscore
 #endif

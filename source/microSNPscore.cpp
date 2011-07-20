@@ -119,16 +119,6 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << "th nucleotide of the subsequence while its first exon starts at chromosome position ";
   std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).exons_begin()->get_start() << ".\n";
   std::cout << "If we take position 60793322 on chromosome to be reported from the target prediction tool we get ";
-  mRNA BCL2_alignment_part(BCL2.get_subsequence_for_alignment(60793322));
-  for(sequence::const_iterator sequence_it(BCL2_alignment_part.begin());sequence_it!=BCL2_alignment_part.end();++sequence_it)
-  {
-    std::cout << base2chr(sequence_it->get_base());
-  }
-  std::cout << " to be the subsequence of interest for the alignment and ";
-  mRNA BCL2_accessability_part(BCL2.get_subsequence_for_accessability(60793322));
-  for(sequence::const_iterator sequence_it(BCL2_accessability_part.begin());sequence_it!=BCL2_accessability_part.end();++sequence_it)
-  {
-    std::cout << base2chr(sequence_it->get_base());
-  }
-  std::cout << " to be the subsequence of interest for the accessability score calculation.\n";
+  std::cout << BCL2.get_subsequence_for_alignment(60793322) << " to be the subsequence of interest for the alignment and ";
+  std::cout << BCL2.get_subsequence_for_accessability(60793322) << " to be the subsequence of interest for the accessability score calculation.\n";
 }

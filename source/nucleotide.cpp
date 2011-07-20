@@ -205,5 +205,45 @@ nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_positi
       }
 }
 
+/*****************************************************************//**
+* @brief output stream insertion operator
+*
+* This operator is used to insert a nucleotide to an output stream
+* (e.g. to print it on screen).
+* The nucleotide will be represented by its letter code (Adenine: A,
+* Cytosine: C, Guanine: G, Uracil: U, Masked: X).
+*
+* @param the_stream output stream the sequence should be inserted in
+* @param the_nucleotide nucleotide to be inserted in the output stream
+*
+* @return output stream with the inserted nucleotide
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const nucleotide & the_nucleotide)
+{
+   /******************************************************************\ 
+  | Call base get method only one and append letter code depending on  |
+  | the nucleo base.                                                   |
+  | The cases are ordered from common to uncommon to reduce comparisms |
+  | as much as possible. Of course the default case should never be    |
+  | reached. Because return exits the function there is no break       |
+  | statement needed after the cases.                                  | 
+   \******************************************************************/
+  nucleoBase the_base(the_nucleotide.get_base());
+  switch(the_base)
+  {
+    case Adenine: return the_stream << 'A';
+    case Uracil: return the_stream << 'U';
+    case Cytosine: return the_stream << 'C';
+    case Guanine: return the_stream << 'G';
+    case Gap: return the_stream << '-';
+    case Mask: return the_stream << 'X';
+    default:
+      std::cerr << "microSNPscore::nucleotide::operator<<\n";
+      std::cerr << " ==> unkown base: ";
+      std::cerr << the_base << std::endl;
+      std::cerr << "  --> assuming Mask\n";
+      return the_stream << 'X';
+  }
+}
 
 } // namespace microSNPscore

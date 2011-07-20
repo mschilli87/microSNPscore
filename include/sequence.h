@@ -2,6 +2,8 @@
 #define MICROSNPSCORE_SEQUENCE_H
 
 
+#include <iostream>
+//for std::ostream (operator<<)
 #include <string>
 #include "nucleotide.h"
 #include <vector>
@@ -821,6 +823,20 @@ inline sequence sequence::get_subsequence_chr_to(chromosomePosition to, const se
 return get_subsequence_to(chromosome_position_to_sequence_position(to),len);
 }
 
+/*****************************************************************//**
+* @brief output stream insertion operator
+*
+* This operator is used to insert a sequence to an output stream (e.g.
+* to print it on screen).
+* The sequence will be represented by its nucleotides (Adenine: A,
+* Cytosine: C, Guanine: G, Uracil: U, Masked: X) from 5' to 3'.
+*
+* @param the_stream output stream the sequence should be inserted in
+* @param the_sequence sequence to be inserted in the output stream
+*
+* @return output stream with the inserted sequence
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const sequence & the_sequence);
 
 } // namespace microSNPscore
 #endif

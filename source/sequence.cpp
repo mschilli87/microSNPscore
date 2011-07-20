@@ -579,5 +579,30 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
              get_length() - prefix_length;
 }
 
+/*****************************************************************//**
+* @brief sequence output stream insertion operator
+*
+* This operator is used to insert a sequence to an output stream (e.g.
+* to print it on screen).
+* The sequence will be represented by its nucleotides (Adenine: A,
+* Cytosine: C, Guanine: G, Uracil: U, Masked: X) from 5' to 3'.
+*
+* @param the_stream output stream the sequence should be inserted in
+* @param the_sequence sequence to be inserted in the output stream
+*
+* @return output stream with the inserted sequence
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const sequence & the_sequence)
+{
+   /*********************************************************\ 
+  | Copy the stream, iterate over the sequence inserting each |
+  | nucleotide and return the result:                         |
+   \*********************************************************/
+  for(sequence::const_iterator sequence_it(the_sequence.begin());sequence_it!=the_sequence.end();++sequence_it)
+  {
+    the_stream << *sequence_it;
+  }
+  return the_stream;
+}
 
 } // namespace microSNPscore
