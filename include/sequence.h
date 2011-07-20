@@ -564,6 +564,8 @@ class sequence {
     
     static std::vector<chromosomePosition> position_string_to_vector(std::string string_list);
 
+
+  protected:
     /*****************************************************************//**
     * @brief chromosome position to sequence position conversion
     *
@@ -578,6 +580,8 @@ class sequence {
     *********************************************************************/
     sequencePosition chromosome_position_to_sequence_position(chromosomePosition chromosome_position) const;
 
+
+  private:
     /*****************************************************************//**
     * @brief chromosome
     *

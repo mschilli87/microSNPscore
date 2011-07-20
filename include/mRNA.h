@@ -79,6 +79,26 @@ class mRNA : public sequence {
     
     inline mRNA get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len = 30);
 
+    /*****************************************************************//**
+    * @brief extract subsequence relevant for accessability calculations
+    *
+    * This method is used to query the subsequence from the whole mRNA
+    * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
+    * everything considered by microSNPscore at all) that is used to
+    * calculate accessability scores (i.e. +/- 80 nucleotides around seed
+    * match region end).
+    *
+    * @param predicted_miRNA_three_prime_position the position on the
+    *     chromosome the target prediction algorithm has predicted to be
+    *     the position the 3' end of the miRNA would be aligned to (if it
+    *     would actually bind) (i.e. one base downstream from the seed 
+    *     matching region)
+    *
+    * @return mRNA containing the subsequence relevant for accessability
+    *    score calculation
+    *********************************************************************/
+    mRNA get_subsequence_for_accessability(chromosomePosition predicted_miRNA_three_prime_position);
+
 
   private:
     /*****************************************************************//**

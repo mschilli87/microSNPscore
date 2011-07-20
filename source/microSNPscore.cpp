@@ -124,5 +124,11 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   {
     std::cout << base2chr(sequence_it->get_base());
   }
-  std::cout << " to be the subsequence of interest for the alignment.\n";
+  std::cout << " to be the subsequence of interest for the alignment and ";
+  mRNA BCL2_accessability_part(BCL2.get_subsequence_for_accessability(60793322));
+  for(sequence::const_iterator sequence_it(BCL2_accessability_part.begin());sequence_it!=BCL2_accessability_part.end();++sequence_it)
+  {
+    std::cout << base2chr(sequence_it->get_base());
+  }
+  std::cout << " to be the subsequence of interest for the accessability score calculation.\n";
 }

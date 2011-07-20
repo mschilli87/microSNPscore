@@ -46,6 +46,34 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
+    * @brief extract subsequence relevant for accessability calculations
+    *
+    * This method is used to query the subsequence from the whole mRNA
+    * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
+    * everything considered by microSNPscore at all) that is used to
+    * calculate accessability scores (i.e. +/- 80 nucleotides around seed
+    * match region end).
+    *
+    * @param predicted_miRNA_three_prime_position the position on the
+    *     chromosome the target prediction algorithm has predicted to be
+    *     the position the 3' end of the miRNA would be aligned to (if it
+    *     would actually bind) (i.e. one base downstream from the seed 
+    *     matching region)
+    *
+    * @return mRNA containing the subsequence relevant for accessability
+    *    score calculation
+    *********************************************************************/
+    mRNA mRNA::get_subsequence_for_accessability(chromosomePosition predicted_miRNA_three_prime_position) {
+       /******************************************************************\ 
+      | Calculating sequence position before subsequence querying to avoid |
+      | caring about strand:                                               |
+       \******************************************************************/
+      sequenceLength window_size(80);
+      sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position));
+      return get_subsequence_from_to(sequence_position - window_size,sequence_position + window_size);
+}
+
+    /*****************************************************************//**
     * @brief internal constructor
     *
     * This method is used to convert a sequence to a mRNA.
