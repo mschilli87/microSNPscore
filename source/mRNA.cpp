@@ -22,6 +22,7 @@ namespace microSNPscore {
     * the additional nucleotides are omitted or the missing nucleotides
     * are treated as masked, respectively.
     *
+    * @param the_ID sequenceID representing the ID of the mRNA
     * @param sequence_string String representing the nucleotide sequence
     *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
     * @param the_chromosome chromosomeType representing the chromosome the
@@ -41,8 +42,8 @@ namespace microSNPscore {
     * @return a mRNA containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    mRNA::mRNA(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends)
-    :sequence(sequence_string,the_chromosome,the_strand,exons_starts,exon_ends) {
+    mRNA::mRNA(sequenceID the_ID, std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends)
+    :sequence(the_ID,sequence_string,the_chromosome,the_strand,exons_starts,exon_ends) {
 }
 
     /*****************************************************************//**

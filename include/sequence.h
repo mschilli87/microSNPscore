@@ -13,6 +13,12 @@ namespace microSNPscore { class nucleotide; }
 namespace microSNPscore {
 
 /*****************************************************************//**
+* @brief sequence ID type
+*
+* This represents the ID of a sequence.
+*********************************************************************/
+typedef std::string sequenceID;
+/*****************************************************************//**
 * @brief chromosome type
 *
 * This represents a chromosome. It is defined as string to handle
@@ -220,6 +226,7 @@ class sequence {
     * the additional nucleotides are omitted or the missing nucleotides
     * are treated as masked, respectively.
     *
+    * @param the_ID sequenceID representing the ID of the sequence
     * @param sequence_string String representing the nucleotide sequence
     *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
     * @param the_chromosome chromosomeType representing the chromosome the
@@ -239,7 +246,16 @@ class sequence {
     * @return a sequence containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
+    sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
+
+    /*****************************************************************//**
+    * @brief get method for ID attribute
+    *
+    * This method is used to access the ID of the sequence
+    *
+    * @return the ID of the sequence
+    *********************************************************************/
+    inline const sequenceID get_ID() const;
 
     /*****************************************************************//**
     * @brief get method for chromosome attribute
@@ -475,9 +491,18 @@ class sequence {
     * This is used to create an instance of the class sequence from
     * another one (e.g. to construct subsequences).
     *
+    * @param the_ID sequenceID representing the ID of the sequence
+    * @param the_chromosome chromosomeType representing the chromosome the
+    *     sequence is located on
+    * @param the_exons std::vector<exon> representing the exons on
+    *     which the sequence is located
+    * @param the_length sequenceLength representing the length of the
+    *    sequence
+    * @param the_nucleotides: std::vector<nucleotide> representing the
+    *     sequence's nucleotides
     * @return a sequence with the given attributes
     *********************************************************************/
-    sequence(chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides);
+    sequence(sequenceID the_ID, chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides);
 
     /*****************************************************************//**
     * @brief exon initialisation
@@ -585,6 +610,13 @@ class sequence {
 
   private:
     /*****************************************************************//**
+    * @brief sequence ID
+    *
+    * This is the ID of the sequence.
+    *********************************************************************/
+    const sequenceID ID;
+
+    /*****************************************************************//**
     * @brief chromosome
     *
     * This is the chromosome the sequence is located on.
@@ -623,6 +655,17 @@ class sequence {
     const std::vector<nucleotide> nucleotides;
 
 };
+    /*****************************************************************//**
+    * @brief get method for ID attribute
+    *
+    * This method is used to access the ID of the sequence
+    *
+    * @return the ID of the sequence
+    *********************************************************************/
+    inline const sequenceID sequence::get_ID() const {
+      return ID;
+    }
+
     /*****************************************************************//**
     * @brief get method for chromosome attribute
     *

@@ -34,6 +34,7 @@ class miRNA : public sequence {
     * the additional nucleotides are omitted or the missing nucleotides
     * are treated as masked, respectively.
     *
+    * @param the_ID sequenceID representing the ID of the miRNA
     * @param sequence_string String representing the nucleotide sequence
     *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
     * @param the_chromosome chromosomeType representing the chromosome the
@@ -53,7 +54,7 @@ class miRNA : public sequence {
     * @return a miRNA containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    miRNA(std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
+    miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
 
 };
 

@@ -83,6 +83,7 @@ namespace microSNPscore {
     * the additional nucleotides are omitted or the missing nucleotides
     * are treated as masked, respectively.
     *
+    * @param the_ID sequenceID representing the ID of the sequence
     * @param sequence_string String representing the nucleotide sequence
     *     (Adenine: A, Cytosine: C, Guanine: G, Uracil: U, Mask: X)
     * @param the_chromosome chromosomeType representing the chromosome the
@@ -102,8 +103,8 @@ namespace microSNPscore {
     * @return a sequence containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    sequence::sequence(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
-    :chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends)))
+    sequence::sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
+    :ID(the_ID),chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends)))
     ,length(initialize_length(exons.begin(),exons.end())),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons.begin(),exons.end(),length)) {
 }
 
@@ -176,7 +177,7 @@ if(get_length()!=0 && from<to)
   | calculated exon and nucleotide vectors and length:            |
    \*************************************************************/
 }  // if(get_length()!=0 && from<to)
-return sequence(get_chromosome(),get_strand(),exon_vector,sequence_length,nucleotide_vector);
+return sequence(get_ID(),get_chromosome(),get_strand(),exon_vector,sequence_length,nucleotide_vector);
 }
 
 /*****************************************************************//**
@@ -237,10 +238,19 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     * This is used to create an instance of the class sequence from
     * another one (e.g. to construct subsequences).
     *
+    * @param the_ID sequenceID representing the ID of the sequence
+    * @param the_chromosome chromosomeType representing the chromosome the
+    *     sequence is located on
+    * @param the_exons std::vector<exon> representing the exons on
+    *     which the sequence is located
+    * @param the_length sequenceLength representing the length of the
+    *    sequence
+    * @param the_nucleotides: std::vector<nucleotide> representing the
+    *     sequence's nucleotides
     * @return a sequence with the given attributes
     *********************************************************************/
-    sequence::sequence(chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides)
-    :chromosome(the_chromosome),strand(the_strand),exons(the_exons),length(the_length),nucleotides(the_nucleotides) {
+    sequence::sequence(sequenceID the_ID, chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides)
+    :ID(the_ID),chromosome(the_chromosome),strand(the_strand),exons(the_exons),length(the_length),nucleotides(the_nucleotides) {
 }
 
     /*****************************************************************//**
