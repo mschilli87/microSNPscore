@@ -359,27 +359,32 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     {
        /**************************************************************\ 
       | Initialize empty nucleotide vector, counters and iterators and |
-      | loop up to requested length:                                   |
+      | loop up to requested length where the order the exons are      |
+      | iterated in depends on the strand (+: forward / -: backward):  |
        \**************************************************************/
       std::vector<nucleotide> nucleotide_vector;
-      std::string::const_iterator sequence_it(the_strand == Plus ?
-                                              the_sequence.begin() :
-                                              (the_sequence.end()-1));
-      const_exon_iterator exon_it(begin_of_exons);
+      std::string::const_iterator sequence_it(the_sequence.begin());
+      const_exon_iterator exon_it(the_strand == Plus ?
+                                  begin_of_exons :
+                                  end_of_exons - (begin_of_exons != end_of_exons ?
+                                                  1 :
+                                                  0));
       chromosomePosition position_on_chromosome(exon_it != end_of_exons ? 
-                                                exon_it->get_start() :
+                                                (the_strand == Plus ?
+                                                 exon_it->get_start() :
+                                                 exon_it->get_end()) :
                                                 0);
       sequenceLength length_of_sequence(0);
-      char the_base_char(the_sequence.begin() != the_sequence.end() ?
+      char the_base_char(sequence_it != the_sequence.end() ?
                          *sequence_it :
                          '\0');
       while(length_of_sequence != the_length &&
-           (position_on_chromosome <= exon_it->get_end() || exon_it != end_of_exons))
+           ((the_strand == Plus && (position_on_chromosome <= exon_it->get_end() || exon_it != end_of_exons)) ||
+            (the_strand == Minus && (position_on_chromosome >= exon_it->get_start() || exon_it != begin_of_exons))))
       {
-         /**************************************************************\ 
-        | For every nucleobase that is no gap: add nucleotide, increment |
-        | counters and if needed move on to next exon:                   |
-         \**************************************************************/
+         /***************************************************\ 
+        | Add nucleotide for every nucleobase that is no gap: |
+         \***************************************************/
         if(the_base_char != '-')
         {
           nucleoBase nucleo_base(Adenine);
@@ -422,14 +427,33 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
               nucleo_base=Mask;
           } // switch(the_base_char)
           nucleotide_vector.push_back(nucleotide(nucleo_base,++length_of_sequence,position_on_chromosome));
-          if(position_on_chromosome != exon_it->get_end())
+           /***************************************************************\ 
+          | Increment counters and if needed move on to next exon where the |
+          | direction depends on the strand (+: forward / -:backward):      |
+           \***************************************************************/
+          if(the_strand == Plus)
           {
-            ++position_on_chromosome;
+            if(position_on_chromosome != exon_it->get_end())
+            {
+              ++position_on_chromosome;
+            }
+            else
+            {
+              ++exon_it;
+              position_on_chromosome = exon_it->get_start();
+            }
           }
           else
           {
-            ++exon_it;
-            position_on_chromosome = exon_it->get_start();
+            if(position_on_chromosome != exon_it->get_start())
+            {
+              --position_on_chromosome;
+            }
+            else
+            {
+              --exon_it;
+              position_on_chromosome = exon_it->get_end();
+            }
           }
         }  // if(the_base_char != '-')
         else
@@ -443,23 +467,9 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
         | Move on in given sequence and a append zero-chars if the given |
         | sequece is too short:                                          |
          \**************************************************************/
-        if(sequence_it != the_sequence.end()) // already out of range?
+        if(sequence_it != the_sequence.end()) // bases remaining?
         {
-          if(the_strand == Plus) 
-          {
-            ++sequence_it;
-          }
-          else
-          {
-            if(sequence_it != the_sequence.begin()) // bases remaining?
-            {
-              --sequence_it;
-            }
-            else // last base read?
-            {
-              sequence_it = the_sequence.end(); // set out of range
-            }
-          }
+          ++sequence_it;
         }
         the_base_char = (sequence_it != the_sequence.end() ? *sequence_it : '\0');
       } // while-loop
