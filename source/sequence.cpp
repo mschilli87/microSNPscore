@@ -553,7 +553,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
       | position while summing up the lengths and calculate the        |
       | corresponding position in the found exon.                      |
       | On + stranded sequences that's the predessecor's position, on  |
-      | - stranded sequences that the distance to the last position:   |
+      | - stranded sequences that's the distance to the last position: |
        \**************************************************************/
       sequenceLength prefix_length(0);
       for(const_exon_iterator exon_it(exons_begin());exon_it!=exons_end();++exon_it)

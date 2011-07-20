@@ -45,5 +45,19 @@ namespace microSNPscore {
     :sequence(sequence_string,the_chromosome,the_strand,exons_starts,exon_ends) {
 }
 
+    /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This method is used to convert a sequence to a mRNA.
+    *
+    * @param the_sequence const sequence reference to the sequence that
+    *     should become an mRNA
+    *
+    * @return mRNA with the same attributes as the given sequence
+    *********************************************************************/
+    mRNA::mRNA(const sequence & the_sequence)
+    :sequence(the_sequence) {
+}
+
 
 } // namespace microSNPscore

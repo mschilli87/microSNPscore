@@ -4,6 +4,7 @@
 
 #include "sequence.h"
 #include <string>
+#include "nucleotide.h"
 
 namespace microSNPscore {
 
@@ -55,7 +56,69 @@ class mRNA : public sequence {
     *********************************************************************/
     mRNA(std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends);
 
+    /*****************************************************************//**
+    * @brief extract subsequence relevant for mRNA:miRNA alignment
+    *
+    * This method is used to query the subsequence from the whole mRNA
+    * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
+    * everything considered by microSNPscore at all) that is expected to
+    * have any relevance in aligning the miRNA to the mRNA.
+    *
+    * @param predicted_miRNA_three_prime_position the position on the
+    *     chromosome the target prediction algorithm has predicted to be
+    *     the position the 3' end of the miRNA would be aligned to (if it
+    *     would actually bind) (i.e. one base downstream from the seed 
+    *     matching region)
+    * @param len the length of the part that is expected to be relevant
+    *    for the alignment - Defaults to 30 (since miRNAs are about 21-22
+    *    nucleotides long and we assume that there would be no big loops
+    *    in the optimal alignment)
+    *
+    * @return mRNA containing the subsequence relevant for the alignment
+    *********************************************************************/
+    
+    inline mRNA get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len = 30);
+
+
+  private:
+    /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This method is used to convert a sequence to a mRNA.
+    *
+    * @param the_sequence const sequence reference to the sequence that
+    *     should become an mRNA
+    *
+    * @return mRNA with the same attributes as the given sequence
+    *********************************************************************/
+    mRNA(const sequence & the_sequence);
+
 };
+    /*****************************************************************//**
+    * @brief extract subsequence relevant for mRNA:miRNA alignment
+    *
+    * This method is used to query the subsequence from the whole mRNA
+    * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
+    * everything considered by microSNPscore at all) that is expected to
+    * have any relevance in aligning the miRNA to the mRNA.
+    *
+    * @param predicted_miRNA_three_prime_position the position on the
+    *     chromosome the target prediction algorithm has predicted to be
+    *     the position the 3' end of the miRNA would be aligned to (if it
+    *     would actually bind) (i.e. one base downstream from the seed 
+    *     matching region)
+    * @param len the length of the part that is expected to be relevant
+    *    for the alignment - Defaults to 30 (since miRNAs are about 21-22
+    *    nucleotides long and we assume that there would be no big loops
+    *    in the optimal alignment)
+    *
+    * @return mRNA containing the subsequence relevant for the alignment
+    *********************************************************************/
+    
+    inline mRNA mRNA::get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len) {
+      return get_subsequence_chr_to(predicted_miRNA_three_prime_position,len);
+}
+
 
 } // namespace microSNPscore
 #endif
