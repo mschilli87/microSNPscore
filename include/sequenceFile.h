@@ -6,6 +6,8 @@
 #include "sequence.h"
 #include <vector>
 
+namespace microSNPscore { class sequence; } 
+
 namespace microSNPscore {
 
 /*****************************************************************//**
@@ -14,10 +16,21 @@ namespace microSNPscore {
 * This represents a file path.
 *********************************************************************/
 typedef std::string filePath;
+/*****************************************************************//**
+* @brief sequence file entry class
+*
+* This represents a sequence file entry and is convertable to a
+* sequence object and to a FASTA entry making it possible to read from
+* and write to the file.
+*
+* @see sequenceFile
+* @see sequence
+*********************************************************************/
+
 class sequenceFileEntry {
   public:
     /*****************************************************************//**
-    * @brief constructor
+    * @brief constructor from FASTA entry
     *
     * This is used to create a sequenceFileEntry from a FASTA entry.
     * If the given string is not a valid FASTA entry the empty default
@@ -44,6 +57,17 @@ class sequenceFileEntry {
     *********************************************************************/
     
     sequenceFileEntry(std::string FASTA_entry);
+
+    /*****************************************************************//**
+    * @brief constructor from sequence object
+    *
+    * This is used to create a sequenceFileEntry from a sequence object.
+    *
+    * @param the_sequence const sequence reference to the sequence the
+    *     entry should be created for
+    * @return sequenceFileEntry corresponding to the sequence
+    *********************************************************************/
+    sequenceFileEntry(const sequence & the_sequence);
 
     /*****************************************************************//**
     * @brief get method for ID attribute
@@ -238,7 +262,117 @@ class sequenceFileEntry {
       return nucleotide_sequence;
     }
 
+/*****************************************************************//**
+* @brief sequence file class
+*
+* This represents a sequence file containing FASTA entries. It is
+* capable of reading from and writing to the file.
+*
+* @see sequenceFileEntry
+*********************************************************************/
+
 class sequenceFile {
+  public:
+    /*****************************************************************//**
+    * @brief const entry iterator
+    *
+    * This is used to iterate over sequence file's entries
+    *********************************************************************/
+    typedef std::vector<sequenceFileEntry>::const_iterator const_iterator;
+
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create a sequenceFile with a given path.
+    * The path cannot be changed after the creation.
+    * Even if the given file path exists and contains valid FASTA
+    * entries the sequence file won't contain any entries until you call
+    * the @p read method.
+    * If the file path is not valid the sequence file will be created but
+    * useless since @p read won't be able to read from the file and
+    * @p write won't be able to write to the file.
+    *
+    * @param the_path filePath to the sequence file
+    *
+    * @return sequenceFile corresponding to the given file path
+    *
+    * @see read()
+    * @see write()
+    *********************************************************************/
+    
+    sequenceFile();
+
+    /*****************************************************************//**
+    * @brief read entries from existing file
+    *
+    * This method is used to read valid FASTA entries from an existing
+    * file to the sequence file's entries.
+    * If the file does not exist or does not contain any valid FASTA
+    * entires an error is raised and no sequence file entry is created.
+    * A valid FASTA entry starts with the > sign followed by the sequence
+    * ID, a pipe (|) character, a comma-separated list of exon starts,
+    * another pipe character, a comma-separated list of exon ends, another
+    * pipe character, 1 or -1 representing the strand (+ or -,
+    * respectively), a last pipe character, the chromosome name and
+    * linebreak followed by the sequence which may contain newlines but
+    * must end with a newline.
+    * If the header line containes more than four pipe characters, the
+    * additional one are taken as part of the sequence ID.
+    *********************************************************************/
+    void read();
+
+    /*****************************************************************//**
+    * @brief entry vector begin
+    *
+    * This is used to get the first entry of the sequence file.
+    *
+    * @return const_iterator pointing to the sequence file's first entry
+    *********************************************************************/
+    inline const_iterator begin() const;
+
+    /*****************************************************************//**
+    * @brief entry vector end
+    *
+    * This is used to get the end sequence file's entry vector.
+    *
+    * @return const_iterator pointing behind the last entry of the file
+    *********************************************************************/
+    inline const_iterator end() const;
+
+    /*****************************************************************//**
+    * @brief sequence entry creation
+    *
+    * This method is used to create an entry for a given sequence in the
+    * sequence file.
+    * The file won't actually change until you call the @p write method.
+    *
+    * @param the_sequence const sequence reference to the sequence an
+    *     entry should be made for
+    *
+    * @see write()
+    *********************************************************************/
+    inline void add_sequence(const sequence & the_sequence);
+
+    /*****************************************************************//**
+    * @brief write entries to file
+    *
+    * This method is used to write FASTA entries from the sequence file's
+    * entries to the file.
+    * If the file path is not valid (or not accessable), an error is
+    * raised.
+    * If the path is valid (and accessable) and exists its current content
+    * will be overwritten with the current sequence file content.
+    * If the path is valid (and accessable) and does not exist it is
+    * created and the current sequence file content is written to it.
+    * To write a given sequence to the sequence file you first have to add
+    * it to the sequnece file by calling the @p add_sequence method.
+    *
+    * @see add_sequence()
+    *********************************************************************/
+    
+    void write();
+
+
   private:
     /*****************************************************************//**
     * @brief file path
@@ -256,6 +390,59 @@ class sequenceFile {
     std::vector<sequenceFileEntry> entries;
 
 };
+    /*****************************************************************//**
+    * @brief entry vector begin
+    *
+    * This is used to get the first entry of the sequence file.
+    *
+    * @return const_iterator pointing to the sequence file's first entry
+    *********************************************************************/
+    inline sequenceFile::const_iterator sequenceFile::begin() const {
+      return entries.begin();
+}
+
+    /*****************************************************************//**
+    * @brief entry vector end
+    *
+    * This is used to get the end sequence file's entry vector.
+    *
+    * @return const_iterator pointing behind the last entry of the file
+    *********************************************************************/
+    inline sequenceFile::const_iterator sequenceFile::end() const {
+      return entries.end();
+}
+
+    /*****************************************************************//**
+    * @brief sequence entry creation
+    *
+    * This method is used to create an entry for a given sequence in the
+    * sequence file.
+    * The file won't actually change until you call the @p write method.
+    *
+    * @param the_sequence const sequence reference to the sequence an
+    *     entry should be made for
+    *
+    * @see write()
+    *********************************************************************/
+    inline void sequenceFile::add_sequence(const sequence & the_sequence) {
+      entries.push_back(sequenceFileEntry(the_sequence));
+}
+
+/*****************************************************************//**
+* @brief output stream insertion operator
+*
+* This operator is used to insert a sequence file entry to an output
+* stream (e.g. to print it on screen).
+* The sequenceFileEntry will be represented as FASTA entry.
+*
+* @param the_stream output stream the sequence file entry should be
+*     inserted in
+* @param the_entry sequenceFileEntry to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted sequence file entry
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const sequenceFileEntry & the_entry);
 
 } // namespace microSNPscore
 #endif

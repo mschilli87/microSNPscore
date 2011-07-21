@@ -213,7 +213,7 @@ nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_positi
 * The nucleotide will be represented by its letter code (Adenine: A,
 * Cytosine: C, Guanine: G, Uracil: U, Masked: X).
 *
-* @param the_stream output stream the sequence should be inserted in
+* @param the_stream output stream the nucleotide should be inserted in
 * @param the_nucleotide nucleotide to be inserted in the output stream
 *
 * @return output stream with the inserted nucleotide
