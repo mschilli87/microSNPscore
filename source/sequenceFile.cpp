@@ -92,17 +92,6 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
-    * @brief sequence object creation
-    *
-    * This method is used to create a sequence object corresponding to the
-    * sequence file entry.
-    *
-    * @return sequence object corresponding to the sequence file entry
-    *********************************************************************/
-    sequence sequenceFileEntry::get_sequence() const {
-}
-
-    /*****************************************************************//**
     * @brief FASTA entry creation
     *
     * This method is used to create a FASTA entry corresponding to the

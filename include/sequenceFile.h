@@ -77,7 +77,7 @@ class sequenceFileEntry {
     *
     * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
-    sequence get_sequence() const;
+    inline sequence get_sequence() const;
 
     /*****************************************************************//**
     * @brief FASTA entry creation
@@ -145,6 +145,18 @@ class sequenceFileEntry {
     std::string nucleotide_sequence;
 
 };
+    /*****************************************************************//**
+    * @brief sequence object creation
+    *
+    * This method is used to create a sequence object corresponding to the
+    * sequence file entry.
+    *
+    * @return sequence object corresponding to the sequence file entry
+    *********************************************************************/
+    inline sequence sequenceFileEntry::get_sequence() const {
+      return sequence(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
+}
+
 /*****************************************************************//**
 * @brief sequence file class
 *
