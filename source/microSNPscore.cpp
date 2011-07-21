@@ -84,4 +84,5 @@ UAGUCGUACCAGUCAUGACGUGUCUGCAGUUUCACCGUCGUACUACGUACGUCUGCUGCU\n\
 caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << "If we put the following FASTA entry:\n" << FASTA_test << " into a sequence file entry and print it we get:\n";
   std::cout << sequenceFileEntry(FASTA_test);
+  sequence test(sequenceFileEntry(FASTA_test).get_sequence());
 }

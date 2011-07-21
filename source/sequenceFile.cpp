@@ -123,8 +123,9 @@ namespace microSNPscore {
       FASTA_stream << ">" << ID << "|" << exon_starts << "|" << exon_ends << "|";
       FASTA_stream << (strand == Plus ? "1" : "-1") << "|" << chromosome << std::endl;
       std::istringstream sequence_stream(nucleotide_sequence);
-      char sequence_line[nucleotides_per_line+1];
+      char sequence_line[nucleotides_per_line+2];
       sequence_line[nucleotides_per_line] = '\n';
+      sequence_line[nucleotides_per_line+1] = '\0';
       while(sequence_stream.read(sequence_line,nucleotides_per_line).good())
       {
         FASTA_stream << sequence_line;
