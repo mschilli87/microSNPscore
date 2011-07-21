@@ -2,7 +2,6 @@
 #include<regex.h>
 // for regex_t, regmatch_t, regcomp, regexec (regular expressions)
 #include "sequenceFile.h"
-#include "sequence.h"
 
 namespace microSNPscore {
 
@@ -93,6 +92,29 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
+    * @brief sequence object creation
+    *
+    * This method is used to create a sequence object corresponding to the
+    * sequence file entry.
+    *
+    * @return sequence object corresponding to the sequence file entry
+    *********************************************************************/
+    sequence sequenceFileEntry::get_sequence() const {
+}
+
+    /*****************************************************************//**
+    * @brief FASTA entry creation
+    *
+    * This method is used to create a FASTA entry corresponding to the
+    * sequence file entry.
+    *
+    * @return string containing a FASTA entry corresponding to the
+    *     sequence file entry
+    *********************************************************************/
+    std::string sequenceFileEntry::get_FASTA() const {
+}
+
+    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create a sequenceFile with a given path.
@@ -155,22 +177,5 @@ namespace microSNPscore {
     void sequenceFile::write() {
 }
 
-/*****************************************************************//**
-* @brief output stream insertion operator
-*
-* This operator is used to insert a sequence file entry to an output
-* stream (e.g. to print it on screen).
-* The sequenceFileEntry will be represented as FASTA entry.
-*
-* @param the_stream output stream the sequence file entry should be
-*     inserted in
-* @param the_entry sequenceFileEntry to be inserted in the output
-*     stream
-*
-* @return output stream with the inserted sequence file entry
-*********************************************************************/
-std::ostream & operator<<(std::ostream & the_stream, const sequenceFileEntry & the_entry)
-{
-}
 
 } // namespace microSNPscore

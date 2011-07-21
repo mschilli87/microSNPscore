@@ -8,8 +8,6 @@
 
 #include <iostream>
 //for std::ostream (operator<<)
-namespace microSNPscore { class sequence; } 
-
 namespace microSNPscore {
 
 /*****************************************************************//**
@@ -72,67 +70,25 @@ class sequenceFileEntry {
     sequenceFileEntry(const sequence & the_sequence);
 
     /*****************************************************************//**
-    * @brief get method for ID attribute
+    * @brief sequence object creation
     *
-    * This method is used to access the ID of the sequence the entry is
-    * for.
+    * This method is used to create a sequence object corresponding to the
+    * sequence file entry.
     *
-    * @return the ID of the sequence the entry is for
-    *
-    * @see sequence::get_id()
+    * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
-    
-    inline const sequenceID get_ID() const;
+    sequence get_sequence() const;
 
     /*****************************************************************//**
-    * @brief get method for chromosome attribute
+    * @brief FASTA entry creation
     *
-    * This method is used to access the chromosome of the sequence
-    * the entry is for.
+    * This method is used to create a FASTA entry corresponding to the
+    * sequence file entry.
     *
-    * @return the chromosome of the sequence the entry is for
-    *
-    * @see sequence::get_chromosome()
+    * @return string containing a FASTA entry corresponding to the
+    *     sequence file entry
     *********************************************************************/
-    inline const chromosomeType get_chromosome() const;
-
-    /*****************************************************************//**
-    * @brief get method for strand attribute
-    *
-    * This method is used to access the strand of the sequence this entry
-    * is for.
-    *
-    * @return the strand of the sequence the entry is for
-    *
-    * @see sequence::get_strand()
-    *********************************************************************/
-    inline const strandType get_strand() const;
-
-    /*****************************************************************//**
-    * @brief get method for exon starts attribute
-    *
-    * This method is used to access the starts of the exons containing the
-    * sequence this entry is for.
-    *
-    * @return std::string representing a comma-separated list
-    * containing the starts of the exons containing the sequence this
-    * entry is for
-    *********************************************************************/
-    inline const std::string get_exon_starts() const;
-
-    /*****************************************************************//**
-    * @brief get method for exon ends attribute
-    *
-    * This method is used to access the ends of the exons containing the
-    * sequence this entry is for.
-    *
-    * @return std::string representing a comma-separated list
-    * containing the ends of the exons containing the sequence this
-    * entry is for
-    *********************************************************************/
-    inline const std::string get_exon_ends() const;
-
-    inline const std::string get_nucleotide_sequence() const;
+    std::string get_FASTA() const;
 
 
   private:
@@ -189,81 +145,6 @@ class sequenceFileEntry {
     std::string nucleotide_sequence;
 
 };
-    /*****************************************************************//**
-    * @brief get method for ID attribute
-    *
-    * This method is used to access the ID of the sequence the entry is
-    * for.
-    *
-    * @return the ID of the sequence the entry is for
-    *
-    * @see sequence::get_id()
-    *********************************************************************/
-    
-    inline const sequenceID sequenceFileEntry::get_ID() const {
-      return ID;
-    }
-
-    /*****************************************************************//**
-    * @brief get method for chromosome attribute
-    *
-    * This method is used to access the chromosome of the sequence
-    * the entry is for.
-    *
-    * @return the chromosome of the sequence the entry is for
-    *
-    * @see sequence::get_chromosome()
-    *********************************************************************/
-    inline const chromosomeType sequenceFileEntry::get_chromosome() const {
-      return chromosome;
-    }
-
-    /*****************************************************************//**
-    * @brief get method for strand attribute
-    *
-    * This method is used to access the strand of the sequence this entry
-    * is for.
-    *
-    * @return the strand of the sequence the entry is for
-    *
-    * @see sequence::get_strand()
-    *********************************************************************/
-    inline const strandType sequenceFileEntry::get_strand() const {
-      return strand;
-    }
-
-    /*****************************************************************//**
-    * @brief get method for exon starts attribute
-    *
-    * This method is used to access the starts of the exons containing the
-    * sequence this entry is for.
-    *
-    * @return std::string representing a comma-separated list
-    * containing the starts of the exons containing the sequence this
-    * entry is for
-    *********************************************************************/
-    inline const std::string sequenceFileEntry::get_exon_starts() const {
-      return exon_starts;
-    }
-
-    /*****************************************************************//**
-    * @brief get method for exon ends attribute
-    *
-    * This method is used to access the ends of the exons containing the
-    * sequence this entry is for.
-    *
-    * @return std::string representing a comma-separated list
-    * containing the ends of the exons containing the sequence this
-    * entry is for
-    *********************************************************************/
-    inline const std::string sequenceFileEntry::get_exon_ends() const {
-      return exon_ends;
-    }
-
-    inline const std::string sequenceFileEntry::get_nucleotide_sequence() const {
-      return nucleotide_sequence;
-    }
-
 /*****************************************************************//**
 * @brief sequence file class
 *
@@ -444,7 +325,9 @@ class sequenceFile {
 *
 * @return output stream with the inserted sequence file entry
 *********************************************************************/
-std::ostream & operator<<(std::ostream & the_stream, const sequenceFileEntry & the_entry);
+inline std::ostream & operator<<(std::ostream & the_stream, const sequenceFileEntry & the_entry) {
+  return the_stream << the_entry.get_FASTA();
+}
 
 } // namespace microSNPscore
 #endif
