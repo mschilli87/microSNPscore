@@ -1,6 +1,8 @@
 
 #include<regex.h>
 // for regex_t, regmatch_t, regcomp, regexec (regular expressions)
+#include <sstream>
+//for std::istringstream (FASTA string composition)
 #include "sequenceFile.h"
 
 namespace microSNPscore {
@@ -101,6 +103,16 @@ namespace microSNPscore {
     *     sequence file entry
     *********************************************************************/
     std::string sequenceFileEntry::get_FASTA() const {
+      std::istringstream sequence_stream(nucleotide_sequence);
+      std::ostringstream FASTA_stream;
+      FASTA_stream << ">" << ID << "|" << exon_starts << "|" << exon_ends << "|";
+      FASTA_stream << (strand == Plus ? "1" : "-1") << "|" << chromosome << std::endl;
+      char sequence_line[61];
+      while(sequence_stream.read(sequence_line,60).good())
+      {
+        FASTA_stream << sequence_line;
+      }
+      return FASTA_stream.str();
 }
 
     /*****************************************************************//**

@@ -2,12 +2,12 @@
 #define MICROSNPSCORE_SEQUENCEFILE_H
 
 
+#include <iostream>
+//for std::ostream (operator<<)
 #include <string>
 #include "sequence.h"
 #include <vector>
 
-#include <iostream>
-//for std::ostream (operator<<)
 namespace microSNPscore {
 
 /*****************************************************************//**
