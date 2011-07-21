@@ -1,4 +1,6 @@
 
+#include<regex.h>
+// for regex_t, regmatch_t, regcomp, regexec (regular expressions)
 #include "sequenceFile.h"
 #include "sequence.h"
 
@@ -31,7 +33,51 @@ namespace microSNPscore {
     * @return sequenceFileEntry corresponding to the given FASTA entry
     *********************************************************************/
     
-    sequenceFileEntry::sequenceFileEntry(std::string FASTA_entry) {
+    sequenceFileEntry::sequenceFileEntry(std::string FASTA_entry):
+    ID(""),chromosome(""),strand(Plus),exon_starts(""),exon_ends(""),nucleotide_sequence("") {
+       /******************************************************************\ 
+      | Try to initialize extended regular expression matching valid FASTA |
+      | entry stating error in case of failure:                            |
+       \******************************************************************/
+      regex_t regex_FASTA;
+      char pattern_FASTA[] = "^>([^|\n]*)[|]([^\n]*)[|]([^|\n]*)[|](-?1)[|]([^|\n]*)\n(.*)$";
+      if(regcomp(&regex_FASTA,pattern_FASTA,REG_EXTENDED) != 0)
+      {
+        std::cerr << "microSNPscore::sequenceFileEntry::sequenceFileEntry\n";
+        std::cerr << " ==> compiling FASTA regular expression failed\n";
+        std::cerr << "  --> creating empty default sequence\n";
+      }
+      else
+      {
+         /**************************************************************\ 
+        | Try to match the initialized regular expression on given FASTA |
+        | entry stating error in case of failure:                        |
+         \**************************************************************/
+        size_t nmatch_FASTA(0);
+        regmatch_t pmatch_FASTA[7];
+        const char * string_FASTA = FASTA_entry.c_str();
+        if(regexec(&regex_FASTA,string_FASTA,nmatch_FASTA,pmatch_FASTA,0) != 0)
+        {
+          std::cerr << "microSNPscore::sequenceFileEntry::sequenceFileEntry\n";
+          std::cerr << " ==> no valid FASTA entry:\n";
+          std::cerr << FASTA_entry << std::endl;
+          std::cerr << "  --> creating empty default sequence\n";
+        }
+        else
+        {
+           /*****************************************************************\ 
+          | Extract the subsequences matching the regular expression's groups |
+          | from the given FASTA entry assigning them to the corresponding    |
+          | attributes:                                                       |
+           \*****************************************************************/
+          ID = FASTA_entry.substr(pmatch_FASTA[1].rm_so,pmatch_FASTA[1].rm_eo - pmatch_FASTA[1].rm_so);
+          exon_starts = FASTA_entry.substr(pmatch_FASTA[2].rm_so,pmatch_FASTA[2].rm_eo - pmatch_FASTA[2].rm_so);
+          exon_ends = FASTA_entry.substr(pmatch_FASTA[3].rm_so,pmatch_FASTA[3].rm_eo - pmatch_FASTA[3].rm_so);
+          strand = FASTA_entry.substr(pmatch_FASTA[4].rm_so,pmatch_FASTA[4].rm_eo - pmatch_FASTA[4].rm_so) == "1" ? Plus : Minus;
+          chromosome = FASTA_entry.substr(pmatch_FASTA[5].rm_so,pmatch_FASTA[5].rm_eo - pmatch_FASTA[5].rm_so);
+          nucleotide_sequence = FASTA_entry.substr(pmatch_FASTA[6].rm_so,pmatch_FASTA[6].rm_eo - pmatch_FASTA[6].rm_so);
+        } // regexec(&regex_FASTA,FASTA_entry,nmatch_FASTA,pmatch_FASTA_FASTA) == 0
+      } // regcomp(&regex_FASTA,patter_FASTA,REG_EXTEND) == 0
 }
 
     /*****************************************************************//**

@@ -320,7 +320,7 @@ std::ostream & operator<<(std::ostream & the_stream, const matchType & the_match
       std::cerr << " ==> unkown match type identifier: ";
       std::cerr << the_identifier << std::endl;
       std::cerr << "  --> assuming Masked\n";
-      return the_stream << 'Masked';
+      return the_stream << "Masked";
   }
 }
 
