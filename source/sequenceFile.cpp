@@ -110,7 +110,7 @@ namespace microSNPscore {
         std::ostringstream exon_ends_stream;
         exon_starts_stream << the_sequence.exons_begin()->get_start();
         exon_ends_stream << the_sequence.exons_begin()->get_end();
-        for(sequence::const_exon_iterator exon_it(the_sequence.exons_begin());exon_it!=the_sequence.exons_end();++exon_it)
+        for(sequence::const_exon_iterator exon_it(the_sequence.exons_begin()+1);exon_it!=the_sequence.exons_end();++exon_it)
         {
           exon_starts_stream << "," << exon_it->get_start();
           exon_ends_stream << "," << exon_it->get_end();

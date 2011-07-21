@@ -299,7 +299,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
         chromosomePosition start(exon_it->get_start());
         chromosomePosition end(exon_it->get_end());
         ++exon_it;
-        while (exon_it->get_start() <= end && exon_it != unmerged_exon_vector.end())
+        while (exon_it != unmerged_exon_vector.end() && exon_it->get_start() <= end)
         {
           end=exon_it->get_end();
           ++exon_it;
