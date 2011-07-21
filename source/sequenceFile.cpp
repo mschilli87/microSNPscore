@@ -95,7 +95,32 @@ namespace microSNPscore {
     *     entry should be created for
     * @return sequenceFileEntry corresponding to the sequence
     *********************************************************************/
-    sequenceFileEntry::sequenceFileEntry(const sequence & the_sequence) {
+    sequenceFileEntry::sequenceFileEntry(const sequence & the_sequence)
+    :ID(the_sequence.get_ID()),chromosome(the_sequence.get_chromosome()),strand(the_sequence.get_strand()),exon_starts(""),exon_ends(""),nucleotide_sequence("") {
+       /****************************************************************\ 
+      | If required create output string streams for the exon starts and |
+      | end lists, iterate over the sequnece's exons inserting their     |
+      | start and end to the stream, get the nucleotide sequence by      |
+      | inserting the sequence to another output string stream and get   |
+      | the final string values from the streams:                        |
+       \****************************************************************/
+      if(the_sequence.get_length() != 0)
+      {
+        std::ostringstream exon_starts_stream;
+        std::ostringstream exon_ends_stream;
+        exon_starts_stream << the_sequence.exons_begin()->get_start();
+        exon_ends_stream << the_sequence.exons_begin()->get_end();
+        for(sequence::const_exon_iterator exon_it(the_sequence.exons_begin());exon_it!=the_sequence.exons_end();++exon_it)
+        {
+          exon_starts_stream << "," << exon_it->get_start();
+          exon_ends_stream << "," << exon_it->get_end();
+        }
+        std::ostringstream nucleotide_stream;
+        nucleotide_stream << the_sequence;
+        exon_starts = exon_starts_stream.str();
+        exon_ends = exon_ends_stream.str();
+        nucleotide_sequence = nucleotide_stream.str();
+      }
 }
 
     /*****************************************************************//**
