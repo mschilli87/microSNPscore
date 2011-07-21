@@ -104,16 +104,30 @@ namespace microSNPscore {
     * This method is used to create a FASTA entry corresponding to the
     * sequence file entry.
     *
+    * @param nucleotides_per_line (optional) sequenceLength of one line
+    * in the FASTA output (a newline will be insterted after every that
+    * number of nucleotides) - Defaults to 60
     * @return string containing a FASTA entry corresponding to the
     *     sequence file entry
     *********************************************************************/
-    std::string sequenceFileEntry::get_FASTA() const {
-      std::istringstream sequence_stream(nucleotide_sequence);
+    
+    std::string sequenceFileEntry::get_FASTA(sequenceLength nucleotides_per_line) const {
+       /******************************************************************\ 
+      | Create an output string stream for the FASTA entry composition and |
+      | insert the header informations into it. Then create an input       |
+      | string stream from the nucleotide sequence to read lines of the    |
+      | desired length from it inserting them (followed by a newline) into |
+      | the output stream before converting it to a string for return:     |
+       \******************************************************************/
       std::ostringstream FASTA_stream;
       FASTA_stream << ">" << ID << "|" << exon_starts << "|" << exon_ends << "|";
       FASTA_stream << (strand == Plus ? "1" : "-1") << "|" << chromosome << std::endl;
-      char sequence_line[61];
-      while(sequence_stream.read(sequence_line,60).good())
+      std::istringstream sequence_stream(nucleotide_sequence);
+      std::cout << "Length of sequence: " << nucleotide_sequence.length() << std::endl;
+      std::cout << "Sequence: " << nucleotide_sequence << std::endl;
+      char sequence_line[nucleotides_per_line+1];
+      sequence_line[nucleotides_per_line] = '\n';
+      while(sequence_stream.read(sequence_line,nucleotides_per_line).good())
       {
         FASTA_stream << sequence_line;
       }

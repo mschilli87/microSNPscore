@@ -85,10 +85,14 @@ class sequenceFileEntry {
     * This method is used to create a FASTA entry corresponding to the
     * sequence file entry.
     *
+    * @param nucleotides_per_line (optional) sequenceLength of one line
+    * in the FASTA output (a newline will be insterted after every that
+    * number of nucleotides) - Defaults to 60
     * @return string containing a FASTA entry corresponding to the
     *     sequence file entry
     *********************************************************************/
-    std::string get_FASTA() const;
+    
+    std::string get_FASTA(sequenceLength nucleotides_per_line = 60) const;
 
 
   private:
