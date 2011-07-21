@@ -2,6 +2,7 @@
 #include <iostream>
 #include "mRNA.h"
 #include "miRNA.h"
+#include "sequenceFile.h"
 
 using namespace microSNPscore;
 
@@ -77,4 +78,10 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << BCL2.get_subsequence_for_alignment(60793322) << " to be the subsequence of interest for the alignment and ";
   std::cout << BCL2.get_subsequence_for_accessability(60793322) << " to be the subsequence of interest for the accessability score calculation.\n";
   std::cout << "The ID of the alignment relevant BCL2 subsequence is " << BCL2.get_subsequence_for_alignment(60793322).get_ID() << ".\n";
+  std::string FASTA_test(">test|no1|103,160,150|165,135,270|-1|my_chrom\n\
+AAAAAAACAUACdACGaaaUAAAAAAAAAAAAACCCCCCCCCCCCCCCUUUUUGGXGGGC\n\
+UAGUCGUACCAGUCAUGACGUGUCUGCAGUUUCACCGUCGUACUACGUACGUCUGCUGCU\n\
+caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
+  std::cout << "If we put the following FASTA entry:\n" << FASTA_test << " into a sequence file entry and print it we get:\n";
+  std::cout << sequenceFileEntry(FASTA_test);
 }
