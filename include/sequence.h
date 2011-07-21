@@ -867,7 +867,7 @@ return get_subsequence_to(chromosome_position_to_sequence_position(to),len);
 }
 
 /*****************************************************************//**
-* @brief output stream insertion operator
+* @brief output stream sequence insertion operator
 *
 * This operator is used to insert a sequence to an output stream (e.g.
 * to print it on screen).
@@ -880,6 +880,20 @@ return get_subsequence_to(chromosome_position_to_sequence_position(to),len);
 * @return output stream with the inserted sequence
 *********************************************************************/
 std::ostream & operator<<(std::ostream & the_stream, const sequence & the_sequence);
+
+/*****************************************************************//**
+* @brief output stream strand insertion operator
+*
+* This operator is used to insert a strand to an output stream (e.g.
+* to print it on screen).
+* The strand will be represented by its sign (+ or -).
+*
+* @param the_stream output stream the strand should be inserted in
+* @param the_strand strandType to be inserted in the output stream
+*
+* @return output stream with the inserted strand
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const strandType & the_strand);
 
 } // namespace microSNPscore
 #endif

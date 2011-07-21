@@ -604,15 +604,35 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
 *********************************************************************/
 std::ostream & operator<<(std::ostream & the_stream, const sequence & the_sequence)
 {
-   /*********************************************************\ 
-  | Copy the stream, iterate over the sequence inserting each |
-  | nucleotide and return the result:                         |
-   \*********************************************************/
+   /******************************************************************\ 
+  | Iterate over the sequence inserting each nucleotide and return the |
+  | result:                                                            |
+   \******************************************************************/
   for(sequence::const_iterator sequence_it(the_sequence.begin());sequence_it!=the_sequence.end();++sequence_it)
   {
     the_stream << *sequence_it;
   }
   return the_stream;
+}
+
+/*****************************************************************//**
+* @brief output stream strand insertion operator
+*
+* This operator is used to insert a strand to an output stream (e.g.
+* to print it on screen).
+* The strand will be represented by its sign (+ or -).
+*
+* @param the_stream output stream the strand should be inserted in
+* @param the_strand strandType to be inserted in the output stream
+*
+* @return output stream with the inserted strand
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const strandType & the_strand)
+{
+   /******************************************************\ 
+  | Append sign depending on the strand and return result: |
+   \******************************************************/
+ return the_stream << (the_strand == Plus ? '+' : '-');
 }
 
 } // namespace microSNPscore

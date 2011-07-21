@@ -379,7 +379,7 @@ class nucleotide {
     }
 
 /*****************************************************************//**
-* @brief output stream insertion operator
+* @brief output stream nucleotide insertion operator
 *
 * This operator is used to insert a nucleotide to an output stream
 * (e.g. to print it on screen).
@@ -392,6 +392,35 @@ class nucleotide {
 * @return output stream with the inserted nucleotide
 *********************************************************************/
 std::ostream & operator<<(std::ostream & the_stream, const nucleotide & the_nucleotide);
+
+/*****************************************************************//**
+* @brief output stream nucleo base insertion operator
+*
+* This operator is used to insert a nucleo base to an output stream
+* (e.g. to print it on screen).
+* The nucle base will be represented by its full name.
+*
+* @param the_stream output stream the nucleo base should be inserted
+* in
+* @param the_base nucleoBase to be inserted in the output stream
+*
+* @return output stream with the inserted nucleo base
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const nucleoBase & the_base);
+
+/*****************************************************************//**
+* @brief output stream match insertion operator
+*
+* This operator is used to insert a match to an output stream (e.g. to
+* print it on screen).
+* The match will be represented by the full name of its identifier.
+*
+* @param the_stream output stream the match should be inserted in
+* @param the_match matchType to be inserted in the output stream
+*
+* @return output stream with the inserted match
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const matchType & the_match);
 
 } // namespace microSNPscore
 #endif

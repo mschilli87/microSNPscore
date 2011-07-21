@@ -5,49 +5,6 @@
 
 using namespace microSNPscore;
 
-std::string base2str(nucleoBase b)
-{
-  switch(b)
-  {
-    case Adenine: return "Adenine";
-    case Uracil: return "Uracil";
-    case Cytosine: return "Cytosine";
-    case Guanine: return "Guanine";
-    case Gap: return "Gap";
-    case Mask: return "Mask";
-    default:
-      std::cerr << "base2str\n";
-      std::cerr << " ==> unkown base: ";
-      std::cerr << b << std::endl;
-      std::cerr << "  --> assuming Mask\n";
-      return "Mask";
-  }
-}
-
-char base2chr(nucleoBase b)
-{
-  switch(b)
-  {
-    case Adenine: return 'A';
-    case Uracil: return 'U';
-    case Cytosine: return 'C';
-    case Guanine: return 'G';
-    case Gap: return '-';
-    case Mask: return 'X';
-    default:
-      std::cerr << "base2chr\n";
-      std::cerr << " ==> unkown base: ";
-      std::cerr << b << std::endl;
-      std::cerr << "  --> assuming Mask\n";
-      return 'X';
-  }
-}
-
-std::ostream & operator<<(std::ostream & the_stream,const nucleoBase & the_base)
-{
-  return the_stream << base2str(the_base);
-}
-
 int main(){
   miRNA miR195("hsa-miR195","aGCTTCCCUGGCUCUAGCAGCACAGAAAUAUUGGCACAGGGAAGCGAGUCUGCCAAUAUUGGCUGUGCUGCUCCAGGCAGGGUGGUG","chr17",Plus,"6920934","6921020");
   mRNA BCL2("BCL2","AGUCAACAUGCCUGCCCCAAACAAAUAUGCAAAAGGUUCACUAAAGCAGUAGAAAUAAUAUGCAUUGUCAGUGAUGUACCAUGAAACAAAGCUGCAGGCUGUUUAAGAAAAAAUAACACACAUAUAAACAU\
@@ -87,14 +44,15 @@ UUUAAAUAAAAAUAAGUGUACAAUAAGUGUUUUUGUAUUGAAAGCUUUUGUUAUCAAGAUUUUCAUACUUUUACCUUCCA
 GUAAGGAUACUUUACAUGGUUAAGGUAAAGUAAGUCUCCAGUUGGCCACCAUUAGCUAUAAUGGCACUUUGUUUGUGUUGUUGGAAAAAGUCACAUUGCCAUUAAACUUUCCUUGUCUGUCUAGUUAAUAUUGUGAAGAAAAAUAAAGUAC\
 AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << "Length of miR195: " << miR195.get_length() << std::endl;
-  std::cout << "BCL2 is transcribed from the " << (BCL2.get_strand() == Plus ? "+" : "-") << " strand.\n";
-  std::cout << "First nucleotide of BCL2 is " << BCL2.begin()->get_base();
-  std::cout << " and is located at position " << BCL2.begin()->get_chromosome_position();
+  std::cout << "BCL2 is transcribed from the " << BCL2.get_strand() << " strand.\n";
+  std::cout << "First nucleotide of BCL2 is " << BCL2.begin()->get_base() << " (" << *(BCL2.begin());
+  std::cout << ") and is located at position " << BCL2.begin()->get_chromosome_position();
   std::cout << " on the chromosome " << BCL2.get_chromosome() << " which corresponds to sequence position ";
   std::cout << BCL2.get_nucleotide_chr(BCL2[1]->get_chromosome_position())->get_sequence_position() << ".\n";
   std::cout << "Under no special conditions aligning it with the third nucleotide of miR195, which is a ";
   std::cout << miR195[3]->get_base() << ", would result in a score of ";
-  std::cout << BCL2.begin()->get_match(*(miR195[3])).get_score() << ".\n";
+  std::cout << BCL2.begin()->get_match(*(miR195[3])).get_score() << " because it is a ";
+  std::cout << BCL2.begin()->get_match(*(miR195[3])) << ".\n";
   std::cout << "The 1st nucleotide of miR195 should be on chromosome position 6920934 and is on position ";
   std::cout << miR195.begin()->get_chromosome_position() << ".\n";
   std::cout << "And of course chromosome position 6920934 should be position 1 in miR195 and is ";

@@ -6,6 +6,8 @@
 #include "sequence.h"
 #include <vector>
 
+#include <iostream>
+//for std::ostream (operator<<)
 namespace microSNPscore { class sequence; } 
 
 namespace microSNPscore {
@@ -429,7 +431,7 @@ class sequenceFile {
 }
 
 /*****************************************************************//**
-* @brief output stream insertion operator
+* @brief output stream sequence file entry insertion operator
 *
 * This operator is used to insert a sequence file entry to an output
 * stream (e.g. to print it on screen).
