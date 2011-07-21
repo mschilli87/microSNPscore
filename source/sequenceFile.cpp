@@ -123,12 +123,17 @@ namespace microSNPscore {
       FASTA_stream << ">" << ID << "|" << exon_starts << "|" << exon_ends << "|";
       FASTA_stream << (strand == Plus ? "1" : "-1") << "|" << chromosome << std::endl;
       std::istringstream sequence_stream(nucleotide_sequence);
-      std::cout << "Length of sequence: " << nucleotide_sequence.length() << std::endl;
-      std::cout << "Sequence: " << nucleotide_sequence << std::endl;
       char sequence_line[nucleotides_per_line+1];
       sequence_line[nucleotides_per_line] = '\n';
       while(sequence_stream.read(sequence_line,nucleotides_per_line).good())
       {
+        FASTA_stream << sequence_line;
+      }
+      sequenceLength last_line_length(sequence_stream.gcount());
+      if(last_line_length > 0)
+      {
+        sequence_line[last_line_length] = '\n';
+        sequence_line[++last_line_length] = '\0';
         FASTA_stream << sequence_line;
       }
       return FASTA_stream.str();
