@@ -1,8 +1,12 @@
 
-#include<regex.h>
-// for regex_t, regmatch_t, regcomp, regexec (regular expressions)
+#include <regex.h>
+// for regex_t, regmatch_t, regcomp and regexec (regular expressions)
 #include <sstream>
 //for std::istringstream (newline omitting & FASTA string composition)
+#include <iostream>
+//for std::cerr and std::endl (error stating)
+#include <fstream>
+//for std::ofstream and std::ifstream (file access)
 #include "sequenceFile.h"
 
 namespace microSNPscore {
@@ -227,6 +231,28 @@ namespace microSNPscore {
     *********************************************************************/
     
     void sequenceFile::write() {
+       /*****************************************************************\
+| Try to open an outut file stream associated to the file           |
+      | corresponding to the sequence file's path stating an error in the |
+      | case of failure and iterate over the entries inserting each one   |
+      | into the output stream before closing the output file stream:     |
+       \*****************************************************************/
+      std::ofstream the_file(path.c_str());
+      if(the_file.fail())
+      {
+        std::cerr << "microSNPscore::sequenceFile::sequenceFile\n";
+        std::cerr << " ==> Cannot open file to write to: ";
+        std::cerr << path << std::endl;
+        std::cerr << "  --> sequences won't be written to the file\n";
+      }
+      else
+      {
+        for(const_iterator entry_it(begin());entry_it!=end();++entry_it)
+        {
+          the_file << *entry_it;
+        }
+        the_file.close();
+      }
 }
 
 
