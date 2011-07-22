@@ -231,7 +231,7 @@ namespace microSNPscore {
         | FASTA file stating error in case of failure:                       |
          \******************************************************************/
         regex_t regex_FASTA_file;
-        char pattern_FASTA_file[] = "^(>[^\n]*[|][^|\n]*[|][^|\n]*[|]-?1[|][^|\n]*\n[^>]*)*$";
+        char pattern_FASTA_file[] = "^(>[^\n]*[|][^|\n]*[|][^|\n]*[|]-?1[|][^|\n]*\n[^>]*)+$";
         if(regcomp(&regex_FASTA_file,pattern_FASTA_file,REG_EXTENDED|REG_NOSUB) != 0)
         {
           std::cerr << "microSNPscore::sequenceFile::read\n";
@@ -264,7 +264,7 @@ namespace microSNPscore {
             | FASTA entry stating error in case of failure:                      |
              \******************************************************************/
             regex_t regex_FASTA_entry;
-            char pattern_FASTA_entry[] = ">[^\n]*[|][^|\n]*[|][^|\n]*[|]-?1[|][^|\n]*\n[^>]*";
+            char pattern_FASTA_entry[] = "^>[^\n]*[|][^|\n]*[|][^|\n]*[|]-?1[|][^|\n]*\n[^>]*";
             if(regcomp(&regex_FASTA_entry,pattern_FASTA_entry,REG_EXTENDED) != 0)
             {
               std::cerr << "microSNPscore::sequenceFile::read\n";
@@ -275,15 +275,21 @@ namespace microSNPscore {
             {
                /*************************************************************\ 
               | Match the initialized regular expression as often as possible |
+              | (at least one time because it matches valid FAST file regex)  |
               | inserting a sequence file entry for every match found:        |
                \*************************************************************/
               size_t nmatch_FASTA_entry(1);
               regmatch_t pmatch_FASTA_entry[nmatch_FASTA_entry];
-              while(regexec(&regex_FASTA_entry,FASTA_file_cstring,nmatch_FASTA_entry,pmatch_FASTA_entry,0) != 0)
+              regoff_t start(0);
+              regoff_t end(0);
+              regexec(&regex_FASTA_entry,FASTA_file_cstring,nmatch_FASTA_entry,pmatch_FASTA_entry,0);
+              do
               {
-                entries.push_back(sequenceFileEntry(FASTA_file_string.substr(pmatch_FASTA_entry[0].rm_so,
-                                                                             pmatch_FASTA_entry[0].rm_eo - pmatch_FASTA_entry[0].rm_so)));
+                start = end + pmatch_FASTA_entry[0].rm_so;
+                end += pmatch_FASTA_entry[0].rm_eo;
+                entries.push_back(sequenceFileEntry(FASTA_file_string.substr(start,end-start)));
               }
+              while(regexec(&regex_FASTA_entry,FASTA_file_cstring+end,nmatch_FASTA_entry,pmatch_FASTA_entry,0) == 0);
             } // regcomp(&regex_FASTA_entry,pattern_FASTA_entry,REG_EXTENDED) == 0
           } // regexec(&regex_FASTA_file,FASTA_file_cstring,(size_t) 0,NULL,0) == 0
         } // regcomp(&regex_FASTA_file,pattern_FASTA_file,REG_EXTENDED|REG_NOSUB) == 0

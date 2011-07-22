@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <stdio.h>
 #include "mRNA.h"
 #include "miRNA.h"
 #include "sequenceFile.h"
@@ -87,4 +88,25 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   sequence test(sequenceFileEntry(FASTA_test).get_sequence());
   std::cout << "If we convert that sequence file entry to a sequence object and then convert that object back to a sequence file entry we get:\n";
   std::cout << sequenceFileEntry(test);
+  std::cout << "The next test is to create a sequence file \"test.seq\"";
+  sequenceFile test_file("test.seq");
+  std::cout << ", append BCL2";
+  test_file.add_sequence(BCL2);
+  std::cout << " and miR195";
+  test_file.add_sequence(miR195);
+  std::cout << " and write it to the hard disk.\n";
+  test_file.write();
+  std::cout << "Now we create another sequence file with the same file name";
+  sequenceFile scnd_file("test.seq");
+  std::cout << " and add the test sequence from above";
+  scnd_file.add_sequence(test);
+  std::cout << " before we read the entries already on disk";
+  scnd_file.read();
+  std::cout << " and remove the file (no test - just cleanup).\n";
+  remove("test.seq");
+  std::cout << "If we would write the second sequence file's content to the file it would look like this:\n";
+  for(sequenceFile::const_iterator entry_it(scnd_file.begin());entry_it!=scnd_file.end();++entry_it)
+  {
+    std::cout << *entry_it;
+  }
 }
