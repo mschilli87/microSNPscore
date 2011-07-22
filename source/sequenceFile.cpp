@@ -211,6 +211,83 @@ namespace microSNPscore {
     * additional one are taken as part of the sequence ID.
     *********************************************************************/
     void sequenceFile::read() {
+       /**********************************************************\ 
+      | Try to open an input file stream associated to the file    |
+      | corresponding to the sequence file's path stating an error |
+      | in the case of failure:                                    |
+       \**********************************************************/
+      std::ifstream FASTA_file(path.c_str());
+      if(FASTA_file.fail())
+      {
+        std::cerr << "microSNPscore::sequenceFile::sequenceFile\n";
+        std::cerr << " ==> Cannot open file to read from: ";
+        std::cerr << path << std::endl;
+        std::cerr << "  --> no sequences will be read from the file\n";
+      }
+      else
+      {
+         /******************************************************************\ 
+        | Try to initialize extended regular expression matching a valid     |
+        | FASTA file stating error in case of failure:                       |
+         \******************************************************************/
+        regex_t regex_FASTA_file;
+        char pattern_FASTA_file[] = "^(>[^\n]*[|][^|\n]*[|][^|\n]*[|]-?1[|][^|\n]*\n[^>]*)*$";
+        if(regcomp(&regex_FASTA_file,pattern_FASTA_file,REG_EXTENDED|REG_NOSUB) != 0)
+        {
+          std::cerr << "microSNPscore::sequenceFile::read\n";
+          std::cerr << " ==> compiling FASTA file regular expression failed\n";
+          std::cerr << "  --> no sequences will be read from the file\n";
+        }
+        else
+        {
+           /****************************************************************\ 
+          | Read the content of the file into string stream, convert it to a |
+          | string and a c-type string and try to match the initialized      |
+          | regular expression stating error in case of failure:             |
+           \****************************************************************/
+          std::stringstream FASTA_file_stream;
+          FASTA_file_stream << FASTA_file.rdbuf();
+          FASTA_file.close();
+          std::string FASTA_file_string(FASTA_file_stream.str());
+          const char * FASTA_file_cstring = FASTA_file_string.c_str();
+          if(regexec(&regex_FASTA_file,FASTA_file_cstring,(size_t) 0,NULL,0) != 0)
+          {
+            std::cerr << "microSNPscore::sequenceFile::read\n";
+            std::cerr << " ==> no valid FASTA file:\n";
+            std::cerr << FASTA_file_string << std::endl;
+            std::cerr << "  --> creating empty default sequence\n";
+          }
+          else
+          {
+             /******************************************************************\ 
+            | Try to initialize extended regular expression matching a valid     |
+            | FASTA entry stating error in case of failure:                      |
+             \******************************************************************/
+            regex_t regex_FASTA_entry;
+            char pattern_FASTA_entry[] = ">[^\n]*[|][^|\n]*[|][^|\n]*[|]-?1[|][^|\n]*\n[^>]*";
+            if(regcomp(&regex_FASTA_entry,pattern_FASTA_entry,REG_EXTENDED) != 0)
+            {
+              std::cerr << "microSNPscore::sequenceFile::read\n";
+              std::cerr << " ==> compiling FASTA entry regular expression failed\n";
+              std::cerr << "  --> no sequences will be read from the file\n";
+            }
+            else
+            {
+               /*************************************************************\ 
+              | Match the initialized regular expression as often as possible |
+              | inserting a sequence file entry for every match found:        |
+               \*************************************************************/
+              size_t nmatch_FASTA_entry(1);
+              regmatch_t pmatch_FASTA_entry[nmatch_FASTA_entry];
+              while(regexec(&regex_FASTA_entry,FASTA_file_cstring,nmatch_FASTA_entry,pmatch_FASTA_entry,0) != 0)
+              {
+                entries.push_back(sequenceFileEntry(FASTA_file_string.substr(pmatch_FASTA_entry[0].rm_so,
+                                                                             pmatch_FASTA_entry[0].rm_eo - pmatch_FASTA_entry[0].rm_so)));
+              }
+            } // regcomp(&regex_FASTA_entry,pattern_FASTA_entry,REG_EXTENDED) == 0
+          } // regexec(&regex_FASTA_file,FASTA_file_cstring,(size_t) 0,NULL,0) == 0
+        } // regcomp(&regex_FASTA_file,pattern_FASTA_file,REG_EXTENDED|REG_NOSUB) == 0
+      } // ! FASTA_file.fail()
 }
 
     /*****************************************************************//**
@@ -231,8 +308,8 @@ namespace microSNPscore {
     *********************************************************************/
     
     void sequenceFile::write() {
-       /*****************************************************************\
-| Try to open an outut file stream associated to the file           |
+       /*****************************************************************\ 
+      | Try to open an outut file stream associated to the file           |
       | corresponding to the sequence file's path stating an error in the |
       | case of failure and iterate over the entries inserting each one   |
       | into the output stream before closing the output file stream:     |
