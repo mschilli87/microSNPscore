@@ -199,7 +199,7 @@ class sequenceFile {
     * @see write()
     *********************************************************************/
     
-    sequenceFile();
+    sequenceFile(filePath the_path);
 
     /*****************************************************************//**
     * @brief read entries from existing file

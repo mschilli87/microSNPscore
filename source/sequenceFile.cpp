@@ -185,7 +185,8 @@ namespace microSNPscore {
     * @see write()
     *********************************************************************/
     
-    sequenceFile::sequenceFile() {
+    sequenceFile::sequenceFile(filePath the_path)
+    :path(the_path),entries(std::vector<sequenceFileEntry>()) {
 }
 
     /*****************************************************************//**
