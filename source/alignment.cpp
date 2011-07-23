@@ -63,5 +63,41 @@ alignment::alignment() {
     seedType alignment::get_seed_type() const {
 }
 
+/*****************************************************************//**
+* @brief output stream seed type insertion operator
+*
+* This operator is used to insert a seed type to an output stream
+* (e.g. to print it on screen).
+* The seed type will be represented by its name.
+*
+* @param the_stream output stream the seed type should be inserted in
+* @param seed_type seedType to be inserted in the output stream
+*
+* @return output stream with the inserted seed type
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type)
+{
+   /******************************************************************\ 
+  | Append name depending on the seed type.                            |
+  | The cases are ordered from common to uncommon to reduce comparisms |
+  | as much as possible. Of course the default case should never be    |
+  | reached. Because return exits the function there is no break       |
+  | statement needed after the cases.                                  | 
+   \******************************************************************/
+  switch(seed_type)
+  {
+
+    case eightMer: return the_stream << "8mer";
+    case sevenMerAOne: return the_stream << "7mer-A1";
+    case sevenMerMEight: return the_stream << "7mer-m8";
+    case sixMer: return the_stream << "6mer";
+    default:
+      std::cerr << "microSNPscore::operator<<(seedType)\n";
+      std::cerr << " ==> unkown seed type: ";
+      std::cerr << seed_type << std::endl;
+      std::cerr << "  --> assuming sixMer\n";
+      return the_stream << "6mer";
+  }
+}
 
 } // namespace microSNPscore

@@ -279,6 +279,19 @@ class alignment {
       return columns.begin();
 }
 
+/*****************************************************************//**
+* @brief output stream seed type insertion operator
+*
+* This operator is used to insert a seed type to an output stream
+* (e.g. to print it on screen).
+* The seed type will be represented by its name.
+*
+* @param the_stream output stream the seed type should be inserted in
+* @param seed_type seedType to be inserted in the output stream
+*
+* @return output stream with the inserted seed type
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type);
 
 } // namespace microSNPscore
 #endif
