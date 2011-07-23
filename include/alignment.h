@@ -179,6 +179,20 @@ class alignmentColumn {
     }
 
 /*****************************************************************//**
+* @brief seed type type
+*
+* This represents the seed type (sixMer, sevenMerAOne, sevenMerMEight,
+* eightMer) of a mRNA:miRNA alignement.
+*********************************************************************/
+
+enum seedType {
+  sixMer,
+  sevenMerAOne,
+  sevenMerMEight,
+  eightMer
+
+};
+/*****************************************************************//**
 * @brief mRNA:miRNA alignment class
 *
 * This represents an alignment of mRNA and miRNA.
@@ -220,6 +234,16 @@ class alignment {
     * @return const_iterator pointing behind the last alignment column
     *********************************************************************/
     inline const_iterator end() const;
+
+    /*****************************************************************//**
+    * @brief seed type calculation
+    *
+    * This method is used to calculate the alignment's seed type (sixMer,
+    * sevenMerAOne, sevenMerMEight, eightMer).
+    *
+    * @return the seed type of the alignment
+    *********************************************************************/
+    seedType get_seed_type() const;
 
 
   private:

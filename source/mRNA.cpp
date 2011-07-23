@@ -75,6 +75,68 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
+    * @brief extract subsequence relevant for downstream AU content 
+    *    calculation
+    *
+    * This method is used to query the subsequence from the whole mRNA
+    * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
+    * everything considered by microSNPscore at all) that is used to
+    * calculate the downstream (i.e. +30 nucleotides behind seed
+    * match region).
+    *
+    * @param predicted_miRNA_three_prime_position the position on the
+    *     chromosome the target prediction algorithm has predicted to be
+    *     the position the 3' end of the miRNA would be aligned to (if it
+    *     would actually bind) (i.e. one base downstream from the seed 
+    *     matching region)
+    * @param seed_type the seed type (sixMer,sevenMerAOne, sevenMerMEight,
+    *     eightMer) of the corresponding alignment
+    *
+    * @return mRNA containing the subsequence relevant for downstream AU
+    *    content calculation
+    *********************************************************************/
+    mRNA mRNA::get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position, seedType seed_type) {
+       /******************************************************************\ 
+      | Calculating sequence position before subsequence querying to avoid |
+      | caring about strand:                                               |
+       \******************************************************************/
+      sequenceLength window_size(80);
+      sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position));
+      return get_subsequence_from_to(sequence_position - window_size,sequence_position + window_size);
+}
+
+    /*****************************************************************//**
+    * @brief extract subsequence relevant for upstream AU content 
+    *    calculation
+    *
+    * This method is used to query the subsequence from the whole mRNA
+    * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
+    * everything considered by microSNPscore at all) that is used to
+    * calculate the upstream (i.e. -30 nucleotides before seed
+    * match region).
+    *
+    * @param predicted_miRNA_three_prime_position the position on the
+    *     chromosome the target prediction algorithm has predicted to be
+    *     the position the 3' end of the miRNA would be aligned to (if it
+    *     would actually bind) (i.e. one base downstream from the seed 
+    *     matching region)
+    * @param seed_type the seed type (sixMer,sevenMerAOne, sevenMerMEight,
+    *     eightMer) of the corresponding alignment
+    *
+    * @return mRNA containing the subsequence relevant for downstream AU
+    *    content calculation
+    *********************************************************************/
+    mRNA mRNA::get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position, seedType seed_type) {
+       /******************************************************************\ 
+      | Calculating sequence position before subsequence querying to avoid |
+      | caring about strand:                                               |
+       \******************************************************************/
+      sequenceLength window_size(80);
+      sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position));
+      return get_subsequence_from_to(sequence_position - window_size,sequence_position + window_size);
+}
+
+    /*****************************************************************//**
     * @brief internal constructor
     *
     * This method is used to convert a sequence to a mRNA.
