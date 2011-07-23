@@ -52,17 +52,6 @@ alignmentColumn::alignmentColumn(const nucleotide & the_mRNA_nucleotide, const n
 alignment::alignment() {
 }
 
-    /*****************************************************************//**
-    * @brief seed type calculation
-    *
-    * This method is used to calculate the alignment's seed type (sixMer,
-    * sevenMerAOne, sevenMerMEight, eightMer).
-    *
-    * @return the seed type of the alignment
-    *********************************************************************/
-    seedType alignment::get_seed_type() const {
-}
-
 /*****************************************************************//**
 * @brief output stream seed type insertion operator
 *

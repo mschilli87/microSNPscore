@@ -236,14 +236,14 @@ class alignment {
     inline const_iterator end() const;
 
     /*****************************************************************//**
-    * @brief seed type calculation
+    * @brief get method for seed type attribute
     *
-    * This method is used to calculate the alignment's seed type (sixMer,
+    * This method is used to access the alignment's seed type (sixMer,
     * sevenMerAOne, sevenMerMEight, eightMer).
     *
     * @return the seed type of the alignment
     *********************************************************************/
-    seedType get_seed_type() const;
+    inline const seedType get_seed_type() const;
 
 
   private:
@@ -253,6 +253,14 @@ class alignment {
     * A vector containing the alignment's columns from miRNA 5' to 3'
     *********************************************************************/
     std::vector<alignmentColumn> columns;
+
+    /*****************************************************************//**
+    * @brief seed type
+    *
+    * This is the seed type (sixMer, sevenMerAOne, sevenMerMEight,
+    * EightMer) of the alignment.
+    *********************************************************************/
+    seedType seed_type;
 
 };
     /*****************************************************************//**
@@ -278,6 +286,18 @@ class alignment {
     inline alignment::const_iterator alignment::end() const {
       return columns.begin();
 }
+
+    /*****************************************************************//**
+    * @brief get method for seed type attribute
+    *
+    * This method is used to access the alignment's seed type (sixMer,
+    * sevenMerAOne, sevenMerMEight, eightMer).
+    *
+    * @return the seed type of the alignment
+    *********************************************************************/
+    inline const seedType alignment::get_seed_type() const {
+      return seed_type;
+    }
 
 /*****************************************************************//**
 * @brief output stream seed type insertion operator
