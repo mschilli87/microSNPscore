@@ -5,7 +5,6 @@
 #include "sequence.h"
 #include <string>
 #include "nucleotide.h"
-#include "alignment.h"
 
 namespace microSNPscore {
 
@@ -109,20 +108,18 @@ class mRNA : public sequence {
     * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
     * everything considered by microSNPscore at all) that is used to
     * calculate the downstream (i.e. +30 nucleotides behind seed
-    * match region).
+    * 8mer match region).
     *
     * @param predicted_miRNA_three_prime_position the position on the
     *     chromosome the target prediction algorithm has predicted to be
     *     the position the 3' end of the miRNA would be aligned to (if it
     *     would actually bind) (i.e. one base downstream from the seed 
     *     matching region)
-    * @param seed_type the seed type (sixMer,sevenMerAOne, sevenMerMEight,
-    *     eightMer) of the corresponding alignment
     *
     * @return mRNA containing the subsequence relevant for downstream AU
     *    content calculation
     *********************************************************************/
-    mRNA get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position, seedType seed_type);
+    mRNA get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position);
 
     /*****************************************************************//**
     * @brief extract subsequence relevant for upstream AU content 
@@ -132,20 +129,18 @@ class mRNA : public sequence {
     * sequence ('the whole mRNA' actually means 'only' the 3'UTR which is
     * everything considered by microSNPscore at all) that is used to
     * calculate the upstream (i.e. -30 nucleotides before seed
-    * match region).
+    * 8mer match region).
     *
     * @param predicted_miRNA_three_prime_position the position on the
     *     chromosome the target prediction algorithm has predicted to be
     *     the position the 3' end of the miRNA would be aligned to (if it
     *     would actually bind) (i.e. one base downstream from the seed 
     *     matching region)
-    * @param seed_type the seed type (sixMer,sevenMerAOne, sevenMerMEight,
-    *     eightMer) of the corresponding alignment
     *
     * @return mRNA containing the subsequence relevant for downstream AU
     *    content calculation
     *********************************************************************/
-    mRNA get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position, seedType seed_type);
+    mRNA get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position);
 
 
   private:

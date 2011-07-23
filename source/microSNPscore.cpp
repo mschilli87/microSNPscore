@@ -76,8 +76,10 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << "th nucleotide of the subsequence while its first exon starts at chromosome position ";
   std::cout << BCL2.get_subsequence_chr_from(BCL2[27]->get_chromosome_position(),10).exons_begin()->get_start() << ".\n";
   std::cout << "If we take position 60793322 on chromosome to be reported from the target prediction tool we get ";
-  std::cout << BCL2.get_subsequence_for_alignment(60793322) << " to be the subsequence of interest for the alignment and ";
-  std::cout << BCL2.get_subsequence_for_accessability(60793322) << " to be the subsequence of interest for the accessability score calculation.\n";
+  std::cout << BCL2.get_subsequence_for_alignment(60793322) << " to be the subsequence of interest for the alignment, ";
+  std::cout << BCL2.get_subsequence_for_accessability(60793322) << " to be the subsequence of interest for the accessability score calculation, ";
+  std::cout << BCL2.get_subsequence_for_downstream_AU_content(60793322) << " to be the subsequence for the downstream AU content calculation and ";
+  std::cout << BCL2.get_subsequence_for_upstream_AU_content(60793322) << " to be the subsequence for the upstream AU content calculation.\n";
   std::cout << "The ID of the alignment relevant BCL2 subsequence is " << BCL2.get_subsequence_for_alignment(60793322).get_ID() << ".\n";
   std::string FASTA_test(">test|no1|103,160,150|165,135,270|-1|my_chrom\n\
 AAAAAAACAUACdACGaaaUAAAAAAAAAAAAACCCCCCCCCCCCCCCUUUUUGGXGGGC\n\
