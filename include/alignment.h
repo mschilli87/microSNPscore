@@ -186,6 +186,13 @@ class alignmentColumn {
 class alignment {
   public:
     /*****************************************************************//**
+    * @brief const iterartor type
+    *
+    * This type is used to access the alignment's columns.
+    *********************************************************************/
+    typedef std::vector<alignmentColumn>::const_iterator const_iterator;
+
+    /*****************************************************************//**
     * @brief standard constructor
     *
     * This is used to create an instance of the class alignment.
@@ -193,6 +200,26 @@ class alignment {
     * @return an empty alignment
     *********************************************************************/
     alignment();
+
+    /*****************************************************************//**
+    * @brief alignment begin
+    *
+    * This is used to get the first column (beeing the 5' end of the miRNA
+    * and thus the 3' end of the mRNA) of the alignment.
+    *
+    * @return const_iterator pointing to the first alignment column
+    *********************************************************************/
+    inline const_iterator begin() const;
+
+    /*****************************************************************//**
+    * @brief alignment begin
+    *
+    * This is used to get the end of the alignment's column vector (beeing
+    * the 3' end of the miRNA and thus the 5' end of the mRNA).
+    *
+    * @return const_iterator pointing behind the last alignment column
+    *********************************************************************/
+    inline const_iterator end() const;
 
 
   private:
@@ -204,6 +231,30 @@ class alignment {
     std::vector<alignmentColumn> columns;
 
 };
+    /*****************************************************************//**
+    * @brief alignment begin
+    *
+    * This is used to get the first column (beeing the 5' end of the miRNA
+    * and thus the 3' end of the mRNA) of the alignment.
+    *
+    * @return const_iterator pointing to the first alignment column
+    *********************************************************************/
+    inline alignment::const_iterator alignment::begin() const {
+      return columns.end();
+}
+
+    /*****************************************************************//**
+    * @brief alignment begin
+    *
+    * This is used to get the end of the alignment's column vector (beeing
+    * the 3' end of the miRNA and thus the 5' end of the mRNA).
+    *
+    * @return const_iterator pointing behind the last alignment column
+    *********************************************************************/
+    inline alignment::const_iterator alignment::end() const {
+      return columns.begin();
+}
+
 
 } // namespace microSNPscore
 #endif
