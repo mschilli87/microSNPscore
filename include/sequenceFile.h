@@ -6,6 +6,8 @@
 //for std::ostream (operator<<)
 #include <string>
 #include "sequence.h"
+#include "mRNA.h"
+#include "miRNA.h"
 #include <vector>
 
 namespace microSNPscore {
@@ -78,6 +80,26 @@ class sequenceFileEntry {
     * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
     inline sequence get_sequence() const;
+
+    /*****************************************************************//**
+    * @brief mRNA object creation
+    *
+    * This method is used to create a mRNA object corresponding to the
+    * sequence file entry.
+    *
+    * @return mRNA object corresponding to the sequence file entry
+    *********************************************************************/
+    inline mRNA get_mRNA() const;
+
+    /*****************************************************************//**
+    * @brief miRNA object creation
+    *
+    * This method is used to create a miRNA object corresponding to the
+    * sequence file entry.
+    *
+    * @return miRNA object corresponding to the sequence file entry
+    *********************************************************************/
+    inline miRNA get_miRNA() const;
 
     /*****************************************************************//**
     * @brief FASTA entry creation
@@ -159,6 +181,30 @@ class sequenceFileEntry {
     *********************************************************************/
     inline sequence sequenceFileEntry::get_sequence() const {
       return sequence(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
+}
+
+    /*****************************************************************//**
+    * @brief mRNA object creation
+    *
+    * This method is used to create a mRNA object corresponding to the
+    * sequence file entry.
+    *
+    * @return mRNA object corresponding to the sequence file entry
+    *********************************************************************/
+    inline mRNA sequenceFileEntry::get_mRNA() const {
+      return mRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
+}
+
+    /*****************************************************************//**
+    * @brief miRNA object creation
+    *
+    * This method is used to create a miRNA object corresponding to the
+    * sequence file entry.
+    *
+    * @return miRNA object corresponding to the sequence file entry
+    *********************************************************************/
+    inline miRNA sequenceFileEntry::get_miRNA() const {
+      return miRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
 }
 
 /*****************************************************************//**
