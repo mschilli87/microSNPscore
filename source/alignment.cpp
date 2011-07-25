@@ -138,6 +138,28 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     *********************************************************************/
     optimalAlignmentList::optimalAlignmentList(const mRNA & the_mRNA, const miRNA & the_miRNA)
     :alignments(std::vector<alignment>()) {
+       /****************************************************************\ 
+      | If both sequences contain at least one nucleotide:               |
+      | Allocate memory for matrices, fill them, search the last column  |
+      | for best-scoring alignment ends and backtrace them appending the |
+      | backtraced alignments to the alignments attribute:               |
+       \****************************************************************/
+      sequenceLength mRNA_length(the_mRNA.get_length());
+      sequenceLength miRNA_length(the_miRNA.get_length());
+      if(mRNA_length != 0 && miRNA_length != 0)
+      {
+        alignmentMatrixCell mRNA_gap_matrix[mRNA_length][miRNA_length];
+        alignmentMatrixCell miRNA_gap_matrix[mRNA_length][miRNA_length];
+        alignmentMatrixCell score_matrix[mRNA_length][miRNA_length];
+        alignmentScore max_score(fill_matrices(&mRNA_gap_matrix[0][0],&miRNA_gap_matrix[0][0],&score_matrix[0][0],the_mRNA,the_miRNA));
+        for(unsigned short int row=0;row!=mRNA_length;++row)
+        {
+          if(score_matrix[row][miRNA_length-1].get_score()==max_score)
+          {
+            backtrace_alignments(&score_matrix[row][miRNA_length-1],alignments);
+          }
+        }
+      } // mRNA_length != 0 && miRNA_length != 0
 }
 
     /*****************************************************************//**
