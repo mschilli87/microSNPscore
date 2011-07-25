@@ -188,9 +188,13 @@ class exon {
 /*****************************************************************//**
 * @brief sequence class
 *
-* This shall become the representation for sequences (DNA and RNA)
-* and is used as my first example to generate code with BOUML
+* This represents a RNA sequence and is used as base class for the
+* mRNA and miRNA classes.
+*
+* @see mRNA
+* @see miRNA
 *********************************************************************/
+
 class sequence {
   public:
     /*****************************************************************//**
