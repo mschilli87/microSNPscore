@@ -339,6 +339,285 @@ class alignment {
     }
 
 /*****************************************************************//**
+* @brief alignment matrix cell class
+*
+* This represents a cell in an alignment matrix.
+*********************************************************************/
+class alignmentMatrixCell {
+  public:
+    /*****************************************************************//**
+    * @brief const iterator type
+    *
+    * This type is used to access the alignment matrix cell's
+    * predecessors.
+    *********************************************************************/
+    
+    typedef std::vector<const alignmentMatrixCell *>::const_iterator const_iterator;
+
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create an instance of the class alignmentMatrixCell.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. The reason for providing those default values is
+    * to allow using (two-dimensional) arrays (beeing the alignment
+    * matrices) containing objects of this class.
+    *
+    * @param the_mRNA_position mRNA position corresponding to the
+    *     alignment matrix row holding the cell
+    * @param the_miRNA_position miRNA position corresponding to the
+    *     alignment matrix column holding the cell
+    * @param the_score score of an optimal aligment up to this cell
+    * @param the_predecessors vector containing pointers to the cells that
+    *     are part of an optimal alignment up to the cell
+    * @return an alignment matrix cell with the given attributes
+    *********************************************************************/
+    
+    alignmentMatrixCell(sequencePosition the_mRNA_position = 0, sequencePosition the_miRNA_position = 0, alignmentScore the_score = 0, const std::vector<const alignmentMatrixCell *> & the_predecessors = std::vector<const alignmentMatrixCell *>());
+
+    /*****************************************************************//**
+    * @brief get method for mRNA position attribute
+    *
+    * This method is used to access the mRNA position corresponding to the
+    * alignment matrix row holding the cell.
+    *
+    * @return the mRNA position of the cell
+    *********************************************************************/
+    inline const sequencePosition get_mRNA_position() const;
+
+    /*****************************************************************//**
+    * @brief get method for miRNA position attribute
+    *
+    * This method is used to access the miRNA position corresponding to
+    * the alignment matrix column holding the cell.
+    *
+    * @return the miRNA position of the cell
+    *********************************************************************/
+    inline const sequencePosition get_miRNA_position() const;
+
+    /*****************************************************************//**
+    * @brief get method for alignment score attribute
+    *
+    * This method is used to access the score of an optimal aligment up to
+    * the cell.
+    *
+    * @return the alignment score of the cell
+    *********************************************************************/
+    inline const alignmentScore get_score() const;
+
+    /*****************************************************************//**
+    * @brief predecessors begin
+    *
+    * This is used to get a pointer to first predecessor of the cell.
+    *
+    * @return const_iterator pointing to a pointer to the cell's first
+    *      predecessor
+    *********************************************************************/
+    inline const_iterator predecessors_begin() const;
+
+    /*****************************************************************//**
+    * @brief predecessors end
+    *
+    * This is used to get the end of the cell's predecessor vector.
+    *
+    * @return const_iterator pointing behind the pointer to the cell's
+    *     last predecessor
+    *********************************************************************/
+    inline const_iterator predecessors_end() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief position in mRNA
+    *
+    * This is the mRNA position corresponding to the alignment matrix
+    * row holding this cell.
+    *********************************************************************/
+    sequencePosition mRNA_position;
+
+    /*****************************************************************//**
+    * @brief position in miRNA
+    *
+    * This is the miRNA position corresponding to the alignment matrix
+    * column holding this cell.
+    *********************************************************************/
+    sequencePosition miRNA_position;
+
+    /*****************************************************************//**
+    * @brief alignment score
+    *
+    * This is the score of an optimal aligment up to this cell.
+    *********************************************************************/
+    alignmentScore score;
+
+    /*****************************************************************//**
+    * @brief predecessor vector
+    *
+    * This is a vector containing pointers to the cells that are part of
+    * an optimal alignment up to this cell.
+    *********************************************************************/
+    std::vector<const alignmentMatrixCell *> predecessors;
+
+};
+    /*****************************************************************//**
+    * @brief get method for mRNA position attribute
+    *
+    * This method is used to access the mRNA position corresponding to the
+    * alignment matrix row holding the cell.
+    *
+    * @return the mRNA position of the cell
+    *********************************************************************/
+    inline const sequencePosition alignmentMatrixCell::get_mRNA_position() const {
+      return mRNA_position;
+    }
+
+    /*****************************************************************//**
+    * @brief get method for miRNA position attribute
+    *
+    * This method is used to access the miRNA position corresponding to
+    * the alignment matrix column holding the cell.
+    *
+    * @return the miRNA position of the cell
+    *********************************************************************/
+    inline const sequencePosition alignmentMatrixCell::get_miRNA_position() const {
+      return miRNA_position;
+    }
+
+    /*****************************************************************//**
+    * @brief get method for alignment score attribute
+    *
+    * This method is used to access the score of an optimal aligment up to
+    * the cell.
+    *
+    * @return the alignment score of the cell
+    *********************************************************************/
+    inline const alignmentScore alignmentMatrixCell::get_score() const {
+      return score;
+    }
+
+    /*****************************************************************//**
+    * @brief predecessors begin
+    *
+    * This is used to get a pointer to first predecessor of the cell.
+    *
+    * @return const_iterator pointing to a pointer to the cell's first
+    *      predecessor
+    *********************************************************************/
+    inline alignmentMatrixCell::const_iterator alignmentMatrixCell::predecessors_begin() const {
+      return predecessors.begin();
+}
+
+    /*****************************************************************//**
+    * @brief predecessors end
+    *
+    * This is used to get the end of the cell's predecessor vector.
+    *
+    * @return const_iterator pointing behind the pointer to the cell's
+    *     last predecessor
+    *********************************************************************/
+    inline alignmentMatrixCell::const_iterator alignmentMatrixCell::predecessors_end() const {
+      return predecessors.end();
+}
+
+/*****************************************************************//**
+* @brief optimal alignment list class
+*
+* This represents a list of all optimal alignments between a mRNA and
+* a miRNA.
+* It does NOT implement the std::list<> interface.
+*********************************************************************/
+
+class optimalAlignmentList {
+  public:
+    /*****************************************************************//**
+    * @brief const iterator type
+    *
+    * This type is used to access the optimal alignments in the list.
+    *********************************************************************/
+    typedef std::vector<alignment>::const_iterator const_iterator;
+
+    optimalAlignmentList();
+
+    /*****************************************************************//**
+    * @brief alignment list begin
+    *
+    * This is used to get the first optimal alignment in the list.
+    *
+    * @return const_iterator pointing to the first optimal alignment
+    *********************************************************************/
+    inline const_iterator begin() const;
+
+    /*****************************************************************//**
+    * @brief alignment list end
+    *
+    * This is used to get the end of the optimal alignment list.
+    *
+    * @return const_iterator pointing behind the last optimal alignment
+    *********************************************************************/
+    inline const_iterator end() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief fill alignment matrices
+    *
+    * This method is used to calculate the values of the cells of the
+    * alignment matrices.
+    * The given matrices are assumed to have proper dimension, otherwise
+    * the behavior is undefined.
+    *
+    * @param
+    *
+    * @return the optimal alignment score
+    *********************************************************************/
+    static alignmentScore fill_matrices();
+
+    /*****************************************************************//**
+    * @brief recursive alignment calculation
+    *
+    * This method is used to calculate the optimal alignments going
+    * through a given alignment matrix cell ending with a given postfix
+    * and a given overall score and appending them to a given alignment
+    * vector. The score is NOT checked against the alignment column scores
+    * to improve performance.
+    *
+    * @param
+    *********************************************************************/
+    static void backtrace_alignments();
+
+    /*****************************************************************//**
+    * @brief alignment vector
+    *
+    * This is a vector containing the optimal alignments.
+    *********************************************************************/
+    std::vector<alignment> alignments;
+
+};
+    /*****************************************************************//**
+    * @brief alignment list begin
+    *
+    * This is used to get the first optimal alignment in the list.
+    *
+    * @return const_iterator pointing to the first optimal alignment
+    *********************************************************************/
+    inline optimalAlignmentList::const_iterator optimalAlignmentList::begin() const {
+      return alignments.begin();
+}
+
+    /*****************************************************************//**
+    * @brief alignment list end
+    *
+    * This is used to get the end of the optimal alignment list.
+    *
+    * @return const_iterator pointing behind the last optimal alignment
+    *********************************************************************/
+    inline optimalAlignmentList::const_iterator optimalAlignmentList::end() const {
+      return alignments.end();
+}
+
+/*****************************************************************//**
 * @brief output stream seed type insertion operator
 *
 * This operator is used to insert a seed type to an output stream

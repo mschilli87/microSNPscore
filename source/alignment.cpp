@@ -98,6 +98,65 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
   } // the_columns.begin() == the_columns.end()
 }
 
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create an instance of the class alignmentMatrixCell.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. The reason for providing those default values is
+    * to allow using (two-dimensional) arrays (beeing the alignment
+    * matrices) containing objects of this class.
+    *
+    * @param the_mRNA_position mRNA position corresponding to the
+    *     alignment matrix row holding the cell
+    * @param the_miRNA_position miRNA position corresponding to the
+    *     alignment matrix column holding the cell
+    * @param the_score score of an optimal aligment up to this cell
+    * @param the_predecessors vector containing pointers to the cells that
+    *     are part of an optimal alignment up to the cell
+    * @return an alignment matrix cell with the given attributes
+    *********************************************************************/
+    
+    alignmentMatrixCell::alignmentMatrixCell(sequencePosition the_mRNA_position, sequencePosition the_miRNA_position, alignmentScore the_score, const std::vector<const alignmentMatrixCell *> & the_predecessors)
+    :mRNA_position(the_mRNA_position),miRNA_position(the_miRNA_position),score(the_score),predecessors(the_predecessors) {
+}
+
+    optimalAlignmentList::optimalAlignmentList() {
+}
+
+    /*****************************************************************//**
+    * @brief fill alignment matrices
+    *
+    * This method is used to calculate the values of the cells of the
+    * alignment matrices.
+    * The given matrices are assumed to have proper dimension, otherwise
+    * the behavior is undefined.
+    *
+    * @param
+    *
+    * @return the optimal alignment score
+    *********************************************************************/
+    alignmentScore optimalAlignmentList::fill_matrices()
+    {
+}
+
+    /*****************************************************************//**
+    * @brief recursive alignment calculation
+    *
+    * This method is used to calculate the optimal alignments going
+    * through a given alignment matrix cell ending with a given postfix
+    * and a given overall score and appending them to a given alignment
+    * vector. The score is NOT checked against the alignment column scores
+    * to improve performance.
+    *
+    * @param
+    *********************************************************************/
+    void optimalAlignmentList::backtrace_alignments()
+    {
+}
+
 /*****************************************************************//**
 * @brief output stream seed type insertion operator
 *
