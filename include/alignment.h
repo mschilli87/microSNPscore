@@ -179,6 +179,12 @@ class alignmentColumn {
     }
 
 /*****************************************************************//**
+* @brief alignment score type
+*
+* This represents the overall score of an alignment.
+*********************************************************************/
+typedef short alignmentScore;
+/*****************************************************************//**
 * @brief seed type type
 *
 * This represents the seed type (sixMer, sevenMerAOne, sevenMerMEight,
@@ -236,6 +242,15 @@ class alignment {
     inline const_iterator end() const;
 
     /*****************************************************************//**
+    * @brief get method for score attribute
+    *
+    * This method is used to access the alignment's score
+    *
+    * @return the score of the alignment
+    *********************************************************************/
+    inline const alignmentScore get_score() const;
+
+    /*****************************************************************//**
     * @brief get method for seed type attribute
     *
     * This method is used to access the alignment's seed type (sixMer,
@@ -253,6 +268,8 @@ class alignment {
     * A vector containing the alignment's columns from miRNA 5' to 3'
     *********************************************************************/
     std::vector<alignmentColumn> columns;
+
+    alignmentScore score;
 
     /*****************************************************************//**
     * @brief seed type
@@ -286,6 +303,17 @@ class alignment {
     inline alignment::const_iterator alignment::end() const {
       return columns.begin();
 }
+
+    /*****************************************************************//**
+    * @brief get method for score attribute
+    *
+    * This method is used to access the alignment's score
+    *
+    * @return the score of the alignment
+    *********************************************************************/
+    inline const alignmentScore alignment::get_score() const {
+      return score;
+    }
 
     /*****************************************************************//**
     * @brief get method for seed type attribute
