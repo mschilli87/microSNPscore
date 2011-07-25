@@ -111,18 +111,23 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     * to allow using (two-dimensional) arrays (beeing the alignment
     * matrices) containing objects of this class.
     *
-    * @param the_mRNA_position mRNA position corresponding to the
-    *     alignment matrix row holding the cell
-    * @param the_miRNA_position miRNA position corresponding to the
-    *     alignment matrix column holding the cell
-    * @param the_score score of an optimal aligment up to this cell
-    * @param the_predecessors vector containing pointers to the cells that
-    *     are part of an optimal alignment up to the cell
+    * @param the_mRNA_nucleotide (pseudo-optional) pointer to the mRNA
+    *     nucleotide corresponding to the alignment matrix row holding the
+    *     cell - Defaults to NULL
+    * @param the_miRNA_nucleotide (pseudo-optional) pointer to the miRNA
+    *     nucleotide corresponding to the alignment matrix column holding
+    *     the cell - Defaults to NULL
+    * @param the_score (pseudo-optional) score of an optimal aligment up
+    *     to this cell - Defaults to 0
+    * @param the_predecessors (pseudo-optional) vector containing pointers
+    *     to the cells that are part of an optimal alignment up to the
+    *     cell - Defaults to empty
     *
     * @return an alignment matrix cell with the given attributes
     *********************************************************************/
-    alignmentMatrixCell::alignmentMatrixCell(sequencePosition the_mRNA_position, sequencePosition the_miRNA_position, alignmentScore the_score, const std::vector<const alignmentMatrixCell *> & the_predecessors)
-    :mRNA_position(the_mRNA_position),miRNA_position(the_miRNA_position),score(the_score),predecessors(the_predecessors) {
+    
+    alignmentMatrixCell::alignmentMatrixCell(const nucleotide * the_mRNA_nucleotide, const nucleotide * the_miRNA_nucleotide, alignmentScore the_score, const std::vector<const alignmentMatrixCell *> & the_predecessors)
+    :mRNA_nucleotide(the_mRNA_nucleotide),miRNA_nucleotide(the_miRNA_nucleotide),score(the_score),predecessors(the_predecessors) {
 }
 
     /*****************************************************************//**
