@@ -43,13 +43,59 @@ alignmentColumn::alignmentColumn(const nucleotide & the_mRNA_nucleotide, const n
 }
 
 /*****************************************************************//**
-* @brief standard constructor
+* @brief constructor
 *
 * This is used to create an instance of the class alignment.
+* The default values are not intended to be used directly.
+* They are only provided to allow array allocation but you will need
+* to assign a valid object created by giving those parameters a value
+* to actually use it. This is done by containers like std::vector and
+* the reason for providing those default values is to allow using
+* containers containing objects of this class.
 *
-* @return an empty alignment
+* @param the_columns (pseudo-optional) vector containing the
+*     alignment's coumns - Defaults to empty
+* @param the_score (pseudo-optinal) the overall score of the alignment
+*     (It is NOT checked against the given coloumn score to improve
+*     performance) - Defaults to 0
+* @return alignment containing the given columns with the given score
 *********************************************************************/
-alignment::alignment() {
+alignment::alignment(const std::vector<alignmentColumn> & the_columns, alignmentScore the_score):
+columns(the_columns),score(the_score),seed_type(sixMer) {
+   /******************************************************************\ 
+  | Iterating over the first eight alignment columns checking for the  |
+  | first position to be Adenine in mRNA, positions 2 to 7 and 8 to be |
+  | matches and update the seed type if necessary:                     |
+   \******************************************************************/
+  const_iterator column_it(the_columns.begin());
+  if(column_it != the_columns.end())
+  {
+    bool AOne(column_it->get_mRNA_nucleotide().get_base()==Adenine); // A1?
+    while(++column_it != the_columns.end() &&
+          column_it - the_columns.begin() != 7 &&
+          column_it->get_match().get_identifier() == Match) {}
+    if(column_it - the_columns.begin() == 7) // m2-m7?
+    {
+      if(column_it != the_columns.end() && column_it->get_match().get_identifier() == Match) // m8?
+      {
+        if(AOne)
+        {
+          seed_type = eightMer;
+        }
+        else
+        {
+          seed_type = sevenMerMEight;
+        }
+      } // m8
+      else
+      {
+        if(AOne)
+        {
+          seed_type = sevenMerAOne;
+        }
+      }
+    } // m2-m7
+  } // the_columns.begin() == the_columns.end()
 }
 
 /*****************************************************************//**

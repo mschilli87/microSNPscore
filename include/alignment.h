@@ -213,13 +213,24 @@ class alignment {
     typedef std::vector<alignmentColumn>::const_iterator const_iterator;
 
     /*****************************************************************//**
-    * @brief standard constructor
+    * @brief constructor
     *
     * This is used to create an instance of the class alignment.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
     *
-    * @return an empty alignment
+    * @param the_columns (pseudo-optional) vector containing the
+    *     alignment's coumns - Defaults to empty
+    * @param the_score (pseudo-optinal) the overall score of the alignment
+    *     (It is NOT checked against the given coloumn score to improve
+    *     performance) - Defaults to 0
+    * @return alignment containing the given columns with the given score
     *********************************************************************/
-    alignment();
+    alignment(const std::vector<alignmentColumn> & the_columns, alignmentScore the_score);
 
     /*****************************************************************//**
     * @brief alignment begin
