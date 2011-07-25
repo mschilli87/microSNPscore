@@ -1,4 +1,6 @@
 
+#include <algorithm>
+// for std::max (alignment score calculation)
 #include "alignment.h"
 #include "mRNA.h"
 #include "miRNA.h"
@@ -193,6 +195,484 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     *********************************************************************/
     alignmentScore optimalAlignmentList::fill_matrices(alignmentMatrixCell * matrix_mRNA_gap, alignmentMatrixCell * matrix_miRNA_gap, alignmentMatrixCell * matrix_overall, const mRNA & the_mRNA, const miRNA & the_miRNA)
     {
+       /****************************************************************\ 
+      | Define function wide constants, get sequence lengths, initialize |
+      | return value and check if the sequences actually contain         |
+      | nucleotides (i.e. if a non-empty alignment is queried):          |
+       \****************************************************************/
+      const sequencePosition seed_start = 2;  // position 1 won't be aligned
+      const sequencePosition seed_end = 8;    // weighting until (inclusive) that position
+      sequenceLength mRNA_length(the_mRNA.get_length());
+      sequenceLength miRNA_length(the_miRNA.get_length());
+      alignmentScore best_overall_score(0);   // score of empty alignment
+      if(mRNA_length != 0 && miRNA_length != 0)
+      {
+         /******************************************************************\ 
+        | Iterate over the miRNA (5' to 3') to fill the matrices linewise    |
+        | calculating the loop wide constant stating whether the current row |
+        | should be weighted or not:                                         |
+         \******************************************************************/
+        unsigned short int column = 0;
+        for(sequence::const_iterator miRNA_it(the_miRNA.begin());miRNA_it!=the_miRNA.end();++miRNA_it,++column)
+        {
+          const matchPosition match_pos (seed_start <= column && column <= seed_end ? Seed : ThreePrime);
+           /******************************************************************\ 
+          | Iterate over the mRNA (3' to 5') to fill the current row column by |
+          | column calculating loop wide constants representing the indices of |
+          | the relevant cells in the given arrays (which represent arrays in  |
+          | two dimensions but because the matrix width - beeing the length of |
+          | the miRNA - is unkwon at compilation time it is not possible to    |
+          | use the two-dimensional subscript operator directly which is why   |
+          | we need to calculate the offset from the [0][0] pointer - note: If |
+          | the given matrices have smaller dimensions than the sequence's     |
+          | length the bevavior of this implementation is undefined!) and the  |
+          | gap-nucleotides that might be inserted in this iteration loop:     |
+           \******************************************************************/
+          unsigned short int row = 0;
+          for(sequence::const_iterator mRNA_it(the_mRNA.end());mRNA_it>=the_mRNA.begin();--mRNA_it,++row)
+          {
+            const unsigned short int index = row * miRNA_length + column;
+            const unsigned short int index_left = index - 1;
+            const unsigned short int index_up = index - miRNA_length;
+            const unsigned short int index_upleft = index_up - 1;
+            const nucleotide mRNA_gap(Gap,mRNA_it->get_sequence_position(),mRNA_it->get_chromosome_position());
+            const nucleotide miRNA_gap(Gap,miRNA_it->get_sequence_position(),miRNA_it->get_chromosome_position());
+             /******************************************************************\ 
+            | While the central iteration of the linear programming algorithm is |
+            | quite clear there are many different cases since the recursive     |
+            | formulars rely on precalculated values (as it is the nature of     |
+            | linear programming) that might not exist for the cells in the      |
+            | first two rows and columns.                                        |
+            | But in all cases we need a vector of const alignment matrix cell   |
+            | pointers as predecessor parameter for the alignment matrix cell's  |
+            | constructor since we will create alignment matrix cells in any     |
+            | case:                                                              |
+             \******************************************************************/
+            std::vector<const alignmentMatrixCell *> predecessors;
+             /******************************************************************\ 
+            | The first special case is the first matrix element at all: the     |
+            | upper-left corner representing the alignment position given by the |
+            | miRNA target prediction tool. Note that there are no starting gap  |
+            | row and column since the reported mRNA position has to be aligned  |
+            | with the miRNA's 5' end in any case to match the prediction:       |
+             \******************************************************************/
+            if(row==0) // row == 0
+            {
+              if(column==0) // row == 0 && column == 0
+              {
+                 /******************************************************************\ 
+                | Since there is no preceeding alignment part, there is no recursion |
+                | to apply (i.e. the base case of the overall score recursive        |
+                | formular) and there cannot be any open gap (i.e. undefined for the |
+                | open gap score recursive formulars). Note that the match score of  |
+                | the first pair of nucleotides is not considered, since we already  |
+                | know that the miRNA's 5' end will not bind to the mRNA in any case |
+                | because it is needed for binding the RISC (RNA-induced silencing   |
+                | complex):                                                          |
+                 \******************************************************************/
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
+                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors);
+              } // row == 0 && col == 0
+               /**************************************************************\ 
+              | The second special case is the second column of the first row: |
+               \**************************************************************/
+              else if(column==1) // row == 0 && column == 1
+              {
+                 /*****************************************************************\ 
+                | Since we are still in the first row, there cannot be any gap in   |
+                | the miRNA (i.e. undefined in the open miRNA gap score formular)   |
+                | and since we are in the second column there cannot be any         |
+                | preceeding gap in the mRNA but there must be a preceeding match   |
+                | (i.e. the base case of the open mRNA gap score formular).         |
+                | Note that there is no need to consider the preceeding score since |
+                | it has to be 0.                                                   |
+                | Since we are still in the first row there is no other option than |
+                | inserting a mRNA gap and thus the overall score equals the open   |
+                | mRNA gap score in any case:                                       |
+                 \*****************************************************************/
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
+                predecessors.push_back(&matrix_overall[index_left]);
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,
+                                                             miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score(),
+                                                             predecessors);
+                matrix_overall[index] = matrix_mRNA_gap[index];
+              } // row == 0 && column == 1
+               /*********************************************************\ 
+              | The third special case is the remainder of the first row: |
+               \*********************************************************/
+              else // row == 0 && column > 1
+              {
+                 /*****************************************************************\ 
+                | Since we are still in the first row, there cannot be any gap in   |
+                | the miRNA (i.e. undefined in the open miRNA gap score formular)   |
+                | and since we are behind the second column there must be at least  |
+                | one gap in the mRNA (i.e. the gap open case of the open mRNA gap  |
+                | score formular can be omitted).                                   |
+                | Since we are still in the first row there is no other option than |
+                | inserting a mRNA gap and thus the overall score equals the open   |
+                | mRNA gap score in any case:                                       |
+                 \*****************************************************************/
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
+                predecessors.push_back(&matrix_mRNA_gap[index_left]);
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,
+                                                             matrix_mRNA_gap[index_left].get_score()+
+                                                             miRNA_it->get_match(mRNA_gap,match_pos,Extend).get_score(),
+                                                             predecessors);
+                matrix_overall[index] = matrix_mRNA_gap[index];
+              } // row == 0 && column > 1
+               /******************************************************************\ 
+              | Since we now have completed the first row of the matrices we have  |
+              | calculated the first overall alignment score which is yet the best |
+              | score. Note that an optimal alignment can end anywhere in the last |
+              | row because we want to align the whole miRNA while we do not care  |
+              | about how much of the mRNA is covered by the alignment:            |
+               \******************************************************************/
+              if(column==miRNA_length-1) // first overall score
+              {
+                best_overall_score = matrix_overall[index].get_score();
+              } // first overall score
+            } // row==0
+             /**************************************************************\ 
+            | The fourth special case is the first column of the second row: |
+             \**************************************************************/
+            else if(row==1) // row == 1
+            {
+              if(column==0) // row == 1 && column == 0
+              {
+                 /*****************************************************************\ 
+                | Since we are in the first column, there cannot be any gap in the  |
+                | mRNA (i.e. undefined in the open mRNA gap score formular) and     |
+                | since we are still in the second row there cannot be any          |
+                | preceeding gap in the miRNA but there must be a preceeding match  |
+                | (i.e. the base case of the open miRNA gap score formular).        |
+                | Note that there is no need to consider the preceeding score since |
+                | it has to be 0.                                                   |
+                | Since we are in the first row there is no other option than       |
+                | inserting a miRNA gap and thus the overall score equals the open  |
+                | miRNA gap score in any case:                                      |
+                 \*****************************************************************/
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
+                predecessors.push_back(&matrix_overall[index_up]);
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
+                                                              mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score(),
+                                                              predecessors);
+                matrix_overall[index] = matrix_miRNA_gap[index];
+              } // row == 1 && column == 0
+               /**************************************************************\ 
+              | The fifth special case is the second column of the second row: |
+               \**************************************************************/
+              else if(column==1) // row == 1 && column == 1
+              {
+                 /******************************************************************\ 
+                | Since we are in the second column, there cannot be a be any        |
+                | preceeding gap in the mRNA but there has must be a preceeding gap  |
+                | in the miRNA (i.e. the base case of the open mRNA gap score        |
+                | formular) and since we are still in the second row there cannot be |
+                | any preceeding gap in the miRNA but there must be a preceeding gap |
+                | in the mRNA (i.e. the base case of the open miRNA gap score        |
+                | formular).                                                         |
+                | Since we are neither in the first row nor in the first column we   |
+                | can try to match the two nucleotides without adding a gap in one   |
+                | of the sequences. After calculating all possible scores we add all |
+                | those predecessors leading to the maximum to the overall score     |
+                | matrix cell (i.e. the full recursive step of the overall score     |
+                | formular).                                                         |
+                | Note that we need to remove the predecessors from our vector       |
+                | before we can re-use it for another alignment matrix cell:         |
+                 \******************************************************************/
+                predecessors.push_back(&matrix_overall[index_left]);
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,
+                                                             matrix_overall[index_left].get_score()+
+                                                             miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score(),
+                                                             predecessors);
+                predecessors.pop_back();
+                predecessors.push_back(&matrix_overall[index_up]);
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
+                                                              matrix_overall[index_up].get_score()+
+                                                              mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score(),
+                                                              predecessors);
+                predecessors.pop_back();
+                alignmentScore best_score(std::max(matrix_mRNA_gap[index].get_score(),matrix_miRNA_gap[index].get_score()));
+                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
+                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
+                if(match_score >= best_score)
+                {
+                  best_score = match_score;
+                  predecessors.push_back(&matrix_overall[index_upleft]);
+                }
+                if(matrix_mRNA_gap[index].get_score() == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_left]);
+                }
+                if(matrix_miRNA_gap[index].get_score() == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_up]);
+                }
+                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+              } // row == 1 && column == 1
+               /**********************************************************\ 
+              | The sixth special case is the remainder of the second row: |
+               \**********************************************************/
+              else // row == 1 && column > 1
+              {
+                 /******************************************************************\ 
+                | Since we are behind the second column, there could be a preceeding |
+                | gap in the mRNA thus we need to check whether it is better to open |
+                | a new one or to extend the existing one (i.e. the full recursive   |
+                | step of the open mRNA gap score formular) but since we are still   |
+                | in the second row there cannot be any preceeding gap in the miRNA  |
+                | while there must be a preceeding gap in the mRNA or a preceeding   |
+                | match (i.e. the base case of the open miRNA gap score formular).   |
+                | Since we are neither in the first row nor in the first column we   |
+                | can try to match the two nucleotides without adding a gap in one   |
+                | of the sequences. After calculating all possible scores we add all |
+                | those predecessors leading to the maximum to the overall score     |
+                | matrix cell (i.e. the full recursive step of the overall score     |
+                | formular).                                                         |
+                | Note that we need to remove the predecessors from our vector       |
+                | before we can re-use it for another alignment matrix cell:         |
+                 \******************************************************************/
+                alignmentScore open_score(matrix_overall[index_left].get_score()+
+                                          miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score());
+                alignmentScore extend_score(matrix_mRNA_gap[index_left].get_score()+
+                                            miRNA_it->get_match(mRNA_gap,match_pos,Extend).get_score());
+                alignmentScore best_score(std::max(open_score,extend_score));
+                if(open_score==best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_left]);
+                }
+                if(extend_score==best_score)
+                {
+                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
+                }
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                predecessors.erase(predecessors.begin(),predecessors.end());
+                predecessors.push_back(&matrix_overall[index_up]);
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
+                                                              matrix_overall[index_up].get_score()+
+                                                              mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score(),
+                                                              predecessors);
+                predecessors.pop_back();
+                best_score = std::max(best_score,matrix_miRNA_gap[index].get_score());
+                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
+                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
+                if(match_score >= best_score)
+                {
+                  best_score = match_score;
+                  predecessors.push_back(&matrix_overall[index_upleft]);
+                }
+                if(open_score == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_left]);
+                }
+                if(extend_score == best_score)
+                {
+                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
+                }
+                if(matrix_miRNA_gap[index].get_score() == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_up]);
+                }
+                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+              } // row ==1 && column > 1
+               /******************************************************************\ 
+              | Since we now have completed the second row of the matrices we have |
+              | calculated the second overall alignment score which might be yet   |
+              | the best score:                                                    |
+               \******************************************************************/
+              if(column==miRNA_length-1 && matrix_overall[index].get_score()>best_overall_score) // new best overall score
+              {
+                best_overall_score = matrix_overall[index].get_score();
+              } // new best overall score
+             /**************************************************************\ 
+            | The seventh special case is the remainder of the first column: |
+             \**************************************************************/
+            } // row == 1
+            else // row > 1
+            {
+              if(column==0) // row > 1 && column == 0
+              {
+                 /*****************************************************************\ 
+                | Since we are in the first column, there cannot be any gap in the  |
+                | mRNA (i.e. undefined in the open mRNA gap score formular) and     |
+                | since we are behind the second row there must be at least one gap |
+                | in the mRNA (i.e. the gap open case of the open mRNA gap score    |
+                | formular can be omitted).                                         |
+                | Since we are in the first row there is no other option than       |
+                | inserting a miRNA gap and thus the overall score equals the open  |
+                | miRNA gap score in any case:                                      |
+                 \*****************************************************************/
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
+                predecessors.push_back(&matrix_miRNA_gap[index_up]);
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
+                                                              matrix_miRNA_gap[index_up].get_score()+
+                                                              mRNA_it->get_match(miRNA_gap,match_pos,Extend).get_score(),
+                                                              predecessors);
+                matrix_overall[index] = matrix_miRNA_gap[index];
+              } // row > 1 && column == 0
+               /**************************************************************\ 
+              | The eight and last special case is the remainder of the second |
+              | column:                                                        |
+               \**************************************************************/
+              else if(column==1) // row > 1 && column == 1
+              {
+                 /******************************************************************\ 
+                | Since we are in the second column, there cannot be a be any        |
+                | preceeding gap in the mRNA but there has must be a preceeding gap  |
+                | in the miRNA or a preceeding match (i.e. the base case of the open |
+                | mRNA gap score formular) but since we are behind the second row,   |
+                | there could be a preceeding gap in the miRNA thus we need to check |
+                | whether it is better to open  a new one or to extend the existing  |
+                | one (i.e. the full recursive step of the open mRNA gap score       |
+                | formular).                                                         |
+                | Since we are neither in the first row nor in the first column we   |
+                | can try to match the two nucleotides without adding a gap in one   |
+                | of the sequences. After calculating all possible scores we add all |
+                | those predecessors leading to the maximum to the overall score     |
+                | matrix cell (i.e. the full recursive step of the overall score     |
+                | formular).                                                         |
+                | Note that we need to remove the predecessors from our vector       |
+                | before we can re-use it for another alignment matrix cell:         |
+                 \******************************************************************/
+                predecessors.push_back(&matrix_overall[index_left]);
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
+                                                             matrix_overall[index_left].get_score()+
+                                                             miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score(),
+                                                             predecessors);
+                predecessors.pop_back();
+                alignmentScore open_score(matrix_overall[index_up].get_score()+
+                                          mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score());
+                alignmentScore extend_score(matrix_miRNA_gap[index_up].get_score()+
+                                            mRNA_it->get_match(miRNA_gap,match_pos,Extend).get_score());
+                alignmentScore best_score(std::max(open_score,extend_score));
+                if(open_score==best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_up]);
+                }
+                if(extend_score==best_score)
+                {
+                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
+                }
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                predecessors.erase(predecessors.begin(),predecessors.end());
+                best_score = std::max(best_score,matrix_mRNA_gap[index].get_score());
+                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
+                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
+                if(match_score >= best_score)
+                {
+                  best_score = match_score;
+                  predecessors.push_back(&matrix_overall[index_upleft]);
+                }
+                if(open_score == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_up]);
+                }
+                if(extend_score == best_score)
+                {
+                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
+                }
+                if(matrix_mRNA_gap[index].get_score() == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_left]);
+                }
+                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+              } // row > 1 && column == 1
+               /************************************************************\ 
+              | The last case is the default one and is applied to the whole |
+              | matrices except the first to columns and rows:               |
+               \************************************************************/
+              else // row > 1 && column > 1
+              {
+                 /******************************************************************\ 
+                | Since we are behind the second column, there could be a preceeding |
+                | gap in the mRNA thus we need to check whether it is better to open |
+                | a new one or to extend the existing one (i.e. the full recursive   |
+                | step of the open mRNA gap score formular) and since we are behind  |
+                | the second row, the same argumentation holds for the miRNA.        |
+                | Since we are neither in the first row nor in the first column we   |
+                | can try to match the two nucleotides without adding a gap in one   |
+                | of the sequences. After calculating all possible scores we add all |
+                | those predecessors leading to the maximum to the overall score     |
+                | matrix cell (i.e. the full recursive step of the overall score     |
+                | formular).                                                         |
+                | Note that we need to remove the predecessors from our vector       |
+                | before we can re-use it for another alignment matrix cell:         |
+                 \******************************************************************/
+                alignmentScore mRNA_open_score(matrix_overall[index_left].get_score()+
+                                               miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score());
+                alignmentScore mRNA_extend_score(matrix_mRNA_gap[index_left].get_score()+
+                                                 miRNA_it->get_match(mRNA_gap,match_pos,Extend).get_score());
+                alignmentScore best_score(std::max(mRNA_open_score,mRNA_extend_score));
+                if(mRNA_open_score==best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_left]);
+                }
+                if(mRNA_extend_score==best_score)
+                {
+                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
+                }
+                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                predecessors.erase(predecessors.begin(),predecessors.end());
+                alignmentScore miRNA_open_score(matrix_overall[index_up].get_score()+
+                                                mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score());
+                alignmentScore miRNA_extend_score(matrix_miRNA_gap[index_up].get_score()+
+                                                  mRNA_it->get_match(miRNA_gap,match_pos,Extend).get_score());
+                best_score = std::max(miRNA_open_score,miRNA_extend_score);
+                if(miRNA_open_score==best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_up]);
+                }
+                if(miRNA_extend_score==best_score)
+                {
+                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
+                }
+                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                predecessors.erase(predecessors.begin(),predecessors.end());
+                best_score = std::max(best_score,matrix_mRNA_gap[index].get_score());
+                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
+                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
+                if(match_score >= best_score)
+                {
+                  best_score = match_score;
+                  predecessors.push_back(&matrix_overall[index_upleft]);
+                }
+                if(mRNA_open_score == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_left]);
+                }
+                if(mRNA_extend_score == best_score)
+                {
+                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
+                }
+                if(miRNA_open_score == best_score)
+                {
+                  predecessors.push_back(&matrix_overall[index_up]);
+                }
+                if(miRNA_extend_score == best_score)
+                {
+                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
+                }
+                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+              } // row > 1 && column > 1
+               /*****************************************************************\ 
+              | Each time we completed another row of the matrices we have        |
+              | calculated another overall alignment score which might be yet the |
+              | the best score:                                                   |
+               \*****************************************************************/
+              if(column==miRNA_length-1 && matrix_overall[index].get_score()>best_overall_score) // new best overall score
+              {
+                best_overall_score = matrix_overall[index].get_score();
+              } // new best overall score
+            } // row > 1
+          }  // mRNA_it
+        } // miRNA_it
+      } // mRNA_length != 0 && miRNA_length != 0
+       /*******************************************************\ 
+      | In the end we return the score of an optimal alignment: |
+       \*******************************************************/
+      return best_overall_score;
+      
 }
 
     /*****************************************************************//**
