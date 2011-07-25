@@ -178,16 +178,15 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     *     alignment matrix that should hold the values for the optimal
     *     alignments up to each cells coordinates where there is an open
     *     gap in the miRNA in the last alignment column
-    * @param matrix_no_gap pointer to the [0][0] element of the alignment
+    * @param matrix_overall pointer to the [0][0] element of the alignment
     *     matrix that should hold the values for the optimal alignments up
-    *     to each cells coordinates where there is no open gap in the last
-    *     alignment column
+    *     to each cells coordinates
     * @param the_mRNA const reference to the mRNA to align
     * @param the_miRNA const reference to the miRNA to align
     *
     * @return the optimal alignment score
     *********************************************************************/
-    alignmentScore optimalAlignmentList::fill_matrices(alignmentMatrixCell * matrix_mRNA_gap, alignmentMatrixCell * matrix_miRNA_gap, alignmentMatrixCell * matrix_no_gap, const mRNA & the_mRNA, const miRNA & the_miRNA)
+    alignmentScore optimalAlignmentList::fill_matrices(alignmentMatrixCell * matrix_mRNA_gap, alignmentMatrixCell * matrix_miRNA_gap, alignmentMatrixCell * matrix_overall, const mRNA & the_mRNA, const miRNA & the_miRNA)
     {
 }
 
