@@ -5,6 +5,9 @@
 #include "nucleotide.h"
 #include <vector>
 
+namespace microSNPscore { class mRNA; } 
+namespace microSNPscore { class miRNA; } 
+
 namespace microSNPscore {
 
 /*****************************************************************//**
@@ -372,9 +375,9 @@ class alignmentMatrixCell {
     * @param the_score score of an optimal aligment up to this cell
     * @param the_predecessors vector containing pointers to the cells that
     *     are part of an optimal alignment up to the cell
+    *
     * @return an alignment matrix cell with the given attributes
     *********************************************************************/
-    
     alignmentMatrixCell(sequencePosition the_mRNA_position = 0, sequencePosition the_miRNA_position = 0, alignmentScore the_score = 0, const std::vector<const alignmentMatrixCell *> & the_predecessors = std::vector<const alignmentMatrixCell *>());
 
     /*****************************************************************//**
@@ -538,7 +541,18 @@ class optimalAlignmentList {
     *********************************************************************/
     typedef std::vector<alignment>::const_iterator const_iterator;
 
-    optimalAlignmentList();
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create an instance of the class optimalAlignmentList
+    * by aligning a given mRNA to a given miRNA.
+    *
+    * @param the_mRNA mRNA to be aligned
+    * @param the_miRNA miRNA to be aligned
+    *
+    * @return an optimal alignment list for the given mRNA:miRNA-duplex
+    *********************************************************************/
+    optimalAlignmentList(const mRNA & the_mRNA, const miRNA & the_miRNA);
 
     /*****************************************************************//**
     * @brief alignment list begin
@@ -564,15 +578,28 @@ class optimalAlignmentList {
     * @brief fill alignment matrices
     *
     * This method is used to calculate the values of the cells of the
-    * alignment matrices.
-    * The given matrices are assumed to have proper dimension, otherwise
+    * alignment matrices as well as the optimal alignment's score.
+    * The given matrices are assumed to have proper dimensions, otherwise
     * the behavior is undefined.
     *
-    * @param
+    * @param matrix_mRNA_gap pointer to the [0][0] element of the
+    *     alignment matrix that should hold the values for the optimal
+    *     alignments up to each cells coordinates where there is an open
+    *     gap in the mRNA in the last alignment column
+    * @param matrix_miRNA_gap pointer to the [0][0] element of the
+    *     alignment matrix that should hold the values for the optimal
+    *     alignments up to each cells coordinates where there is an open
+    *     gap in the miRNA in the last alignment column
+    * @param matrix_no_gap pointer to the [0][0] element of the alignment
+    *     matrix that should hold the values for the optimal alignments up
+    *     to each cells coordinates where there is no open gap in the last
+    *     alignment column
+    * @param the_mRNA const reference to the mRNA to align
+    * @param the_miRNA const reference to the miRNA to align
     *
     * @return the optimal alignment score
     *********************************************************************/
-    static alignmentScore fill_matrices();
+    static alignmentScore fill_matrices(alignmentMatrixCell * matrix_mRNA_gap, alignmentMatrixCell * matrix_miRNA_gap, alignmentMatrixCell * matrix_no_gap, const mRNA & the_mRNA, const miRNA & the_miRNA);
 
     /*****************************************************************//**
     * @brief recursive alignment calculation
@@ -582,10 +609,24 @@ class optimalAlignmentList {
     * and a given overall score and appending them to a given alignment
     * vector. The score is NOT checked against the alignment column scores
     * to improve performance.
+    * The parameters @p first_call, @p the_score and @p postfix should be
+    * left to the standard values. They only need to be changed for the
+    * (intern) recursive calls.
     *
-    * @param
+    * @param cell pointer to the alingment matrix cell up to which the
+    *     backtrace should be performed
+    * @param alignment_vector reference to the vector the backtraced
+    *     alignments should be added to
+    * @param (optional/intern) first_call boolean telling whether this is
+    *     the first call (i.e. top of the recursion) - Defaults to True
+    * @param (optional/intern) the_score alignment score of the backtraced
+    *     alignments - Defaults to 0
+    * @param (optional/intern) postfix pointer to a vector containing the
+    *     alignment columns following the backtraced part - Defaults to
+    *     empty
     *********************************************************************/
-    static void backtrace_alignments();
+    
+    static void backtrace_alignments(alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call = true, alignmentScore the_score = 0, std::vector<alignmentColumn> * postfix = new std::vector<alignmentColumn>);
 
     /*****************************************************************//**
     * @brief alignment vector
