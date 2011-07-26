@@ -4,6 +4,7 @@
 #include "mRNA.h"
 #include "miRNA.h"
 #include "sequenceFile.h"
+#include "alignment.h"
 
 using namespace microSNPscore;
 
@@ -111,4 +112,6 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   {
     std::cout << *entry_it;
   }
+  std::cout << "If we align the relevant BCL2 substring with miR195 we get:\n";
+  std::cout << optimalAlignmentList(BCL2.get_subsequence_for_alignment(60793322),miR195);
 }
