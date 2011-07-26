@@ -149,8 +149,17 @@ class matchType {
     *
     * This is the identifiers of the match state (Indel, Mismatch, Masked,
     * Wobble, Match).
+    * It should be const but because match types shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
     *********************************************************************/
-    const matchIdentifier identifier;
+    matchIdentifier identifier;
 
     /*****************************************************************//**
     * @brief match state score
@@ -158,36 +167,45 @@ class matchType {
     * This is the score of the match state according to the miRanda
     * scoring scheme (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
     * Masked: -1, Wobble: -1, Match: +5).
+    * It should be const but because match types shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which is in fact not
+    * designed to be used directly but only provided to allow array
+    * allocation which is needed to create containers, too.
     *********************************************************************/
-    const matchScore score;
+    matchScore score;
 
 };
-/*****************************************************************//**
-* @brief get method for identifier attribute
-*
-* This method is used to access the identifier (Indel, Mismatch,
-* Masked, Wobble, Match) of the match type.
-*
-* @return the identifier (Indel, Mismatch, Masked, Wobble, Match)
-* of the match type.
-*********************************************************************/
-inline const matchIdentifier matchType::get_identifier() const {
-  return identifier;
-}
+    /*****************************************************************//**
+    * @brief get method for identifier attribute
+    *
+    * This method is used to access the identifier (Indel, Mismatch,
+    * Masked, Wobble, Match) of the match type.
+    *
+    * @return the identifier (Indel, Mismatch, Masked, Wobble, Match)
+    * of the match type.
+    *********************************************************************/
+    inline const matchIdentifier matchType::get_identifier() const {
+      return identifier;
+    }
 
-/*****************************************************************//**
-* @brief get method for score attribute
-*
-* This method is used to access the score of the match type.
-* The scoring scheme is taken from miRanda because mirSVR was trained
-* with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
-* Masked: -1, Wobble: -1, Match: +5).
-*
-* @return the score of the match type.
-*********************************************************************/
-inline const matchScore matchType::get_score() const {
-  return score;
-}
+    /*****************************************************************//**
+    * @brief get method for score attribute
+    *
+    * This method is used to access the score of the match type.
+    * The scoring scheme is taken from miRanda because mirSVR was trained
+    * with miRanda alignments (IndelOpen: -9 IndelExtend: -4 Mismatch: -3,
+    * Masked: -1, Wobble: -1, Match: +5).
+    *
+    * @return the score of the match type.
+    *********************************************************************/
+    inline const matchScore matchType::get_score() const {
+      return score;
+    }
 
 /*****************************************************************//**
 * @brief nucleotide class

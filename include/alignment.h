@@ -10,6 +10,8 @@ namespace microSNPscore { class miRNA; }
 
 namespace microSNPscore {
 
+class alignmentMatrixCell; // to allow reverse dependency with alignmentMatrixCellEntry
+class overallMatrixCell; // to allow reverse dependency with openGapMatrixCell
 /*****************************************************************//**
 * @brief Alignment column class
 *
@@ -346,64 +348,129 @@ class alignment {
 *
 * This represents a cell in an alignment matrix.
 *********************************************************************/
+class alignmentMatrixCellEntry {
+  public:
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create an instance of the class
+    * alignmentMatrixCellEntry.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
+    *
+    * @param the_column (pseudo-optional) alignmentColumn corresponding to
+    *     the entry - Defaults to uninitialized
+    * @param the_predecessor (pseudo-optional) pointer to the alignment
+    *     matrix cell preceeding the entry in an optimal alignment up to
+    *     its cell - Defaults to NULL
+    *
+    * @return an alignment matrix cell entry with the given attributes
+    *********************************************************************/
+    
+    alignmentMatrixCellEntry(const alignmentColumn & the_column = alignmentColumn(), const alignmentMatrixCell * the_predecessor = NULL);
+
+    /*****************************************************************//**
+    * @brief get method for alignment column attribute
+    *
+    * This method is used to access the alignment column corresponding to
+    * the entry.
+    *
+    * @return the entry's alignment cloumn
+    *********************************************************************/
+    inline const alignmentColumn get_column() const;
+
+    /*****************************************************************//**
+    * @brief get method for predecessor attribute
+    *
+    * This method is used to access the cell that predecesses the entry in
+    * an optimal alignment up to its cell.
+    *
+    * @return a pointer to the entry's predecessor
+    *********************************************************************/
+    inline const alignmentMatrixCell * get_predecessor() const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief alignment column
+    *
+    * This is the alignment column corresponding to this entry.
+    *********************************************************************/
+    alignmentColumn column;
+
+    /*****************************************************************//**
+    * @brief predecessor vector
+    *
+    * This is a pointers to the cell that predecesses this entry in an
+    * optimal alignment up to this cell.
+    *********************************************************************/
+    const alignmentMatrixCell * predecessor;
+
+};
+    /*****************************************************************//**
+    * @brief get method for alignment column attribute
+    *
+    * This method is used to access the alignment column corresponding to
+    * the entry.
+    *
+    * @return the entry's alignment cloumn
+    *********************************************************************/
+    inline const alignmentColumn alignmentMatrixCellEntry::get_column() const {
+      return column;
+    }
+
+    /*****************************************************************//**
+    * @brief get method for predecessor attribute
+    *
+    * This method is used to access the cell that predecesses the entry in
+    * an optimal alignment up to its cell.
+    *
+    * @return a pointer to the entry's predecessor
+    *********************************************************************/
+    inline const alignmentMatrixCell * alignmentMatrixCellEntry::get_predecessor() const {
+      return predecessor;
+    }
+
+/*****************************************************************//**
+* @brief alignment matrix cell class
+*
+* This represents a cell in an alignment matrix it is thought as base
+* class for the cells of the two different kinds of alignment matrices
+* (the one containing overall scores and those storing alignments that
+* end with a gap in their associated sequence).
+*********************************************************************/
 class alignmentMatrixCell {
   public:
     /*****************************************************************//**
     * @brief const iterator type
     *
-    * This type is used to access the alignment matrix cell's
-    * predecessors.
+    * This type is used to access the entries of the alignment matrix
+    * cell.
     *********************************************************************/
     
-    typedef std::vector<const alignmentMatrixCell *>::const_iterator const_iterator;
+    typedef std::vector<alignmentMatrixCellEntry>::const_iterator const_iterator;
 
     /*****************************************************************//**
-    * @brief constructor
+    * @brief entry begin
     *
-    * This is used to create an instance of the class alignmentMatrixCell.
-    * The default values are not intended to be used directly.
-    * They are only provided to allow array allocation but you will need
-    * to assign a valid object created by giving those parameters a value
-    * to actually use it. The reason for providing those default values is
-    * to allow using (two-dimensional) arrays (beeing the alignment
-    * matrices) containing objects of this class.
+    * This is used to get the first entry of the cell.
     *
-    * @param the_mRNA_nucleotide (pseudo-optional) pointer to the mRNA
-    *     nucleotide corresponding to the alignment matrix row holding the
-    *     cell - Defaults to NULL
-    * @param the_miRNA_nucleotide (pseudo-optional) pointer to the miRNA
-    *     nucleotide corresponding to the alignment matrix column holding
-    *     the cell - Defaults to NULL
-    * @param the_score (pseudo-optional) score of an optimal aligment up
-    *     to this cell - Defaults to 0
-    * @param the_predecessors (pseudo-optional) vector containing pointers
-    *     to the cells that are part of an optimal alignment up to the
-    *     cell - Defaults to empty
-    *
-    * @return an alignment matrix cell with the given attributes
+    * @return const_iterator pointing to the first entry of the cell
     *********************************************************************/
-    
-    alignmentMatrixCell(const nucleotide * the_mRNA_nucleotide = NULL, const nucleotide * the_miRNA_nucleotide = NULL, alignmentScore the_score = 0, const std::vector<const alignmentMatrixCell *> & the_predecessors = std::vector<const alignmentMatrixCell *>());
+    inline const_iterator begin() const;
 
     /*****************************************************************//**
-    * @brief get method for mRNA nucleotide attribute
+    * @brief entry end
     *
-    * This method is used to access the mRNA nucleotide corresponding to
-    * the alignment matrix row holding the cell.
+    * This is used to get the end of the cell's entry vector.
     *
-    * @return a pointer to the mRNA position of the cell
+    * @return const_iterator pointing behind last entry of the cell
     *********************************************************************/
-    inline const nucleotide * get_mRNA_nucleotide() const;
-
-    /*****************************************************************//**
-    * @brief get method for miRNA nucleotide attribute
-    *
-    * This method is used to access the miRNA nucleotide corresponding to
-    * the alignment matrix column holding the cell.
-    *
-    * @return a pointer to the miRNA position of the cell
-    *********************************************************************/
-    inline const nucleotide * get_miRNA_nucleotide() const;
+    inline const_iterator end() const;
 
     /*****************************************************************//**
     * @brief get method for alignment score attribute
@@ -415,43 +482,33 @@ class alignmentMatrixCell {
     *********************************************************************/
     inline const alignmentScore get_score() const;
 
+
+  protected:
     /*****************************************************************//**
-    * @brief predecessors begin
+    * @brief constructor
     *
-    * This is used to get a pointer to first predecessor of the cell.
+    * This is used to create an instance of the class alignmentMatrixCell.
+    * Because it is not intended to bo used directly, it is declared
+    * protected. It is only provided to have a standard constructor the
+    * inherited classes can use. The reason for providing those
+    * constructors is to allow using (two-dimensional) arrays (beeing the
+    * alignment matrices) containing objects of those classes.
     *
-    * @return const_iterator pointing to a pointer to the cell's first
-    *      predecessor
+    * @param the_entries (optional) a vector containing the entrys of the
+    *      alignment cell - Defaults to empty
+    * @param the_score (optional) score the alignment cell - Defaults to 0
+    *
+    * @return an alignment matrix cell with the given parameters.
     *********************************************************************/
-    inline const_iterator predecessors_begin() const;
+    
+    alignmentMatrixCell(const std::vector<alignmentMatrixCellEntry> & the_entries = std::vector<alignmentMatrixCellEntry>(), const alignmentScore the_score = 0);
 
     /*****************************************************************//**
-    * @brief predecessors end
+    * @brief cell entry vector
     *
-    * This is used to get the end of the cell's predecessor vector.
-    *
-    * @return const_iterator pointing behind the pointer to the cell's
-    *     last predecessor
+    * This is a vector containing the cell's entries.
     *********************************************************************/
-    inline const_iterator predecessors_end() const;
-
-
-  private:
-    /*****************************************************************//**
-    * @brief position in mRNA
-    *
-    * This is a pointer to the mRNA nucleotide corresponding to the
-    * alignment matrix row holding this cell.
-    *********************************************************************/
-    const nucleotide * mRNA_nucleotide;
-
-    /*****************************************************************//**
-    * @brief position in miRNA
-    *
-    * This is a pointer to the miRNA nucleotide corresponding to the
-    * alignment matrix column holding this cell.
-    *********************************************************************/
-    const nucleotide * miRNA_nucleotide;
+    std::vector<alignmentMatrixCellEntry> entries;
 
     /*****************************************************************//**
     * @brief alignment score
@@ -460,38 +517,28 @@ class alignmentMatrixCell {
     *********************************************************************/
     alignmentScore score;
 
-    /*****************************************************************//**
-    * @brief predecessor vector
-    *
-    * This is a vector containing pointers to the cells that are part of
-    * an optimal alignment up to this cell.
-    *********************************************************************/
-    std::vector<const alignmentMatrixCell *> predecessors;
-
 };
     /*****************************************************************//**
-    * @brief get method for mRNA nucleotide attribute
+    * @brief entry begin
     *
-    * This method is used to access the mRNA nucleotide corresponding to
-    * the alignment matrix row holding the cell.
+    * This is used to get the first entry of the cell.
     *
-    * @return a pointer to the mRNA position of the cell
+    * @return const_iterator pointing to the first entry of the cell
     *********************************************************************/
-    inline const nucleotide * alignmentMatrixCell::get_mRNA_nucleotide() const {
-      return mRNA_nucleotide;
-    }
+    inline alignmentMatrixCell::const_iterator alignmentMatrixCell::begin() const {
+      return entries.begin();
+}
 
     /*****************************************************************//**
-    * @brief get method for miRNA nucleotide attribute
+    * @brief entry end
     *
-    * This method is used to access the miRNA nucleotide corresponding to
-    * the alignment matrix column holding the cell.
+    * This is used to get the end of the cell's entry vector.
     *
-    * @return a pointer to the miRNA position of the cell
+    * @return const_iterator pointing behind last entry of the cell
     *********************************************************************/
-    inline const nucleotide * alignmentMatrixCell::get_miRNA_nucleotide() const {
-      return miRNA_nucleotide;
-    }
+    inline alignmentMatrixCell::const_iterator alignmentMatrixCell::end() const {
+      return entries.end();
+}
 
     /*****************************************************************//**
     * @brief get method for alignment score attribute
@@ -505,30 +552,216 @@ class alignmentMatrixCell {
       return score;
     }
 
+/*****************************************************************//**
+* @brief overall-matrix cell class
+*
+* This represents a cell in one of the open-gap-matrices (those
+* containing the score of the best alignment up to each cell that end
+* with a gap in their associated sequence).
+*********************************************************************/
+
+class openGapMatrixCell : public alignmentMatrixCell {
+  public:
     /*****************************************************************//**
-    * @brief predecessors begin
+    * @brief constructor
     *
-    * This is used to get a pointer to first predecessor of the cell.
+    * This is used to construct a cell in a open-gap-matrix (except the
+    * first row and column as well as the second row of the open-miRNA-
+    * gap-matrix and the the second column of the open-mRNA-gap-matrix)
+    * (i.e. where there could be a preceding gap in the corresponding
+    * sequence).
+    * It will have entries for all steps leading to a best scoring
+    * alignment up to the cell ending with a gap in the corresponding
+    * sequence.
     *
-    * @return const_iterator pointing to a pointer to the cell's first
-    *      predecessor
+    * @param preceding_open_gap_cell const reference to open-gap-matrix
+    *     cell that comes before the new inserted gap (one row up for
+    *     open-miRNA-gap-matrix or one column left for open-mRNA-gap-
+    *     matrix)
+    * @param preceding_overall_cell const reference to overall-matrix cell
+    *     that comes before the new inserted gap (one row up for open-
+    *     miRNA-gap-matrix or one column left for open-mRNA-gap-matrix)
+    * @param miRNA_nucleotide const reference to the miRNA nucleotide
+    *     corresponing to the column of the open-gap-matrix cell that
+    *     should be created (beeing a gap for open-miRNA-gap-matrix)
+    * @param mRNA_nucleotide const reference to the mRNA nucleotide
+    *     corresponing to the row of the open-gap-matrix cell that schould
+    *     be created (beeing a gap for open-mRNA-gap-matrix)
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an open-gap-matrix cell with one entry for every step that
+    *     is part of an optimal alignment up to the cell ending with a gap
+    *     in the corresponding sequence
     *********************************************************************/
-    inline alignmentMatrixCell::const_iterator alignmentMatrixCell::predecessors_begin() const {
-      return predecessors.begin();
-}
+    
+    openGapMatrixCell(const openGapMatrixCell & preceding_open_gap_cell, const overallMatrixCell & preceding_overall_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position);
 
     /*****************************************************************//**
-    * @brief predecessors end
+    * @brief first row and column constructor
     *
-    * This is used to get the end of the cell's predecessor vector.
+    * This is used to construct a cell in the first row of the open-
+    * mRNA-gap-matrix (except the first two columns) or the first column
+    * of the open-mRNA-gap-matrix (except the first two rows) (i.e. the
+    * first definded row/column where there must be a preceding gap in the
+    * corresponding sequence).
+    * It will have one entry extending the existing gap in the
+    * corresponding sequence with the given gap.
     *
-    * @return const_iterator pointing behind the pointer to the cell's
-    *     last predecessor
+    * @param preceding_open_gap_cell const reference to open-gap-matrix
+    *     cell that comes before the new inserted gap (one row up for
+    *     open-miRNA-gap-matrix or one column left for open-mRNA-gap-
+    *     matrix)
+    * @param miRNA_nucleotide const reference to the miRNA nucleotide
+    *     corresponing to the column of the open-gap-matrix cell that
+    *     should be created (beeing a gap for open-miRNA-gap-matrix)
+    * @param mRNA_nucleotide const reference to the mRNA nucleotide
+    *     corresponing to the row of the open-gap-matrix cell that schould
+    *     be created (beeing a gap for open-mRNA-gap-matrix)
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an open-gap-matrix cell with one entry extending an open gap
     *********************************************************************/
-    inline alignmentMatrixCell::const_iterator alignmentMatrixCell::predecessors_end() const {
-      return predecessors.end();
-}
+    openGapMatrixCell(const openGapMatrixCell & preceding_open_gap_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position);
 
+    /*****************************************************************//**
+    * @brief second row and column constructor
+    *
+    * This is used to construct a cell in the second row of the open-
+    * miRNA-gap-matrix or the second column of the open-mRNA-gap-matrix
+    * (i.e. the first definded row/column where there cannot be a
+    * preceding gap in the corresponding sequence).
+    * It will have one entry inserting the given gap in the corresponding
+    * sequence.
+    *
+    * @param preceding_overall_cell const reference to overall-matrix cell
+    *     that comes before the new inserted gap (one row up for open-
+    *     miRNA-gap-matrix or one column left for open-mRNA-gap-matrix)
+    * @param miRNA_nucleotide const reference to the miRNA nucleotide
+    *     corresponing to the column of the open-gap-matrix cell that
+    *     should be created (beeing a gap for open-miRNA-gap-matrix)
+    * @param mRNA_nucleotide const reference to the mRNA nucleotide
+    *     corresponing to the row of the open-gap-matrix cell that schould
+    *     be created (beeing a gap for open-mRNA-gap-matrix)
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an open-gap-matrix cell with one entry opening a new gap
+    *********************************************************************/
+    
+    openGapMatrixCell(const overallMatrixCell & preceding_overall_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position = ThreePrime);
+
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to construct an object of the class openGapMatrixCell.
+    * It is not intended to bo used directly. It is only provided to
+    * allow using(two-dimensional) arrays (beeing the open gap score
+    * alignment matrices) containing objects of this class.
+    *
+    * @return an open-gap-matrix cell with no entries and a score of 0.
+    *********************************************************************/
+    openGapMatrixCell();
+
+};
+/*****************************************************************//**
+* @brief overall-matrix cell class
+*
+* This represents a cell in the overall-matrix (the one containing
+* the score of the overall best alignment up to each cell).
+*********************************************************************/
+
+class overallMatrixCell : public alignmentMatrixCell {
+  public:
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to construct the cells of the overall score matrix
+    * (except the first row and column).
+    * It will have all entrys entries out of those of the given open gap
+    * matrix cells and the one matching the given nucleotides that lead to
+    * the best score.
+    *
+    * @param upper_left_overall_cell const reference to the overall-matrix
+    *     cell one row up and one column left from the overall score
+    *     matrix cell to create.
+    * @param miRNA_open_gap_cell const reference to the open-miRNA-gap-
+    *     matrix cell with the same coordinates as the overall-matrix cell
+    *     to create
+    * @param miRNA_open_gap_cell const reference to the open-miRNA-gap-
+    *     matrix cell with the same coordinates as the overall-matrix cell
+    *     to create
+    * @param miRNA_nucleotide const reference to the nucleotide of the
+    *    miRNA that corresponds to the row of the overall-matrix cell to
+    *    create
+    * @param mRNA_nucleotide const reference to the nucleotide of the mRNA
+    *    that corresponds to the column of the overall-matrix cell to
+    *    create
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an overall-matrix cell with the optimal score and all
+    *     entries leading to it
+    *********************************************************************/
+    
+    overallMatrixCell(const overallMatrixCell & upper_left_overall_cell, const openGapMatrixCell & miRNA_open_gap_cell, const openGapMatrixCell & mRNA_open_gap_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position);
+
+    /*****************************************************************//**
+    * @brief first row and column constructor
+    *
+    * This is used to construct the cells in the first row and column of
+    * the overall score matrix (except the upper left corner).
+    * It will have the same entries and score as the given open gap matrix
+    * cell (which should have only one entry by the way).
+    *
+    * @param open_gap_cell const reference to the open-gap-matrix cell
+    *     with the same coordinates as the overall-matrix cell to create
+    *     (open-mRNA-gap-matrix for the first row and open-miRNA-gap-
+    *     matrix for the first column)
+    *
+    * @return an overall-matrix cell with the same entries and score as
+    *     the given open gap matrix cell
+    *********************************************************************/
+    
+    overallMatrixCell(const openGapMatrixCell & open_gap_cell);
+
+    /*****************************************************************//**
+    * @brief upper left corner constructor
+    *
+    * This is used to construct the upper left corner of the overall score
+    * matrix.
+    * It will have one entry aligning the given nucleotides without taking
+    * the match score into account (Since the miRNA's 3' end is needed for
+    * RISC (RNA-induced silencing complex) binding.
+    *
+    * @param miRNA_five_prime const reference to the nucleotide at the 5'
+    *     end of the miRNA
+    * @param mRNA_three_prime const reference to the nucleotide at the 3'
+    *     end of the mRNA
+    *
+    * @return an overall-matrix cell with one entry aligning the given
+    *     nucleotides and a score of 0.
+    *********************************************************************/
+    overallMatrixCell(const nucleotide & miRNA_five_prime, const nucleotide & mRNA_three_prime);
+
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to construct an object of the class overallMatrixCell.
+    * It is not intended to bo used directly. It is only provided to
+    * allow using a (two-dimensional) array (beeing the overall score
+    * alignment matrices) containing objects of this class.
+    *
+    * @return an overall-matrix cell with no entries and a score of 0.
+    *********************************************************************/
+    overallMatrixCell();
+
+};
 /*****************************************************************//**
 * @brief optimal alignment list class
 *
@@ -603,7 +836,7 @@ class optimalAlignmentList {
     *
     * @return the optimal alignment score
     *********************************************************************/
-    static alignmentScore fill_matrices(alignmentMatrixCell * matrix_mRNA_gap, alignmentMatrixCell * matrix_miRNA_gap, alignmentMatrixCell * matrix_overall, const mRNA & the_mRNA, const miRNA & the_miRNA);
+    static alignmentScore fill_matrices(openGapMatrixCell * matrix_mRNA_gap, openGapMatrixCell * matrix_miRNA_gap, overallMatrixCell * matrix_overall, const mRNA & the_mRNA, const miRNA & the_miRNA);
 
     /*****************************************************************//**
     * @brief recursive alignment calculation

@@ -105,31 +105,322 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     /*****************************************************************//**
     * @brief constructor
     *
-    * This is used to create an instance of the class alignmentMatrixCell.
+    * This is used to create an instance of the class
+    * alignmentMatrixCellEntry.
     * The default values are not intended to be used directly.
     * They are only provided to allow array allocation but you will need
     * to assign a valid object created by giving those parameters a value
-    * to actually use it. The reason for providing those default values is
-    * to allow using (two-dimensional) arrays (beeing the alignment
-    * matrices) containing objects of this class.
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
     *
-    * @param the_mRNA_nucleotide (pseudo-optional) pointer to the mRNA
-    *     nucleotide corresponding to the alignment matrix row holding the
-    *     cell - Defaults to NULL
-    * @param the_miRNA_nucleotide (pseudo-optional) pointer to the miRNA
-    *     nucleotide corresponding to the alignment matrix column holding
-    *     the cell - Defaults to NULL
-    * @param the_score (pseudo-optional) score of an optimal aligment up
-    *     to this cell - Defaults to 0
-    * @param the_predecessors (pseudo-optional) vector containing pointers
-    *     to the cells that are part of an optimal alignment up to the
-    *     cell - Defaults to empty
+    * @param the_column (pseudo-optional) alignmentColumn corresponding to
+    *     the entry - Defaults to uninitialized
+    * @param the_predecessor (pseudo-optional) pointer to the alignment
+    *     matrix cell preceeding the entry in an optimal alignment up to
+    *     its cell - Defaults to NULL
     *
-    * @return an alignment matrix cell with the given attributes
+    * @return an alignment matrix cell entry with the given attributes
     *********************************************************************/
     
-    alignmentMatrixCell::alignmentMatrixCell(const nucleotide * the_mRNA_nucleotide, const nucleotide * the_miRNA_nucleotide, alignmentScore the_score, const std::vector<const alignmentMatrixCell *> & the_predecessors)
-    :mRNA_nucleotide(the_mRNA_nucleotide),miRNA_nucleotide(the_miRNA_nucleotide),score(the_score),predecessors(the_predecessors) {
+    alignmentMatrixCellEntry::alignmentMatrixCellEntry(const alignmentColumn & the_column, const alignmentMatrixCell * the_predecessor)
+    :column(the_column),predecessor(the_predecessor) {
+}
+
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to create an instance of the class alignmentMatrixCell.
+    * Because it is not intended to bo used directly, it is declared
+    * protected. It is only provided to have a standard constructor the
+    * inherited classes can use. The reason for providing those
+    * constructors is to allow using (two-dimensional) arrays (beeing the
+    * alignment matrices) containing objects of those classes.
+    *
+    * @param the_entries (optional) a vector containing the entrys of the
+    *      alignment cell - Defaults to empty
+    * @param the_score (optional) score the alignment cell - Defaults to 0
+    *
+    * @return an alignment matrix cell with the given parameters.
+    *********************************************************************/
+    
+    alignmentMatrixCell::alignmentMatrixCell(const std::vector<alignmentMatrixCellEntry> & the_entries, alignmentScore the_score)
+    :entries(the_entries),score(the_score) {
+}
+
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to construct a cell in a open-gap-matrix (except the
+    * first row and column as well as the second row of the open-miRNA-
+    * gap-matrix and the the second column of the open-mRNA-gap-matrix)
+    * (i.e. where there could be a preceding gap in the corresponding
+    * sequence).
+    * It will have entries for all steps leading to a best scoring
+    * alignment up to the cell ending with a gap in the corresponding
+    * sequence.
+    *
+    * @param preceding_open_gap_cell const reference to open-gap-matrix
+    *     cell that comes before the new inserted gap (one row up for
+    *     open-miRNA-gap-matrix or one column left for open-mRNA-gap-
+    *     matrix)
+    * @param preceding_overall_cell const reference to overall-matrix cell
+    *     that comes before the new inserted gap (one row up for open-
+    *     miRNA-gap-matrix or one column left for open-mRNA-gap-matrix)
+    * @param miRNA_nucleotide const reference to the miRNA nucleotide
+    *     corresponing to the column of the open-gap-matrix cell that
+    *     should be created (beeing a gap for open-miRNA-gap-matrix)
+    * @param mRNA_nucleotide const reference to the mRNA nucleotide
+    *     corresponing to the row of the open-gap-matrix cell that schould
+    *     be created (beeing a gap for open-mRNA-gap-matrix)
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an open-gap-matrix cell with one entry for every step that
+    *     is part of an optimal alignment up to the cell ending with a gap
+    *     in the corresponding sequence
+    *********************************************************************/
+    
+    openGapMatrixCell::openGapMatrixCell(const openGapMatrixCell & preceding_open_gap_cell, const overallMatrixCell & preceding_overall_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position) {
+       /*****************************************************************\ 
+      | Calculate the best score of an alignment up to the cell opening a |
+      | new gap and that of one extending an open gap:                    |
+       \*****************************************************************/
+      alignmentColumn gap_open_column(mRNA_nucleotide,miRNA_nucleotide,match_position,Open);
+      alignmentColumn gap_extend_column(mRNA_nucleotide,miRNA_nucleotide,match_position,Extend);
+      alignmentScore gap_open_score(gap_open_column.get_match().get_score() + preceding_overall_cell.get_score());
+      alignmentScore gap_extend_score(gap_extend_column.get_match().get_score() + preceding_open_gap_cell.get_score());
+       /***************************************************************\ 
+      | Calculate the best score of an alingnment up to the cell ending |
+      | with a gap and add entries for those steps that score that good |
+      | before updating the score:                                      |
+       \***************************************************************/
+      alignmentScore best_score(std::max(gap_open_score,gap_extend_score));
+      if(gap_open_score == best_score)
+      {
+        entries.push_back(alignmentMatrixCellEntry(gap_open_column,&preceding_overall_cell));
+      }
+      if(gap_extend_score == best_score)
+      {
+        entries.push_back(alignmentMatrixCellEntry(gap_extend_column,&preceding_open_gap_cell));
+      }
+      score = best_score;
+}
+
+    /*****************************************************************//**
+    * @brief first row and column constructor
+    *
+    * This is used to construct a cell in the first row of the open-
+    * mRNA-gap-matrix (except the first two columns) or the first column
+    * of the open-mRNA-gap-matrix (except the first two rows) (i.e. the
+    * first definded row/column where there must be a preceding gap in the
+    * corresponding sequence).
+    * It will have one entry extending the existing gap in the
+    * corresponding sequence with the given gap.
+    *
+    * @param preceding_open_gap_cell const reference to open-gap-matrix
+    *     cell that comes before the new inserted gap (one row up for
+    *     open-miRNA-gap-matrix or one column left for open-mRNA-gap-
+    *     matrix)
+    * @param miRNA_nucleotide const reference to the miRNA nucleotide
+    *     corresponing to the column of the open-gap-matrix cell that
+    *     should be created (beeing a gap for open-miRNA-gap-matrix)
+    * @param mRNA_nucleotide const reference to the mRNA nucleotide
+    *     corresponing to the row of the open-gap-matrix cell that schould
+    *     be created (beeing a gap for open-mRNA-gap-matrix)
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an open-gap-matrix cell with one entry extending an open gap
+    *********************************************************************/
+    openGapMatrixCell::openGapMatrixCell(const openGapMatrixCell & preceding_open_gap_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position) {
+       /*****************************************************************\ 
+      | Calculate the best score of an alignment up to the cell extending |
+      | an open gap and create a new entry for it before updating the     |
+      | score:                                                            |
+       \*****************************************************************/
+      alignmentColumn gap_extend_column(mRNA_nucleotide,miRNA_nucleotide,match_position,Extend);
+      alignmentScore gap_extend_score(gap_extend_column.get_match().get_score() + preceding_open_gap_cell.get_score());
+      entries.push_back(alignmentMatrixCellEntry(gap_extend_column,&preceding_open_gap_cell));
+      score = gap_extend_score;
+}
+
+    /*****************************************************************//**
+    * @brief second row and column constructor
+    *
+    * This is used to construct a cell in the second row of the open-
+    * miRNA-gap-matrix or the second column of the open-mRNA-gap-matrix
+    * (i.e. the first definded row/column where there cannot be a
+    * preceding gap in the corresponding sequence).
+    * It will have one entry inserting the given gap in the corresponding
+    * sequence.
+    *
+    * @param preceding_overall_cell const reference to overall-matrix cell
+    *     that comes before the new inserted gap (one row up for open-
+    *     miRNA-gap-matrix or one column left for open-mRNA-gap-matrix)
+    * @param miRNA_nucleotide const reference to the miRNA nucleotide
+    *     corresponing to the column of the open-gap-matrix cell that
+    *     should be created (beeing a gap for open-miRNA-gap-matrix)
+    * @param mRNA_nucleotide const reference to the mRNA nucleotide
+    *     corresponing to the row of the open-gap-matrix cell that schould
+    *     be created (beeing a gap for open-mRNA-gap-matrix)
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an open-gap-matrix cell with one entry opening a new gap
+    *********************************************************************/
+    
+    openGapMatrixCell::openGapMatrixCell(const overallMatrixCell & preceding_overall_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position) {
+       /*****************************************************************\ 
+      | Calculate the best score of an alignment up to the cell opening a |
+      | new gap and create a new entry for it before updating the score:  |
+       \*****************************************************************/
+      alignmentColumn gap_open_column(mRNA_nucleotide,miRNA_nucleotide,match_position,Open);
+      alignmentScore gap_open_score(gap_open_column.get_match().get_score() + preceding_overall_cell.get_score());
+      entries.push_back(alignmentMatrixCellEntry(gap_open_column,&preceding_overall_cell));
+      score = gap_open_score;
+}
+
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to construct an object of the class openGapMatrixCell.
+    * It is not intended to bo used directly. It is only provided to
+    * allow using(two-dimensional) arrays (beeing the open gap score
+    * alignment matrices) containing objects of this class.
+    *
+    * @return an open-gap-matrix cell with no entries and a score of 0.
+    *********************************************************************/
+    openGapMatrixCell::openGapMatrixCell() {
+}
+
+    /*****************************************************************//**
+    * @brief constructor
+    *
+    * This is used to construct the cells of the overall score matrix
+    * (except the first row and column).
+    * It will have all entrys entries out of those of the given open gap
+    * matrix cells and the one matching the given nucleotides that lead to
+    * the best score.
+    *
+    * @param upper_left_overall_cell const reference to the overall-matrix
+    *     cell one row up and one column left from the overall score
+    *     matrix cell to create.
+    * @param miRNA_open_gap_cell const reference to the open-miRNA-gap-
+    *     matrix cell with the same coordinates as the overall-matrix cell
+    *     to create
+    * @param miRNA_open_gap_cell const reference to the open-miRNA-gap-
+    *     matrix cell with the same coordinates as the overall-matrix cell
+    *     to create
+    * @param miRNA_nucleotide const reference to the nucleotide of the
+    *    miRNA that corresponds to the row of the overall-matrix cell to
+    *    create
+    * @param mRNA_nucleotide const reference to the nucleotide of the mRNA
+    *    that corresponds to the column of the overall-matrix cell to
+    *    create
+    * @param match_position matchPosition indicating whether the score
+    *    of the overall-matrix cell should be weighted (Seed) or not
+    *    (ThreePrime)
+    *
+    * @return an overall-matrix cell with the optimal score and all
+    *     entries leading to it
+    *********************************************************************/
+    
+    overallMatrixCell::overallMatrixCell(const overallMatrixCell & upper_left_overall_cell, const openGapMatrixCell & miRNA_open_gap_cell, const openGapMatrixCell & mRNA_open_gap_cell, const nucleotide & miRNA_nucleotide, const nucleotide & mRNA_nucleotide, matchPosition match_position) {
+       /****************************************************************\ 
+      | Calculate the best score of an alignment ending on a gap and the |
+      | best score of an alignment ending with a (mis-)match:            |
+       \****************************************************************/
+      alignmentScore best_score(std::max(miRNA_open_gap_cell.get_score(),mRNA_open_gap_cell.get_score()));
+      alignmentColumn match_column(mRNA_nucleotide,miRNA_nucleotide,match_position);
+      alignmentScore match_score(match_column.get_match().get_score() + upper_left_overall_cell.get_score());
+       /*****************************************************************\ 
+      | Check whether the best alignment ending with a (mis-)match scores |
+      | at least as good as the best alignment ending on a gap and if so  |
+      | update the best score of any alignment an create a new entry for  |
+      | the nucleotide match:                                             |
+       \*****************************************************************/
+      if(match_score >= best_score)
+      {
+        best_score = match_score;
+        entries.push_back(alignmentMatrixCellEntry(match_column,&upper_left_overall_cell));
+      }
+       /*****************************************************************\ 
+      | Check whether there are alignments ending on a gap that score as  |
+      | good as the best alignment overall and if so update include those |
+      | entries:                                                          |
+       \*****************************************************************/
+      if(miRNA_open_gap_cell.get_score() == best_score)
+      {
+        entries.insert(entries.begin(),miRNA_open_gap_cell.begin(),miRNA_open_gap_cell.end());
+      }
+      if(mRNA_open_gap_cell.get_score() == best_score)
+      {
+        entries.insert(entries.begin(),mRNA_open_gap_cell.begin(),mRNA_open_gap_cell.end());
+      }
+       /****************************************\ 
+      | Set the score to the overall best score: |
+       \****************************************/
+      score = best_score;
+}
+
+    /*****************************************************************//**
+    * @brief first row and column constructor
+    *
+    * This is used to construct the cells in the first row and column of
+    * the overall score matrix (except the upper left corner).
+    * It will have the same entries and score as the given open gap matrix
+    * cell (which should have only one entry by the way).
+    *
+    * @param open_gap_cell const reference to the open-gap-matrix cell
+    *     with the same coordinates as the overall-matrix cell to create
+    *     (open-mRNA-gap-matrix for the first row and open-miRNA-gap-
+    *     matrix for the first column)
+    *
+    * @return an overall-matrix cell with the same entries and score as
+    *     the given open gap matrix cell
+    *********************************************************************/
+    
+    overallMatrixCell::overallMatrixCell(const openGapMatrixCell & open_gap_cell)
+    : alignmentMatrixCell(std::vector<alignmentMatrixCellEntry>(open_gap_cell.begin(),open_gap_cell.end()),open_gap_cell.get_score()) {
+      
+}
+
+    /*****************************************************************//**
+    * @brief upper left corner constructor
+    *
+    * This is used to construct the upper left corner of the overall score
+    * matrix.
+    * It will have one entry aligning the given nucleotides without taking
+    * the match score into account (Since the miRNA's 3' end is needed for
+    * RISC (RNA-induced silencing complex) binding.
+    *
+    * @param miRNA_five_prime const reference to the nucleotide at the 5'
+    *     end of the miRNA
+    * @param mRNA_three_prime const reference to the nucleotide at the 3'
+    *     end of the mRNA
+    *
+    * @return an overall-matrix cell with one entry aligning the given
+    *     nucleotides and a score of 0.
+    *********************************************************************/
+    overallMatrixCell::overallMatrixCell(const nucleotide & miRNA_five_prime, const nucleotide & mRNA_three_prime) {
+      entries.push_back(alignmentColumn(mRNA_three_prime,miRNA_five_prime));
+}
+
+    /*****************************************************************//**
+    * @brief standard constructor
+    *
+    * This is used to construct an object of the class overallMatrixCell.
+    * It is not intended to bo used directly. It is only provided to
+    * allow using a (two-dimensional) array (beeing the overall score
+    * alignment matrices) containing objects of this class.
+    *
+    * @return an overall-matrix cell with no entries and a score of 0.
+    *********************************************************************/
+    overallMatrixCell::overallMatrixCell() {
 }
 
     /*****************************************************************//**
@@ -155,9 +446,9 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
       sequenceLength miRNA_length(the_miRNA.get_length());
       if(mRNA_length != 0 && miRNA_length != 0)
       {
-        alignmentMatrixCell mRNA_gap_matrix[mRNA_length][miRNA_length];
-        alignmentMatrixCell miRNA_gap_matrix[mRNA_length][miRNA_length];
-        alignmentMatrixCell score_matrix[mRNA_length][miRNA_length];
+        openGapMatrixCell mRNA_gap_matrix[mRNA_length][miRNA_length];
+        openGapMatrixCell miRNA_gap_matrix[mRNA_length][miRNA_length];
+        overallMatrixCell score_matrix[mRNA_length][miRNA_length];
         alignmentScore max_score(fill_matrices(&mRNA_gap_matrix[0][0],&miRNA_gap_matrix[0][0],&score_matrix[0][0],the_mRNA,the_miRNA));
         for(unsigned short int row=0;row!=mRNA_length;++row)
         {
@@ -193,7 +484,7 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     *
     * @return the optimal alignment score
     *********************************************************************/
-    alignmentScore optimalAlignmentList::fill_matrices(alignmentMatrixCell * matrix_mRNA_gap, alignmentMatrixCell * matrix_miRNA_gap, alignmentMatrixCell * matrix_overall, const mRNA & the_mRNA, const miRNA & the_miRNA)
+    alignmentScore optimalAlignmentList::fill_matrices(openGapMatrixCell * matrix_mRNA_gap, openGapMatrixCell * matrix_miRNA_gap, overallMatrixCell * matrix_overall, const mRNA & the_mRNA, const miRNA & the_miRNA)
     {
        /****************************************************************\ 
       | Define function wide constants, get sequence lengths, initialize |
@@ -243,13 +534,6 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
             | formulars rely on precalculated values (as it is the nature of     |
             | linear programming) that might not exist for the cells in the      |
             | first two rows and columns.                                        |
-            | But in all cases we need a vector of const alignment matrix cell   |
-            | pointers as predecessor parameter for the alignment matrix cell's  |
-            | constructor since we will create alignment matrix cells in any     |
-            | case:                                                              |
-             \******************************************************************/
-            std::vector<const alignmentMatrixCell *> predecessors;
-             /******************************************************************\ 
             | The first special case is the first matrix element at all: the     |
             | upper-left corner representing the alignment position given by the |
             | miRNA target prediction tool. Note that there are no starting gap  |
@@ -270,9 +554,7 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | because it is needed for binding the RISC (RNA-induced silencing   |
                 | complex):                                                          |
                  \******************************************************************/
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
-                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors);
+                matrix_overall[index] = overallMatrixCell(*miRNA_it,*mRNA_it);
               } // row == 0 && col == 0
                /**************************************************************\ 
               | The second special case is the second column of the first row: |
@@ -291,12 +573,8 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | inserting a mRNA gap and thus the overall score equals the open   |
                 | mRNA gap score in any case:                                       |
                  \*****************************************************************/
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
-                predecessors.push_back(&matrix_overall[index_left]);
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,
-                                                             miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score(),
-                                                             predecessors);
-                matrix_overall[index] = matrix_mRNA_gap[index];
+                matrix_mRNA_gap[index] = openGapMatrixCell(matrix_overall[index_left],*miRNA_it,mRNA_gap,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_mRNA_gap[index]);
               } // row == 0 && column == 1
                /*********************************************************\ 
               | The third special case is the remainder of the first row: |
@@ -313,13 +591,8 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | inserting a mRNA gap and thus the overall score equals the open   |
                 | mRNA gap score in any case:                                       |
                  \*****************************************************************/
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
-                predecessors.push_back(&matrix_mRNA_gap[index_left]);
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,
-                                                             matrix_mRNA_gap[index_left].get_score()+
-                                                             miRNA_it->get_match(mRNA_gap,match_pos,Extend).get_score(),
-                                                             predecessors);
-                matrix_overall[index] = matrix_mRNA_gap[index];
+                matrix_mRNA_gap[index] = openGapMatrixCell(matrix_mRNA_gap[index_left],*miRNA_it,mRNA_gap,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_mRNA_gap[index]);
               } // row == 0 && column > 1
                /******************************************************************\ 
               | Since we now have completed the first row of the matrices we have  |
@@ -352,12 +625,8 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | inserting a miRNA gap and thus the overall score equals the open  |
                 | miRNA gap score in any case:                                      |
                  \*****************************************************************/
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
-                predecessors.push_back(&matrix_overall[index_up]);
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
-                                                              mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score(),
-                                                              predecessors);
-                matrix_overall[index] = matrix_miRNA_gap[index];
+                matrix_miRNA_gap[index] = openGapMatrixCell(matrix_overall[index_up],miRNA_gap,*mRNA_it,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_miRNA_gap[index]);
               } // row == 1 && column == 0
                /**************************************************************\ 
               | The fifth special case is the second column of the second row: |
@@ -377,39 +646,12 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | of the sequences. After calculating all possible scores we add all |
                 | those predecessors leading to the maximum to the overall score     |
                 | matrix cell (i.e. the full recursive step of the overall score     |
-                | formular).                                                         |
-                | Note that we need to remove the predecessors from our vector       |
-                | before we can re-use it for another alignment matrix cell:         |
+                | formular):                                                         |
                  \******************************************************************/
-                predecessors.push_back(&matrix_overall[index_left]);
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,
-                                                             matrix_overall[index_left].get_score()+
-                                                             miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score(),
-                                                             predecessors);
-                predecessors.pop_back();
-                predecessors.push_back(&matrix_overall[index_up]);
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
-                                                              matrix_overall[index_up].get_score()+
-                                                              mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score(),
-                                                              predecessors);
-                predecessors.pop_back();
-                alignmentScore best_score(std::max(matrix_mRNA_gap[index].get_score(),matrix_miRNA_gap[index].get_score()));
-                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
-                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
-                if(match_score >= best_score)
-                {
-                  best_score = match_score;
-                  predecessors.push_back(&matrix_overall[index_upleft]);
-                }
-                if(matrix_mRNA_gap[index].get_score() == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_left]);
-                }
-                if(matrix_miRNA_gap[index].get_score() == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_up]);
-                }
-                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                matrix_mRNA_gap[index] = openGapMatrixCell(matrix_overall[index_left],*miRNA_it,mRNA_gap,match_pos);
+                matrix_miRNA_gap[index] = openGapMatrixCell(matrix_overall[index_up],miRNA_gap,*mRNA_it,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_overall[index_upleft],matrix_miRNA_gap[index],
+                                                          matrix_mRNA_gap[index],*miRNA_it,*mRNA_it,match_pos);
               } // row == 1 && column == 1
                /**********************************************************\ 
               | The sixth special case is the remainder of the second row: |
@@ -429,52 +671,13 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | of the sequences. After calculating all possible scores we add all |
                 | those predecessors leading to the maximum to the overall score     |
                 | matrix cell (i.e. the full recursive step of the overall score     |
-                | formular).                                                         |
-                | Note that we need to remove the predecessors from our vector       |
-                | before we can re-use it for another alignment matrix cell:         |
+                | formular):                                                         |
                  \******************************************************************/
-                alignmentScore open_score(matrix_overall[index_left].get_score()+
-                                          miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score());
-                alignmentScore extend_score(matrix_mRNA_gap[index_left].get_score()+
-                                            miRNA_it->get_match(mRNA_gap,match_pos,Extend).get_score());
-                alignmentScore best_score(std::max(open_score,extend_score));
-                if(open_score==best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_left]);
-                }
-                if(extend_score==best_score)
-                {
-                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
-                }
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
-                predecessors.erase(predecessors.begin(),predecessors.end());
-                predecessors.push_back(&matrix_overall[index_up]);
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
-                                                              matrix_overall[index_up].get_score()+
-                                                              mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score(),
-                                                              predecessors);
-                predecessors.pop_back();
-                best_score = std::max(best_score,matrix_miRNA_gap[index].get_score());
-                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
-                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
-                if(match_score >= best_score)
-                {
-                  best_score = match_score;
-                  predecessors.push_back(&matrix_overall[index_upleft]);
-                }
-                if(open_score == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_left]);
-                }
-                if(extend_score == best_score)
-                {
-                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
-                }
-                if(matrix_miRNA_gap[index].get_score() == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_up]);
-                }
-                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                matrix_mRNA_gap[index] = openGapMatrixCell(matrix_mRNA_gap[index_left],matrix_overall[index_left],
+                                                           *miRNA_it,mRNA_gap,match_pos);
+                matrix_miRNA_gap[index] = openGapMatrixCell(matrix_overall[index_up],miRNA_gap,*mRNA_it,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_overall[index_upleft],matrix_miRNA_gap[index],
+                                                          matrix_mRNA_gap[index],*miRNA_it,*mRNA_it,match_pos);
               } // row ==1 && column > 1
                /******************************************************************\ 
               | Since we now have completed the second row of the matrices we have |
@@ -497,19 +700,14 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | Since we are in the first column, there cannot be any gap in the  |
                 | mRNA (i.e. undefined in the open mRNA gap score formular) and     |
                 | since we are behind the second row there must be at least one gap |
-                | in the mRNA (i.e. the gap open case of the open mRNA gap score    |
+                | in the miRNA (i.e. the gap open case of the open miRNA gap score  |
                 | formular can be omitted).                                         |
                 | Since we are in the first row there is no other option than       |
                 | inserting a miRNA gap and thus the overall score equals the open  |
                 | miRNA gap score in any case:                                      |
                  \*****************************************************************/
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,0,predecessors); // dummy
-                predecessors.push_back(&matrix_miRNA_gap[index_up]);
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
-                                                              matrix_miRNA_gap[index_up].get_score()+
-                                                              mRNA_it->get_match(miRNA_gap,match_pos,Extend).get_score(),
-                                                              predecessors);
-                matrix_overall[index] = matrix_miRNA_gap[index];
+                matrix_miRNA_gap[index] = openGapMatrixCell(matrix_miRNA_gap[index_up],*miRNA_it,mRNA_gap,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_miRNA_gap[index]);
               } // row > 1 && column == 0
                /**************************************************************\ 
               | The eight and last special case is the remainder of the second |
@@ -524,59 +722,20 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | mRNA gap score formular) but since we are behind the second row,   |
                 | there could be a preceeding gap in the miRNA thus we need to check |
                 | whether it is better to open  a new one or to extend the existing  |
-                | one (i.e. the full recursive step of the open mRNA gap score       |
+                | one (i.e. the full recursive step of the open miRNA gap score      |
                 | formular).                                                         |
                 | Since we are neither in the first row nor in the first column we   |
                 | can try to match the two nucleotides without adding a gap in one   |
                 | of the sequences. After calculating all possible scores we add all |
                 | those predecessors leading to the maximum to the overall score     |
                 | matrix cell (i.e. the full recursive step of the overall score     |
-                | formular).                                                         |
-                | Note that we need to remove the predecessors from our vector       |
-                | before we can re-use it for another alignment matrix cell:         |
+                | formular):                                                         |
                  \******************************************************************/
-                predecessors.push_back(&matrix_overall[index_left]);
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*miRNA_it,&*miRNA_it,
-                                                             matrix_overall[index_left].get_score()+
-                                                             miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score(),
-                                                             predecessors);
-                predecessors.pop_back();
-                alignmentScore open_score(matrix_overall[index_up].get_score()+
-                                          mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score());
-                alignmentScore extend_score(matrix_miRNA_gap[index_up].get_score()+
-                                            mRNA_it->get_match(miRNA_gap,match_pos,Extend).get_score());
-                alignmentScore best_score(std::max(open_score,extend_score));
-                if(open_score==best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_up]);
-                }
-                if(extend_score==best_score)
-                {
-                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
-                }
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
-                predecessors.erase(predecessors.begin(),predecessors.end());
-                best_score = std::max(best_score,matrix_mRNA_gap[index].get_score());
-                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
-                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
-                if(match_score >= best_score)
-                {
-                  best_score = match_score;
-                  predecessors.push_back(&matrix_overall[index_upleft]);
-                }
-                if(open_score == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_up]);
-                }
-                if(extend_score == best_score)
-                {
-                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
-                }
-                if(matrix_mRNA_gap[index].get_score() == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_left]);
-                }
-                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                matrix_mRNA_gap[index] = openGapMatrixCell(matrix_overall[index_left],*miRNA_it,mRNA_gap,match_pos);
+                matrix_miRNA_gap[index] = openGapMatrixCell(matrix_miRNA_gap[index_up],matrix_overall[index_up],
+                                                           miRNA_gap,*mRNA_it,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_overall[index_upleft],matrix_miRNA_gap[index],
+                                                          matrix_mRNA_gap[index],*miRNA_it,*mRNA_it,match_pos);
               } // row > 1 && column == 1
                /************************************************************\ 
               | The last case is the default one and is applied to the whole |
@@ -596,64 +755,13 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
                 | those predecessors leading to the maximum to the overall score     |
                 | matrix cell (i.e. the full recursive step of the overall score     |
                 | formular).                                                         |
-                | Note that we need to remove the predecessors from our vector       |
-                | before we can re-use it for another alignment matrix cell:         |
                  \******************************************************************/
-                alignmentScore mRNA_open_score(matrix_overall[index_left].get_score()+
-                                               miRNA_it->get_match(mRNA_gap,match_pos,Open).get_score());
-                alignmentScore mRNA_extend_score(matrix_mRNA_gap[index_left].get_score()+
-                                                 miRNA_it->get_match(mRNA_gap,match_pos,Extend).get_score());
-                alignmentScore best_score(std::max(mRNA_open_score,mRNA_extend_score));
-                if(mRNA_open_score==best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_left]);
-                }
-                if(mRNA_extend_score==best_score)
-                {
-                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
-                }
-                matrix_mRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
-                predecessors.erase(predecessors.begin(),predecessors.end());
-                alignmentScore miRNA_open_score(matrix_overall[index_up].get_score()+
-                                                mRNA_it->get_match(miRNA_gap,match_pos,Open).get_score());
-                alignmentScore miRNA_extend_score(matrix_miRNA_gap[index_up].get_score()+
-                                                  mRNA_it->get_match(miRNA_gap,match_pos,Extend).get_score());
-                best_score = std::max(miRNA_open_score,miRNA_extend_score);
-                if(miRNA_open_score==best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_up]);
-                }
-                if(miRNA_extend_score==best_score)
-                {
-                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
-                }
-                matrix_miRNA_gap[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
-                predecessors.erase(predecessors.begin(),predecessors.end());
-                best_score = std::max(best_score,matrix_mRNA_gap[index].get_score());
-                alignmentScore match_score(matrix_overall[index_upleft].get_score()+
-                                           mRNA_it->get_match(*miRNA_it,match_pos).get_score());
-                if(match_score >= best_score)
-                {
-                  best_score = match_score;
-                  predecessors.push_back(&matrix_overall[index_upleft]);
-                }
-                if(mRNA_open_score == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_left]);
-                }
-                if(mRNA_extend_score == best_score)
-                {
-                  predecessors.push_back(&matrix_mRNA_gap[index_left]);
-                }
-                if(miRNA_open_score == best_score)
-                {
-                  predecessors.push_back(&matrix_overall[index_up]);
-                }
-                if(miRNA_extend_score == best_score)
-                {
-                  predecessors.push_back(&matrix_miRNA_gap[index_up]);
-                }
-                matrix_overall[index] = alignmentMatrixCell(&*mRNA_it,&*miRNA_it,best_score,predecessors);
+                matrix_mRNA_gap[index] = openGapMatrixCell(matrix_mRNA_gap[index_left],matrix_overall[index_left],
+                                                           *miRNA_it,mRNA_gap,match_pos);
+                matrix_miRNA_gap[index] = openGapMatrixCell(matrix_miRNA_gap[index_up],matrix_overall[index_up],
+                                                           miRNA_gap,*mRNA_it,match_pos);
+                matrix_overall[index] = overallMatrixCell(matrix_overall[index_upleft],matrix_miRNA_gap[index],
+                                                          matrix_mRNA_gap[index],*miRNA_it,*mRNA_it,match_pos);
               } // row > 1 && column > 1
                /*****************************************************************\ 
               | Each time we completed another row of the matrices we have        |
@@ -706,32 +814,32 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
       {
         the_score = cell->get_score();
       } // right-most column
-      if(cell->predecessors_begin()==cell->predecessors_end()) // upper-left corner
-      {
+      //if(cell->predecessors_begin()==cell->predecessors_end()) // upper-left corner
+      //{
       //  postfix->push_back(alignmentColumn(*(cell->get_mRNA_nucleotide()),*(cell->get_miRNA_nucleotide())));
         // alignment_vector.push_back(alignment(std::vector(postfix->rbegin(),postfix->rend()),the_score));
       //  postfix->pop_back();
-      } // upper-left corner
+      //} // upper-left corner
       else // somewhere in the middle
       {
-        for(alignmentMatrixCell::const_iterator predecessor_it(cell->predecessors_begin());predecessor_it!=cell->predecessors_end();++predecessor_it)
-        {
-          const bool mRNA_move = cell->get_mRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_mRNA_nucleotide()->get_sequence_position();
-          const bool miRNA_move = cell->get_miRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_miRNA_nucleotide()->get_sequence_position();
-          if(mRNA_move && miRNA_move)
-          {
+      //  for(alignmentMatrixCell::const_iterator predecessor_it(cell->predecessors_begin());predecessor_it!=cell->predecessors_end();++predecessor_it)
+      //  {
+      //    const bool mRNA_move = cell->get_mRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_mRNA_nucleotide()->get_sequence_position();
+      //    const bool miRNA_move = cell->get_miRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_miRNA_nucleotide()->get_sequence_position();
+      //    if(mRNA_move && miRNA_move)
+      //    {
       //      postfix->push_back(alignmentColumn(*(cell->get_mRNA_nucleotide()),*(cell->get_miRNA_nucleotide())));
-          }
-          else if(mRNA_move)
-          {
-          }
-          else if(miRNA_move)
-          {
-          }
-          else
-          {
-          }
-        }
+      //    }
+      //    else if(mRNA_move)
+      //    {
+      //    }
+      //    else if(miRNA_move)
+      //    {
+      //    }
+      //    else
+      //    {
+      //    }
+      //  }
       } // somewhere in the middle
 }
 
