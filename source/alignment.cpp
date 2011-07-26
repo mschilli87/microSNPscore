@@ -702,6 +702,37 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     
     void optimalAlignmentList::backtrace_alignments(alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call, alignmentScore the_score, std::vector<alignmentColumn> * postfix)
     {
+      if(first_call) // right-most column
+      {
+        the_score = cell->get_score();
+      } // right-most column
+      if(cell->predecessors_begin()==cell->predecessors_end()) // upper-left corner
+      {
+      //  postfix->push_back(alignmentColumn(*(cell->get_mRNA_nucleotide()),*(cell->get_miRNA_nucleotide())));
+        // alignment_vector.push_back(alignment(std::vector(postfix->rbegin(),postfix->rend()),the_score));
+      //  postfix->pop_back();
+      } // upper-left corner
+      else // somewhere in the middle
+      {
+        for(alignmentMatrixCell::const_iterator predecessor_it(cell->predecessors_begin());predecessor_it!=cell->predecessors_end();++predecessor_it)
+        {
+          const bool mRNA_move = cell->get_mRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_mRNA_nucleotide()->get_sequence_position();
+          const bool miRNA_move = cell->get_miRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_miRNA_nucleotide()->get_sequence_position();
+          if(mRNA_move && miRNA_move)
+          {
+      //      postfix->push_back(alignmentColumn(*(cell->get_mRNA_nucleotide()),*(cell->get_miRNA_nucleotide())));
+          }
+          else if(mRNA_move)
+          {
+          }
+          else if(miRNA_move)
+          {
+          }
+          else
+          {
+          }
+        }
+      } // somewhere in the middle
 }
 
 /*****************************************************************//**
