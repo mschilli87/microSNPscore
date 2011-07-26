@@ -808,39 +808,53 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     *     empty
     *********************************************************************/
     
-    void optimalAlignmentList::backtrace_alignments(alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call, alignmentScore the_score, std::vector<alignmentColumn> * postfix)
+    void optimalAlignmentList::backtrace_alignments(const alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call, alignmentScore the_score, std::vector<alignmentColumn> * postfix)
     {
-      if(first_call) // right-most column
+       /******************************************************************\ 
+      | Checkwhether there is no more cell to trace move through and if so |
+      | create the alignment from the postfix vector. Note that we collect |
+      | the postfix values in the inverse order because vectors have good  |
+      | performance if the insert and remove operations take place at the  |
+      | end and there will be a lot more insert and remove operations than |
+      | alignment creations (in fact that more often as the average        |
+      | alignment has columns) justifying this approach:                   |
+       \******************************************************************/
+      if(cell == NULL) // upper-left corner
       {
-        the_score = cell->get_score();
-      } // right-most column
-      //if(cell->predecessors_begin()==cell->predecessors_end()) // upper-left corner
-      //{
-      //  postfix->push_back(alignmentColumn(*(cell->get_mRNA_nucleotide()),*(cell->get_miRNA_nucleotide())));
-        // alignment_vector.push_back(alignment(std::vector(postfix->rbegin(),postfix->rend()),the_score));
-      //  postfix->pop_back();
-      //} // upper-left corner
-      else // somewhere in the middle
+        alignment_vector.push_back(alignment(std::vector<alignmentColumn>(postfix->rbegin(),postfix->rend()),the_score));
+      } // upper-left corner
+       /******************************************************************\ 
+      | Check whether there is no entry in the cell, if so state an error: |
+       \******************************************************************/
+      else if(cell->begin()==cell->end()) // undefined
       {
-      //  for(alignmentMatrixCell::const_iterator predecessor_it(cell->predecessors_begin());predecessor_it!=cell->predecessors_end();++predecessor_it)
-      //  {
-      //    const bool mRNA_move = cell->get_mRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_mRNA_nucleotide()->get_sequence_position();
-      //    const bool miRNA_move = cell->get_miRNA_nucleotide()->get_sequence_position() != (*predecessor_it)->get_miRNA_nucleotide()->get_sequence_position();
-      //    if(mRNA_move && miRNA_move)
-      //    {
-      //      postfix->push_back(alignmentColumn(*(cell->get_mRNA_nucleotide()),*(cell->get_miRNA_nucleotide())));
-      //    }
-      //    else if(mRNA_move)
-      //    {
-      //    }
-      //    else if(miRNA_move)
-      //    {
-      //    }
-      //    else
-      //    {
-      //    }
-      //  }
-      } // somewhere in the middle
+        std::cerr << "microSNPscore::optimalAlignmentList::backtrace_alignments\n";
+        std::cerr << " ==> unitialized alignment matrix cell (call fill_matrices before)\n";
+        std::cerr << "  --> no further alignment will be added\n";
+      } // undefined
+      else // somewhere in the matrix
+      {
+         /******************************************************************\ 
+        | Check whether this is the initial call and if so adjust the score: |
+         \******************************************************************/
+        if(first_call) // right-most column
+        {
+          the_score = cell->get_score();
+        } // right-most column
+         /******************************************************************\ 
+        | Iterate entries adding their alignment column to the posfix (mind  |
+        | the inverse order) recursive calling the traceback from its        |
+        | predecessor. Note that we need to remove the added coloumn         |
+        | afterwards because the instances of this recursive function share  |
+        | one prefix vector to avoid the need to copy it each time:          |
+         \******************************************************************/
+        for(alignmentMatrixCell::const_iterator entry_it(cell->begin());entry_it!=cell->end();++entry_it)
+        {
+          postfix->push_back(entry_it->get_column());
+          backtrace_alignments(entry_it->get_predecessor(),alignment_vector,false,the_score,postfix);
+          postfix->pop_back();
+        }
+      } // somewhere in the matrix
 }
 
 /*****************************************************************//**

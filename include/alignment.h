@@ -863,7 +863,7 @@ class optimalAlignmentList {
     *     empty
     *********************************************************************/
     
-    static void backtrace_alignments(alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call = true, alignmentScore the_score = 0, std::vector<alignmentColumn> * postfix = new std::vector<alignmentColumn>);
+    static void backtrace_alignments(const alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call = true, alignmentScore the_score = 0, std::vector<alignmentColumn> * postfix = new std::vector<alignmentColumn>);
 
     /*****************************************************************//**
     * @brief alignment vector
