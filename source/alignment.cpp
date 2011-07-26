@@ -1,6 +1,8 @@
 
 #include <algorithm>
 // for std::max (alignment score calculation)
+#include <iostream>
+// for std::cerr and std::endl (error stating)
 #include "alignment.h"
 #include "mRNA.h"
 #include "miRNA.h"
@@ -892,6 +894,96 @@ std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type)
       std::cerr << "  --> assuming sixMer\n";
       return the_stream << "6mer";
   }
+}
+
+/*****************************************************************//**
+* @brief output stream alignment insertion operator
+*
+* This operator is used to insert an alignment to an output stream
+* (e.g. to print it on screen).
+* The alignment will be represented by the chromosome positions of the
+* first and last mRNA nucleotide and its score folloew by the miRNA
+* (5' to 3') over the match symbols and the mRNA (3' to 5 ').
+*
+* @param the_stream output stream the seed type should be inserted in
+* @param the_alignment alignment to be inserted in the output stream
+*
+* @return output stream with the inserted alignment
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const alignment & the_alignment)
+{
+   /******************************************************************\ 
+  | Insert range of first and last mRNA nucleotide as well as the      |
+  | alignments overall score for non-empty alignments and iterate over |
+  | the alignment for every line inserting the miRNA nucleotides, the  |
+  | match types and the mRNA nucleotides:                              |
+   \******************************************************************/
+  if(the_alignment.begin() != the_alignment.end())
+  {
+    the_stream << "\nmRNA range: ";
+    the_stream << the_alignment.begin()->get_mRNA_nucleotide().get_chromosome_position();
+    the_stream << " - ";
+    the_stream << (the_alignment.end()-1)->get_mRNA_nucleotide().get_chromosome_position();
+    the_stream << "\tscore: ";
+    the_stream << the_alignment.get_score();
+    the_stream << std::endl;
+    for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
+    {
+      the_stream << column_it->get_miRNA_nucleotide();
+    }
+    the_stream << std::endl;
+    for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
+    {
+      the_stream << column_it->get_match();
+    }
+    the_stream << std::endl;
+    for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
+    {
+      the_stream << column_it->get_mRNA_nucleotide();
+    }
+    the_stream << std::endl;
+  }
+  else
+  {
+    the_stream << "\n[empty alignment]\n";
+  }
+  return the_stream;
+}
+
+/*****************************************************************//**
+* @brief output stream optimalAlignmentList insertion operator
+*
+* This operator is used to insert an optimal alignment list to an
+* output stream (e.g. to print it on screen).
+* The alignment list will be represented by its alignments separated
+* by an empty line.
+*
+* @param the_stream output stream the seed type should be inserted in
+* @param alignment_list optimalAlignmentList to be inserted in the
+*     output stream
+*
+* @return output stream with the inserted optimal alignment list
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const optimalAlignmentList & alignment_list)
+{
+   /***************************************************************\ 
+  | Insert the first alignment for non-empty lists and iterate over |
+  | the list inserting the alignments:                              |
+   \***************************************************************/
+  if(alignment_list.begin() != alignment_list.end())
+  {
+    the_stream << *alignment_list.begin();
+    for(optimalAlignmentList::const_iterator alignment_it(alignment_list.begin());alignment_it!=alignment_list.end();++alignment_it)
+    {
+      the_stream << std::endl;
+      the_stream << *alignment_it;
+    }
+  }
+  else
+  {
+    the_stream << "\n[empty alignment list]\n";
+  }
+  return the_stream;
 }
 
 } // namespace microSNPscore

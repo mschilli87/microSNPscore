@@ -206,7 +206,7 @@ nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_positi
 }
 
 /*****************************************************************//**
-* @brief output stream insertion operator
+* @brief output stream nucleotide insertion operator
 *
 * This operator is used to insert a nucleotide to an output stream
 * (e.g. to print it on screen).
@@ -261,7 +261,7 @@ std::ostream & operator<<(std::ostream & the_stream, const nucleotide & the_nucl
 std::ostream & operator<<(std::ostream & the_stream, const nucleoBase & the_base)
 {
    /******************************************************************\ 
-  | Append name depending the nucleo base.                             |
+  | Append name depending on the nucleo base.                          |
   | The cases are ordered from common to uncommon to reduce comparisms |
   | as much as possible. Of course the default case should never be    |
   | reached. Because return exits the function there is no break       |
@@ -285,11 +285,50 @@ std::ostream & operator<<(std::ostream & the_stream, const nucleoBase & the_base
 }
 
 /*****************************************************************//**
+* @brief output stream matchIdentifier insertion operator
+*
+* This operator is used to insert a match identifier to an output
+* stream (e.g. to print it on screen).
+* The match identifier will be represented by its full name.
+*
+* @param the_stream output stream the match should be inserted in
+* @param match_identifier matchIdentifier to be inserted in the output stream
+*
+* @return output stream with the inserted match identifier
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const matchIdentifier & match_identifier)
+{
+   /******************************************************************\ 
+  | Append name depending on the identifier.                           |
+  | The cases are ordered from common to uncommon to reduce comparisms |
+  | as much as possible. Of course the default case should never be    |
+  | reached. Because return exits the function there is no break       |
+  | statement needed after the cases.                                  | 
+   \******************************************************************/
+  switch(match_identifier)
+  {
+    case Match: return the_stream << "Match";
+    case Mismatch: return the_stream << "Mismatch";
+    case IndelExtend: return the_stream << "IndelExtend";
+    case IndelOpen: return the_stream << "IndelOpen";
+    case Wobble: return the_stream << "Wobble";
+    case Masked: return the_stream << "Masked";
+    default:
+      std::cerr << "microSNPscore::operator<<(matchIdentifier)\n";
+      std::cerr << " ==> unkown match type identifier: ";
+      std::cerr << match_identifier << std::endl;
+      std::cerr << "  --> assuming Masked\n";
+      return the_stream << "Masked";
+  }
+}
+
+/*****************************************************************//**
 * @brief output stream match insertion operator
 *
 * This operator is used to insert a match to an output stream (e.g. to
 * print it on screen).
-* The match will be represented by the full name of its identifier.
+* The match will be represented by one character code (Match: |,
+* Wobble: :, Masked: ., Gap/Mismatch: [space])
 *
 * @param the_stream output stream the match should be inserted in
 * @param the_match matchType to be inserted in the output stream
@@ -299,8 +338,8 @@ std::ostream & operator<<(std::ostream & the_stream, const nucleoBase & the_base
 std::ostream & operator<<(std::ostream & the_stream, const matchType & the_match)
 {
    /******************************************************************\ 
-  | Call identifier get method only once and append name depending on  |
-  | the identifier.                                                    |
+  | Call identifier get method only once and append character          |
+  | depending on the identifier.                                       |
   | The cases are ordered from common to uncommon to reduce comparisms |
   | as much as possible. Of course the default case should never be    |
   | reached. Because return exits the function there is no break       |
@@ -309,18 +348,18 @@ std::ostream & operator<<(std::ostream & the_stream, const matchType & the_match
   matchIdentifier the_identifier(the_match.get_identifier());
   switch(the_identifier)
   {
-    case Match: return the_stream << "Match";
-    case Mismatch: return the_stream << "Mismatch";
-    case IndelExtend: return the_stream << "IndelExtend";
-    case IndelOpen: return the_stream << "IndelOpen";
-    case Wobble: return the_stream << "Wobble";
-    case Masked: return the_stream << "Masked";
+    case Match: return the_stream << '|';
+    case Mismatch:
+    case IndelExtend:
+    case IndelOpen: return the_stream << ' ';
+    case Wobble: return the_stream << ':';
+    case Masked: return the_stream << '.';
     default:
       std::cerr << "microSNPscore::operator<<(matchType)\n";
       std::cerr << " ==> unkown match type identifier: ";
       std::cerr << the_identifier << std::endl;
       std::cerr << "  --> assuming Masked\n";
-      return the_stream << "Masked";
+      return the_stream << '.';
   }
 }
 

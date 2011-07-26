@@ -2,6 +2,8 @@
 #define MICROSNPSCORE_ALIGNMENT_H
 
 
+#include <iostream>
+//for std::ostream (operator<<)
 #include "nucleotide.h"
 #include <vector>
 
@@ -908,6 +910,38 @@ class optimalAlignmentList {
 * @return output stream with the inserted seed type
 *********************************************************************/
 std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type);
+
+/*****************************************************************//**
+* @brief output stream alignment insertion operator
+*
+* This operator is used to insert an alignment to an output stream
+* (e.g. to print it on screen).
+* The alignment will be represented by the chromosome positions of the
+* first and last mRNA nucleotide and its score folloew by the miRNA
+* (5' to 3') over the match symbols and the mRNA (3' to 5 ').
+*
+* @param the_stream output stream the seed type should be inserted in
+* @param the_alignment alignment to be inserted in the output stream
+*
+* @return output stream with the inserted alignment
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const alignment & the_alignment);
+
+/*****************************************************************//**
+* @brief output stream optimalAlignmentList insertion operator
+*
+* This operator is used to insert an optimal alignment list to an
+* output stream (e.g. to print it on screen).
+* The alignment list will be represented by its alignments separated
+* by an empty line.
+*
+* @param the_stream output stream the seed type should be inserted in
+* @param alignment_list optimalAlignmentList to be inserted in the
+*     output stream
+*
+* @return output stream with the inserted optimal alignment list
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const optimalAlignmentList & alignment_list);
 
 } // namespace microSNPscore
 #endif

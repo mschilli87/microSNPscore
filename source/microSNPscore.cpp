@@ -54,7 +54,7 @@ AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
   std::cout << "Under no special conditions aligning it with the third nucleotide of miR195, which is a ";
   std::cout << miR195[3]->get_base() << ", would result in a score of ";
   std::cout << BCL2.begin()->get_match(*(miR195[3])).get_score() << " because it is a ";
-  std::cout << BCL2.begin()->get_match(*(miR195[3])) << ".\n";
+  std::cout << BCL2.begin()->get_match(*(miR195[3])).get_identifier() << ".\n";
   std::cout << "The 1st nucleotide of miR195 should be on chromosome position 6920934 and is on position ";
   std::cout << miR195.begin()->get_chromosome_position() << ".\n";
   std::cout << "And of course chromosome position 6920934 should be position 1 in miR195 and is ";

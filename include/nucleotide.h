@@ -427,11 +427,26 @@ std::ostream & operator<<(std::ostream & the_stream, const nucleotide & the_nucl
 std::ostream & operator<<(std::ostream & the_stream, const nucleoBase & the_base);
 
 /*****************************************************************//**
+* @brief output stream matchIdentifier insertion operator
+*
+* This operator is used to insert a match identifier to an output
+* stream (e.g. to print it on screen).
+* The match identifier will be represented by its full name.
+*
+* @param the_stream output stream the match should be inserted in
+* @param match_identifier matchIdentifier to be inserted in the output stream
+*
+* @return output stream with the inserted match identifier
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const matchIdentifier & match_identifier);
+
+/*****************************************************************//**
 * @brief output stream match insertion operator
 *
 * This operator is used to insert a match to an output stream (e.g. to
 * print it on screen).
-* The match will be represented by the full name of its identifier.
+* The match will be represented by one character code (Match: |,
+* Wobble: :, Masked: ., Gap/Mismatch: [space])
 *
 * @param the_stream output stream the match should be inserted in
 * @param the_match matchType to be inserted in the output stream
