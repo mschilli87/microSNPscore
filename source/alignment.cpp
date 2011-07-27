@@ -926,22 +926,22 @@ std::ostream & operator<<(std::ostream & the_stream, const alignment & the_align
     the_stream << (the_alignment.end()-1)->get_mRNA_nucleotide().get_chromosome_position();
     the_stream << "\tscore: ";
     the_stream << the_alignment.get_score();
-    the_stream << std::endl;
+    the_stream << "\n";
     for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_miRNA_nucleotide();
     }
-    the_stream << std::endl;
+    the_stream << "\n";
     for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_match();
     }
-    the_stream << std::endl;
+    the_stream << "\n";
     for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_mRNA_nucleotide();
     }
-    the_stream << std::endl;
+    the_stream << "\n";
   }
   else
   {
@@ -975,7 +975,7 @@ std::ostream & operator<<(std::ostream & the_stream, const optimalAlignmentList 
     the_stream << *alignment_list.begin();
     for(optimalAlignmentList::const_iterator alignment_it(alignment_list.begin());alignment_it!=alignment_list.end();++alignment_it)
     {
-      the_stream << std::endl;
+      the_stream << "\n";
       the_stream << *alignment_it;
     }
   }
