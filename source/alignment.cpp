@@ -813,9 +813,9 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
     void optimalAlignmentList::backtrace_alignments(const alignmentMatrixCell * cell, std::vector<alignment> & alignment_vector, bool first_call, alignmentScore the_score, std::vector<alignmentColumn> * postfix)
     {
        /******************************************************************\ 
-      | Checkwhether there is no more cell to trace move through and if so |
-      | create the alignment from the postfix vector. Note that we collect |
-      | the postfix values in the inverse order because vectors have good  |
+      | Check whether there is no more cell to trace back and if so create |
+      | the alignment from the postfix vector. Note that we collect the    |
+      | postfix values in the inverse order because vectors have good      |
       | performance if the insert and remove operations take place at the  |
       | end and there will be a lot more insert and remove operations than |
       | alignment creations (in fact that more often as the average        |
@@ -845,13 +845,14 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
         {
           the_score = cell->get_score();
         } // right-most column
-         /******************************************************************\ 
-        | Iterate entries adding their alignment column to the posfix (mind  |
-        | the inverse order) recursive calling the traceback from its        |
-        | predecessor. Note that we need to remove the added coloumn         |
-        | afterwards because the instances of this recursive function share  |
-        | one prefix vector to avoid the need to copy it each time:          |
-         \******************************************************************/
+         /***************************************************************\ 
+        | Iterate over the entries adding their alignment column to the   |
+        | posfix (mind the inverse order) recursive calling the traceback |
+        | from its predecessor. Note that we need to remove the added     |
+        | coloumn afterwards because the instances of this recursive      |
+        | function share one prefix vector to avoid the need to copy it   |
+        | each time:                                                      |
+         \***************************************************************/
         for(alignmentMatrixCell::const_iterator entry_it(cell->begin());entry_it!=cell->end();++entry_it)
         {
           postfix->push_back(entry_it->get_column());
