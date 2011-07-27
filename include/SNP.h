@@ -91,16 +91,6 @@ class SNP {
     inline const chromosomeType get_chromosome() const;
 
     /*****************************************************************//**
-    * @brief get method for shift attribute
-    *
-    * This method is used to access the number of nucleotides the
-    * alternative sequence is longer than the reference sequence.
-    *
-    * @return the shift length of the SNP
-    *********************************************************************/
-    inline const sequenceLength get_shift() const;
-
-    /*****************************************************************//**
     * @brief get method for position attribute
     *
     * This method is used to access the  position on the chromosome (the
@@ -213,6 +203,37 @@ class SNP {
 
   private:
     /*****************************************************************//**
+    * @brief convert char to nucleo base
+    *
+    * This method 'translates' chars to nucleo bases.
+    * Lowercase letters are treated as uppercase ones.
+    * T is understood as Thymine and is treated as Uracil (simulating
+    * transscription).
+    * Dashes (-) are understood as Gaps and are omitted.
+    * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
+    * and are treated as Mask.
+    *
+    * @param the_char character telling which base to return
+    *
+    * @return nucleo base corresponding to the given character
+    *********************************************************************/
+    static nucleoBase make_base(char the_char);
+
+    /*****************************************************************//**
+    * @brief invert nucleo base sequence
+    *
+    * This method creates the reverse complement of a given sequence to
+    * switch strands.
+    *
+    * @param vector containing the nucleo bases of a sequence on one
+    * strand from 5' to 3'
+    *
+    * @return vector containing the nucleo bases of the given sequence on
+    *     the other strand from 5' to 3'
+    *********************************************************************/
+    static std::vector<nucleoBase> invert(const std::vector<nucleoBase> & the_bases);
+
+    /*****************************************************************//**
     * @brief SNP ID
     *
     * This is the ID of this SNP.
@@ -273,7 +294,7 @@ class SNP {
     * This is the number of nucleotides the alternative sequence is longer
     * than the reference sequence.
     *********************************************************************/
-    sequenceLength shift;
+    short shift;
 
 };
     /*****************************************************************//**
@@ -296,18 +317,6 @@ class SNP {
     *********************************************************************/
     inline const chromosomeType SNP::get_chromosome() const {
       return chromosome;
-    }
-
-    /*****************************************************************//**
-    * @brief get method for shift attribute
-    *
-    * This method is used to access the number of nucleotides the
-    * alternative sequence is longer than the reference sequence.
-    *
-    * @return the shift length of the SNP
-    *********************************************************************/
-    inline const sequenceLength SNP::get_shift() const {
-      return shift;
     }
 
     /*****************************************************************//**
