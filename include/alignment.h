@@ -917,8 +917,9 @@ std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type)
 * This operator is used to insert an alignment to an output stream
 * (e.g. to print it on screen).
 * The alignment will be represented by the chromosome positions of the
-* first and last mRNA nucleotide and its score folloew by the miRNA
-* (5' to 3') over the match symbols and the mRNA (3' to 5 ').
+* first and last mRNA nucleotide and its seed type and score followed
+* by the miRNA (5' to 3') over the match symbols and the mRNA (3' to
+* 5').
 *
 * @param the_stream output stream the seed type should be inserted in
 * @param the_alignment alignment to be inserted in the output stream

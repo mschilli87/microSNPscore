@@ -904,8 +904,9 @@ std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type)
 * This operator is used to insert an alignment to an output stream
 * (e.g. to print it on screen).
 * The alignment will be represented by the chromosome positions of the
-* first and last mRNA nucleotide and its score folloew by the miRNA
-* (5' to 3') over the match symbols and the mRNA (3' to 5 ').
+* first and last mRNA nucleotide and its seed type and score followed
+* by the miRNA (5' to 3') over the match symbols and the mRNA (3' to
+* 5').
 *
 * @param the_stream output stream the seed type should be inserted in
 * @param the_alignment alignment to be inserted in the output stream
@@ -914,18 +915,23 @@ std::ostream & operator<<(std::ostream & the_stream, const seedType & seed_type)
 *********************************************************************/
 std::ostream & operator<<(std::ostream & the_stream, const alignment & the_alignment)
 {
-   /******************************************************************\ 
-  | Insert range of first and last mRNA nucleotide as well as the      |
-  | alignments overall score for non-empty alignments and iterate over |
-  | the alignment for every line inserting the miRNA nucleotides, the  |
-  | match types and the mRNA nucleotides:                              |
-   \******************************************************************/
+   /*****************************************************************\ 
+  | Insert range of first and last mRNA nucleotide as well as the     |
+  | alignments seed type and overall score for non-empty alignments   |
+  | and iterate over the alignment for every line inserting the miRNA |
+  | nucleotides, the match types (except for the first column because |
+  | the miRNA 3' end will not bind to the mRNA since it is needed for |
+  | RISC (RNA-induced silencing complex) binding) and the mRNA        |
+  | nucleotides, respectively:                                        |
+   \*****************************************************************/
   if(the_alignment.begin() != the_alignment.end())
   {
     the_stream << "\nmRNA range: ";
     the_stream << the_alignment.begin()->get_mRNA_nucleotide().get_chromosome_position();
     the_stream << " - ";
     the_stream << (the_alignment.end()-1)->get_mRNA_nucleotide().get_chromosome_position();
+    the_stream << "\nseed type: ";
+    the_stream << the_alignment.get_seed_type();
     the_stream << "\nscore: ";
     the_stream << the_alignment.get_score();
     the_stream << "\n\nmiRNA\t5'    ";
@@ -933,8 +939,8 @@ std::ostream & operator<<(std::ostream & the_stream, const alignment & the_align
     {
       the_stream << column_it->get_miRNA_nucleotide();
     }
-    the_stream << "    3'\n\t      ";
-    for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
+    the_stream << "    3'\n\t       ";
+    for(alignment::const_iterator column_it(the_alignment.begin()+1);column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_match();
     }
