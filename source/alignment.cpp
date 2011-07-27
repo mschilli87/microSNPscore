@@ -1,6 +1,6 @@
 
 #include <algorithm>
-// for std::max (alignment score calculation)
+// for std::max (alignment score calculation) and std::back_copy (alignment traceback)
 #include <iostream>
 // for std::cerr and std::endl (error stating)
 #include "alignment.h"
@@ -508,7 +508,7 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
         unsigned short int column = 0;
         for(sequence::const_iterator miRNA_it(the_miRNA.begin());miRNA_it!=the_miRNA.end();++miRNA_it,++column)
         {
-          const matchPosition match_pos (seed_start <= column && column <= seed_end ? Seed : ThreePrime);
+          const matchPosition match_pos (seed_start-1 <= column && column < seed_end ? Seed : ThreePrime);
            /******************************************************************\ 
           | Iterate over the mRNA (3' to 5') to fill the current row column by |
           | column calculating loop wide constants representing the indices of |
@@ -823,7 +823,9 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
        \******************************************************************/
       if(cell == NULL) // upper-left corner
       {
-        alignment_vector.push_back(alignment(std::vector<alignmentColumn>(postfix->rbegin(),postfix->rend()),the_score));
+        std::vector<alignmentColumn> alignment_columns(postfix->size());
+        std::reverse_copy(postfix->begin(),postfix->end(),alignment_columns.begin());
+        alignment_vector.push_back(alignment(alignment_columns,the_score));
       } // upper-left corner
        /******************************************************************\ 
       | Check whether there is no entry in the cell, if so state an error: |
@@ -924,24 +926,24 @@ std::ostream & operator<<(std::ostream & the_stream, const alignment & the_align
     the_stream << the_alignment.begin()->get_mRNA_nucleotide().get_chromosome_position();
     the_stream << " - ";
     the_stream << (the_alignment.end()-1)->get_mRNA_nucleotide().get_chromosome_position();
-    the_stream << "\tscore: ";
+    the_stream << "\nscore: ";
     the_stream << the_alignment.get_score();
-    the_stream << "\n";
+    the_stream << "\n\nmiRNA\t5'    ";
     for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_miRNA_nucleotide();
     }
-    the_stream << "\n";
+    the_stream << "    3'\n\t      ";
     for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_match();
     }
-    the_stream << "\n";
+    the_stream << "\nmRNA\t3' ...";
     for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
     {
       the_stream << column_it->get_mRNA_nucleotide();
     }
-    the_stream << "\n";
+    the_stream << "... 5'\n";
   }
   else
   {
@@ -973,9 +975,9 @@ std::ostream & operator<<(std::ostream & the_stream, const optimalAlignmentList 
   if(alignment_list.begin() != alignment_list.end())
   {
     the_stream << *alignment_list.begin();
-    for(optimalAlignmentList::const_iterator alignment_it(alignment_list.begin());alignment_it!=alignment_list.end();++alignment_it)
+    for(optimalAlignmentList::const_iterator alignment_it(alignment_list.begin()+1);alignment_it!=alignment_list.end();++alignment_it)
     {
-      the_stream << "\n";
+      the_stream << "\n" << std::endl;
       the_stream << *alignment_it;
     }
   }

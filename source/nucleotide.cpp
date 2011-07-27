@@ -316,7 +316,7 @@ std::ostream & operator<<(std::ostream & the_stream, const matchIdentifier & mat
     default:
       std::cerr << "microSNPscore::operator<<(matchIdentifier)\n";
       std::cerr << " ==> unkown match type identifier: ";
-      std::cerr << match_identifier << std::endl;
+      std::cerr << int(match_identifier) << std::endl;
       std::cerr << "  --> assuming Masked\n";
       return the_stream << "Masked";
   }

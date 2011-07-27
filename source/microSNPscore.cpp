@@ -112,6 +112,7 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   {
     std::cout << *entry_it;
   }
-  std::cout << "If we align the relevant BCL2 substring with miR195 we get:\n";
-  std::cout << optimalAlignmentList(BCL2.get_subsequence_for_alignment(60793322),miR195);
+  std::cout << "If we align the relevant BCL2 substring with the mature miR195 we get:\n";
+  std::cout << optimalAlignmentList(BCL2.get_subsequence_for_alignment(60793322),
+                                    sequenceFileEntry(">mature195|6920949|6920969|1|17\nUAGCAGCACAGAAAUAUUGGC\n").get_miRNA());
 }

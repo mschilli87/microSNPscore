@@ -307,7 +307,7 @@ class alignment {
     * @return const_iterator pointing to the first alignment column
     *********************************************************************/
     inline alignment::const_iterator alignment::begin() const {
-      return columns.end();
+      return columns.begin();
 }
 
     /*****************************************************************//**
@@ -319,7 +319,7 @@ class alignment {
     * @return const_iterator pointing behind the last alignment column
     *********************************************************************/
     inline alignment::const_iterator alignment::end() const {
-      return columns.begin();
+      return columns.end();
 }
 
     /*****************************************************************//**
