@@ -6,6 +6,8 @@
 #include <string>
 #include "nucleotide.h"
 
+namespace microSNPscore { class SNP; } 
+
 namespace microSNPscore {
 
 /*****************************************************************//**
@@ -141,6 +143,20 @@ class mRNA : public sequence {
     *    content calculation
     *********************************************************************/
     mRNA get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position);
+
+    /*****************************************************************//**
+    * @brief apply SNP on mRNA
+    *
+    * This method is used to change a mRNA as described by a given SNP.
+    * If the SNP information do not match those in the mRNA an unchanged
+    * copy of the mRNA is returned (after stating an error).
+    *
+    * @param the_SNP SNP containing the information how the mRNA should be
+    *     changed
+    *
+    * @return a copy of the mRNA with the changes defined by the SNP
+    *********************************************************************/
+    mRNA mutate(const SNP & the_SNP) const;
 
 
   private:

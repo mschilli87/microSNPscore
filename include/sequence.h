@@ -255,7 +255,7 @@ class sequence {
     /*****************************************************************//**
     * @brief get method for ID attribute
     *
-    * This method is used to access the ID of the sequence
+    * This method is used to access the ID of the sequence.
     *
     * @return the ID of the sequence
     *********************************************************************/
@@ -662,7 +662,7 @@ class sequence {
     /*****************************************************************//**
     * @brief get method for ID attribute
     *
-    * This method is used to access the ID of the sequence
+    * This method is used to access the ID of the sequence.
     *
     * @return the ID of the sequence
     *********************************************************************/

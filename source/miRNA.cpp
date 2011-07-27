@@ -1,5 +1,7 @@
 
 #include "miRNA.h"
+#include "mRNA.h"
+#include "alignment.h"
 
 namespace microSNPscore {
 
@@ -44,6 +46,55 @@ namespace microSNPscore {
     *********************************************************************/
     miRNA::miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
     :sequence(the_id,sequence_string,the_chromosome,the_strand,exon_starts,exon_ends) {
+}
+
+    /*****************************************************************//**
+    * @brief calculate downregulation score
+    *
+    * This method calculates the sore measuring how much the translation of
+    * a given mRNA will be downregulated by this miRNA through a target site
+    * starting (miRNA 5' or mRNA 3') at a given position (reported from a
+    * target prediction tool).
+    * It implements the mirSVR algorithm.
+    *
+    * @param the_mRNA  mRNA that is predicted to be downregulated by the
+    *     miRNA
+    * @param predicted_three_prime_position position on chromosome (the
+    *     5' end of the + strand (i.e. the 3' end of the - strand) beeing
+    *     position 1) that is predicted to be the mRNA nucleotide that
+    *     would bind the miRNA 5' end (if it would bind) (i.e. one base
+    *     downstream (3') from the seed match region)
+    *
+    * @return the downregulation score for the target site of the miRNA
+    *     starting at the given position in the given mRNA
+    *********************************************************************/
+    downregulation_score miRNA::get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) {
+}
+
+    /*****************************************************************//**
+    * @brief calculate deregulation score for one possible alignment
+    *
+    * This method calculates the sore measuring how much the translation of
+    * a given mRNA will be downregulated by this miRNA through a target site
+    * starting (miRNA 5' or mRNA 3') at a given position (reported from a
+    * target prediction tool) considering a given alignment.
+    * It implements the mirSVR algorithm.
+    *
+    * @param the_mRNA  mRNA that is predicted to be downregulated by the
+    *     miRNA
+    * @param predicted_three_prime_position position on chromosome (the
+    *     5' end of the + strand (i.e. the 3' end of the - strand) beeing
+    *     position 1) that is predicted to be the mRNA nucleotide that
+    *     would bind the miRNA 5' end (if it would bind) (i.e. one base
+    *     downstream (3') from the seed match region)
+    * @param the_alignment an alignment that is considered to be the best
+    *     one for the miRNA-induced downregulation
+    *
+    * @return the downregulation score for the target site of the miRNA
+    *     starting at the given position in the given mRNA considering the
+    *     given alignment
+    *********************************************************************/
+    downregulation_score miRNA::downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const {
 }
 
 

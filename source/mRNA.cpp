@@ -1,5 +1,6 @@
 
 #include "mRNA.h"
+#include "SNP.h"
 
 namespace microSNPscore {
 
@@ -130,6 +131,21 @@ namespace microSNPscore {
       sequenceLength window_size(30);
       sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position) - 8);
       return get_subsequence_from_to(sequence_position - window_size,sequence_position);
+}
+
+    /*****************************************************************//**
+    * @brief apply SNP on mRNA
+    *
+    * This method is used to change a mRNA as described by a given SNP.
+    * If the SNP information do not match those in the mRNA an unchanged
+    * copy of the mRNA is returned (after stating an error).
+    *
+    * @param the_SNP SNP containing the information how the mRNA should be
+    *     changed
+    *
+    * @return a copy of the mRNA with the changes defined by the SNP
+    *********************************************************************/
+    mRNA mRNA::mutate(const SNP & the_SNP) const {
 }
 
     /*****************************************************************//**
