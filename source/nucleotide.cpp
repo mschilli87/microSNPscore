@@ -278,7 +278,7 @@ std::ostream & operator<<(std::ostream & the_stream, const nucleoBase & the_base
     default:
       std::cerr << "microSNPscore::operator<<(nucleoBase)\n";
       std::cerr << " ==> unkown base: ";
-      std::cerr << the_base << std::endl;
+      std::cerr << int(the_base) << std::endl;
       std::cerr << "  --> assuming Mask\n";
       return the_stream << "Mask";
   }

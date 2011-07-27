@@ -522,7 +522,7 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
           | gap-nucleotides that might be inserted in this iteration loop:     |
            \******************************************************************/
           unsigned short int row = 0;
-          for(sequence::const_iterator mRNA_it(the_mRNA.end());mRNA_it>=the_mRNA.begin();--mRNA_it,++row)
+          for(sequence::const_iterator mRNA_it(the_mRNA.end()-1);mRNA_it>=the_mRNA.begin();--mRNA_it,++row)
           {
             const unsigned short int index = row * miRNA_length + column;
             const unsigned short int index_left = index - 1;
