@@ -19,7 +19,7 @@ namespace microSNPscore {
 * mRNA is downregulated induced by a miRNA.
 *********************************************************************/
 
-typedef double downregulation_score;
+typedef double downregulationScore;
 /*****************************************************************//**
 * @brief microRNA class
 *
@@ -89,7 +89,7 @@ class miRNA : public sequence {
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA
     *********************************************************************/
-    downregulation_score get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) const;
+    downregulationScore get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) const;
 
 
   private:
@@ -116,7 +116,7 @@ class miRNA : public sequence {
     *     starting at the given position in the given mRNA considering the
     *     given alignment
     *********************************************************************/
-    downregulation_score downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const;
+    downregulationScore downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const;
 
 
   public:

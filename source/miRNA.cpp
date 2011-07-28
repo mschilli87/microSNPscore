@@ -69,7 +69,18 @@ namespace microSNPscore {
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA
     *********************************************************************/
-    downregulation_score miRNA::get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) const {
+    downregulationScore miRNA::get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) const {
+       /*********************************************************\ 
+      | Calculate downregulation score candidates for all optimal |
+      | alignments and return the maximum:                        |
+       \*********************************************************/
+      optimalAlignmentList alignments(the_mRNA,*this);
+      downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin()));
+      for(optimalAlignmentList::const_iterator alignment_it(alignments.begin()+1);alignment_it!=alignments.end();++alignment_it)
+      {
+        downregulation_score = std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it));
+      }
+      return downregulation_score;
 }
 
     /*****************************************************************//**
@@ -95,7 +106,7 @@ namespace microSNPscore {
     *     starting at the given position in the given mRNA considering the
     *     given alignment
     *********************************************************************/
-    downregulation_score miRNA::downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const {
+    downregulationScore miRNA::downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const {
 }
 
     /*****************************************************************//**

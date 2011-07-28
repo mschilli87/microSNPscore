@@ -145,7 +145,7 @@ namespace microSNPscore {
     *     the miRNA starting at the given position in the given mRNA
     *********************************************************************/
     
-    deregulation_score SNP::get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const {
+    deregulationScore SNP::get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const {
        /*************************************************************\ 
       | Verify that the SNP may have influence on the downregulation  |
       | score and if so return the score difference between reference |

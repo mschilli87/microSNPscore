@@ -20,7 +20,7 @@ namespace microSNPscore {
 * the translation of a mRNA induced by a miRNA is changed by a SNP.
 *********************************************************************/
 
-typedef double deregulation_score;
+typedef double deregulationScore;
 /*****************************************************************//**
 * @brief SNP ID type
 *
@@ -212,7 +212,7 @@ class SNP {
     *     the miRNA starting at the given position in the given mRNA
     *********************************************************************/
     
-    deregulation_score get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const;
+    deregulationScore get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const;
 
 
   private:
