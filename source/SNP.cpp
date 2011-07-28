@@ -149,7 +149,7 @@ namespace microSNPscore {
        /*************************************************************\ 
       | Verify that the SNP may have influence on the downregulation  |
       | score and if so return the score difference between reference |
-      | and alternative:                                              |
+      | and alternative shifting the predicted 3' position if needed: |
        \*************************************************************/
       const bool SNP_on_miRNA = this->matches(the_miRNA);
       const bool SNP_on_mRNA = this->matches(the_mRNA);
@@ -162,7 +162,11 @@ namespace microSNPscore {
         return the_miRNA.get_downregulation_score(the_mRNA,predicted_three_prime_position) -
                (SNP_on_miRNA ?
                 the_miRNA.mutate(*this).get_downregulation_score(the_mRNA,predicted_three_prime_position) :
-                the_miRNA.get_downregulation_score(the_mRNA.mutate(*this),predicted_three_prime_position));
+                the_miRNA.get_downregulation_score(the_mRNA.mutate(*this),predicted_three_prime_position +
+                                                                          (predicted_three_prime_position < (get_position(Plus) +
+                                                                                                             reference_end(Plus) -
+                                                                                                             reference_begin(Plus)) ?
+                                                                           0 : get_shift())));
       }
 }
 
