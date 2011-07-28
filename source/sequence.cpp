@@ -34,7 +34,7 @@ namespace microSNPscore {
     * @return an exon located at the given positions on chromosome
     *********************************************************************/
     
-    exon::exon(const chromosomePosition & start_position, const chromosomePosition & end_position)
+    exon::exon(chromosomePosition start_position, chromosomePosition end_position)
     :start(start_position),end(end_position) {
        /*********************************************************\ 
       | Check for negative length and if so set to zero length by |
@@ -246,6 +246,93 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     * @return a copy of the sequence with the changes defined by the SNP
     *********************************************************************/
     sequence sequence::mutate(const SNP & the_SNP) const {
+       /******************************************************************\ 
+      | Check whether the SNP matches the sequnece and if not return copy: |
+       \******************************************************************/
+      if(!the_SNP.matches(*this))
+      {
+        return sequence(*this);
+      }
+      else // the_SNP.matches(*this)
+      {
+         /*********************************************\ 
+        | Calculate constants to reduce function calls: |
+         \*********************************************/
+        const short int shift = the_SNP.get_shift();
+        const sequenceLength reference_length(the_SNP.reference_end(Plus)-the_SNP.reference_begin(Plus));
+        const const_iterator change_begin(get_nucleotide_chr(the_SNP.get_position(get_strand())));
+        const const_iterator change_end(get_nucleotide(change_begin->get_sequence_position()+reference_length-1)+1);
+        const SNP::const_iterator alternative_begin(the_SNP.alternative_begin(get_strand()));
+        const SNP::const_iterator alternative_end(the_SNP.alternative_end(get_strand()));
+         /******************************************************************\ 
+        | Initialize nucleotide vector for the mutated sequence and iterate  |
+        | over the 5' unchanging subsequence and copy it to the new vector   |
+        | shifting the chromosome positions for - stranded sequences because |
+        | the positions are counted from the 5' end of the + strand and thus |
+        | the 5' end of the - strand has higher positions than the changing  |
+        | subsequence:                                                       |
+         \******************************************************************/
+        std::vector<nucleotide> the_nucleotides(get_length()+shift);
+        sequencePosition position(0);
+        for(const_iterator sequence_it(begin());sequence_it!=change_begin;++sequence_it)
+        {
+          the_nucleotides.push_back(nucleotide(sequence_it->get_base(),++position,sequence_it->get_chromosome_position() +
+                                                                                  (get_strand() == Plus ? 0 : shift)));
+        }
+         /*************************************************************\ 
+        | Iterate over the alternative sequnce and insert it to the new |
+        | vector counting the chromosome position up for + stranded     |
+        | sequences or down for - stranded sequences, respectively:     |
+         \*************************************************************/
+        chromosomePosition position_on_chromosome(the_SNP.get_position(get_strand()));
+        for(SNP::const_iterator alternative_it(alternative_begin);alternative_it!=alternative_end;
+            ++alternative_it,position_on_chromosome += (get_strand() == Plus ? 1 : -1))
+        {
+          the_nucleotides.push_back(nucleotide(*alternative_it,++position,position_on_chromosome));
+        } 
+         /*****************************************************************\ 
+        | Iterate over the 3' unchanging subsequence and copy it to the new |
+        | vector shifting the chromosome positions for + stranded sequences |
+        | because the positions are counted from the 5' end of the + strand |
+        | and thus the 3' end of the + strand has higher positions than the |
+        | changed subsequence:                                              |
+         \*****************************************************************/
+        for(const_iterator sequence_it(change_end);sequence_it!=end();++sequence_it)
+        {
+          the_nucleotides.push_back(nucleotide(sequence_it->get_base(),++position,sequence_it->get_chromosome_position() +
+                                                                                  (get_strand() == Plus ? shift : 0)));
+        }
+         /*****************************************************************\ 
+        | Initialize exon vector for the mutated sequence, iterate over the |
+        | exons shifting exons borders that have higher positions than the  |
+        | changed subsequence:                                              |
+         \*****************************************************************/
+        std::vector<exon> the_exons(exons_end()-exons_begin());
+        for(const_exon_iterator exon_it(exons_begin());exon_it!=exons_end();++exon_it)
+        {
+          if(shift == 0 || exon_it->get_end() < the_SNP.get_position(Plus)) // nothing to change
+          {
+            the_exons.push_back(*exon_it);
+          }
+          else if(exon_it->get_start() < the_SNP.get_position(Plus))  // only end shifted
+          {
+            the_exons.push_back(exon(exon_it->get_start(),exon_it->get_end()+shift));
+          }
+          else // start and end shifted
+          {
+            the_exons.push_back(exon(exon_it->get_start()+shift,exon_it->get_end()+shift));
+          }
+        }
+         /******************************************************************\ 
+        | Create the new sequence ID containing the old one and the SNP ID   |
+        | separated by a colon (:) and return a sequence with the calculated |
+        | attributes:                                                        |
+         \******************************************************************/
+        sequenceID the_ID(get_ID());
+        the_ID += ":";
+        the_ID += the_SNP.get_ID();
+        return sequence(the_ID,get_chromosome(),get_strand(),the_exons,get_length()+shift,the_nucleotides);
+      }
 }
 
     /*****************************************************************//**
