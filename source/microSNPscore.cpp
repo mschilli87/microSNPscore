@@ -130,4 +130,22 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << *BCL2.mutate(rs4987856).get_nucleotide_chr(rs4987856.get_position(BCL2.mutate(rs4987856).get_strand())) << ".\n";
   std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
   std::cout << rs4987856.get_deregulation_score(mature195,BCL2,60793322) << ".\n";
+  std::cout << "\n\n====================================================================================================\n\n";
+  std::cout << "For a more comprehensive test of the deregulation score calculation we need more examples testing more cases:\n\n";
+  std::cout << "We start with a made up miRNA we call miR-0815:\n\n";
+  std::string FASTA0815(">miR-0815|11|31|1|42\naACCGUGAagucaucaccagc\n");
+  std::cout << FASTA0815;
+  miRNA miR0815(sequenceFileEntry(FASTA0815).get_miRNA());
+  std::cout << "\nThe seed is marked in upper case\n";
+  std::cout << "\nIn addition to that miRNA we make up a mRNA we call gene-4711:\n\n";
+  std::string FASTA4711(">gene-4711|21,242|129,360|-1|007\n\
+acguagcgguacgucacacacacugguacuacuacagugcacacaguguacugaugcuac\n\
+cggggaucguacuacuacugacuuacgacuacgacguguacggcuagcauccccgugauu\n\
+uucacgguAcaucagucuagcgcgagagagaucuucucagcuagcugacuagcugaucgu\n\
+agcuagcugacuagcguagcuacguagcuagucagucgaugcuagcga\n");
+  std::cout << FASTA4711;
+  mRNA gene4711(sequenceFileEntry(FASTA4711).get_mRNA());
+  std::cout << "\nThe base marked in upper case is chromosome position 120 and we take that position to be reported as 3' end of the target site.\n";
+  std::cout << "\nThis leads to the following optimal alignment(s) of mir-0815 and gene-4711:\n";
+  std::cout << optimalAlignmentList(gene4711.get_subsequence_for_alignment(120),miR0815);
 }
