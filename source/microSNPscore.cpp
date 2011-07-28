@@ -124,4 +124,6 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << "rs4987856 will turn " << *rs4987856.reference_begin(BCL2.get_strand());
   std::cout <<  " into " << *rs4987856.alternative_begin(BCL2.get_strand()) << ".\n";
   std::cout << "Thus rs4987856 " << (rs4987856.matches(BCL2) ? "matches" : "does not match") << " BCL2.\n";
+  std::cout << "And if we mutate BCL2 with rs4987856 we get:\n";
+  std::cout << sequenceFileEntry(BCL2.mutate(rs4987856));
 }
