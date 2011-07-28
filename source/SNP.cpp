@@ -67,22 +67,6 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
-    * @brief get method for position attribute
-    *
-    * This method is used to access the position on the chromosome (the
-    * 5' end of the + strand (i.e. the 3' end of the - strand) beeing
-    * position 1) of the 5' end of the SNP's reference sequence on the
-    * given strand.
-    *
-    * @param the_strand strand (Plus or Minus) the SNP should be
-    *     evaluated on
-    *
-    * @return the reference sequence's 5' end position on chromosome
-    *********************************************************************/
-    chromosomePosition SNP::get_position(strandType the_strand) const {
-}
-
-    /*****************************************************************//**
     * @brief compare sequence information
     *
     * This method is used to check whether the SNP would influence a given

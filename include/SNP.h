@@ -113,7 +113,7 @@ class SNP {
     *
     * @return the reference sequence's 5' end position on chromosome
     *********************************************************************/
-    chromosomePosition get_position(strandType the_strand) const;
+    inline chromosomePosition get_position(strandType the_strand) const;
 
     /*****************************************************************//**
     * @brief reference vector begin
@@ -340,6 +340,23 @@ class SNP {
     inline const short SNP::get_shift() const {
       return shift;
     }
+
+    /*****************************************************************//**
+    * @brief get method for position attribute
+    *
+    * This method is used to access the position on the chromosome (the
+    * 5' end of the + strand (i.e. the 3' end of the - strand) beeing
+    * position 1) of the 5' end of the SNP's reference sequence on the
+    * given strand.
+    *
+    * @param the_strand strand (Plus or Minus) the SNP should be
+    *     evaluated on
+    *
+    * @return the reference sequence's 5' end position on chromosome
+    *********************************************************************/
+    inline chromosomePosition SNP::get_position(strandType the_strand) const {
+      return position - (the_strand == Plus ? 0 : get_shift());
+}
 
     /*****************************************************************//**
     * @brief reference vector begin
