@@ -371,6 +371,7 @@ class SNP {
     *     SNP's reference sequence
     *********************************************************************/
     inline SNP::const_iterator SNP::reference_begin(strandType the_strand) const {
+      return (the_strand == Plus ? reference_plus : reference_minus).begin();
 }
 
     /*****************************************************************//**
@@ -386,6 +387,7 @@ class SNP {
     *     SNP's reference sequence
     *********************************************************************/
     inline SNP::const_iterator SNP::reference_end(strandType the_strand) const {
+      return (the_strand == Plus ? reference_plus : reference_minus).end();
 }
 
     /*****************************************************************//**
@@ -401,6 +403,7 @@ class SNP {
     *     SNP's alternative sequence
     *********************************************************************/
     inline SNP::const_iterator SNP::alternative_begin(strandType the_strand) const {
+      return (the_strand == Plus ? alternative_plus : alternative_minus).begin();
 }
 
     /*****************************************************************//**
@@ -416,6 +419,7 @@ class SNP {
     *     SNP's alternative sequence
     *********************************************************************/
     inline SNP::const_iterator SNP::alternative_end(strandType the_strand) const {
+      return (the_strand == Plus ? alternative_plus : alternative_minus).end();
 }
 
 
