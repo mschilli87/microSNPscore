@@ -121,4 +121,6 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << "It is located on chromosome " << rs4987856.get_chromosome() << " at position " << rs4987856.get_position(Minus);
   std::cout << " and has a shift length of " << rs4987856.get_shift() << ".\n";
   std::cout << "The BCL nucleotide at that position is " << *BCL2.get_nucleotide_chr(rs4987856.get_position(BCL2.get_strand())) << ".\n";
+  std::cout << "rs4987856 will turn " << *rs4987856.reference_begin(BCL2.get_strand());
+  std::cout <<  " into " << *rs4987856.alternative_begin(BCL2.get_strand()) << ".\n";
 }

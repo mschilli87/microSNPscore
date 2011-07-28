@@ -69,7 +69,7 @@ namespace microSNPscore {
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA
     *********************************************************************/
-    downregulation_score miRNA::get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) {
+    downregulation_score miRNA::get_downregulation_score(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position) const {
 }
 
     /*****************************************************************//**
