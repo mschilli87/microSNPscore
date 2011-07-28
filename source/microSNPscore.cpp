@@ -126,4 +126,6 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << "Thus rs4987856 " << (rs4987856.matches(BCL2) ? "matches" : "does not match") << " BCL2.\n";
   std::cout << "And if we mutate BCL2 with rs4987856 we get:\n";
   std::cout << sequenceFileEntry(BCL2.mutate(rs4987856));
+  std::cout << "As you might see (or not ^^) the position of interest now contains ";
+  std::cout << *BCL2.mutate(rs4987856).get_nucleotide_chr(rs4987856.get_position(BCL2.mutate(rs4987856).get_strand())) << ".\n";
 }
