@@ -151,8 +151,8 @@ namespace microSNPscore {
       | score and if so return the score difference between reference |
       | and alternative shifting the predicted 3' position if needed: |
        \*************************************************************/
-      const bool SNP_on_miRNA = this->matches(the_miRNA);
-      const bool SNP_on_mRNA = this->matches(the_mRNA);
+      const bool SNP_on_miRNA = matches(the_miRNA);
+      const bool SNP_on_mRNA = matches(the_mRNA);
       if(!SNP_on_miRNA && !SNP_on_mRNA)
       {
         return 0;

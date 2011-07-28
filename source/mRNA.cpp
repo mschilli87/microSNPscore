@@ -65,7 +65,7 @@ namespace microSNPscore {
     * @return mRNA containing the subsequence relevant for accessability
     *    score calculation
     *********************************************************************/
-    mRNA mRNA::get_subsequence_for_accessability(chromosomePosition predicted_miRNA_three_prime_position) {
+    mRNA mRNA::get_subsequence_for_accessability(chromosomePosition predicted_miRNA_three_prime_position) const {
        /******************************************************************\ 
       | Calculating sequence position before subsequence querying to avoid |
       | caring about strand:                                               |
@@ -94,7 +94,7 @@ namespace microSNPscore {
     * @return mRNA containing the subsequence relevant for downstream AU
     *    content calculation
     *********************************************************************/
-    mRNA mRNA::get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position) {
+    mRNA mRNA::get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position) const {
        /******************************************************************\ 
       | Calculating sequence position before subsequence querying to avoid |
       | caring about strand:                                               |
@@ -123,7 +123,7 @@ namespace microSNPscore {
     * @return mRNA containing the subsequence relevant for downstream AU
     *    content calculation
     *********************************************************************/
-    mRNA mRNA::get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position) {
+    mRNA mRNA::get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position) const {
        /******************************************************************\ 
       | Calculating sequence position before subsequence querying to avoid |
       | caring about strand:                                               |

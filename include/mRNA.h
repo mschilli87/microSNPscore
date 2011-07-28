@@ -80,7 +80,7 @@ class mRNA : public sequence {
     * @return mRNA containing the subsequence relevant for the alignment
     *********************************************************************/
     
-    inline mRNA get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len = 30);
+    inline mRNA get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len = 30) const;
 
     /*****************************************************************//**
     * @brief extract subsequence relevant for accessability calculations
@@ -100,7 +100,7 @@ class mRNA : public sequence {
     * @return mRNA containing the subsequence relevant for accessability
     *    score calculation
     *********************************************************************/
-    mRNA get_subsequence_for_accessability(chromosomePosition predicted_miRNA_three_prime_position);
+    mRNA get_subsequence_for_accessability(chromosomePosition predicted_miRNA_three_prime_position) const;
 
     /*****************************************************************//**
     * @brief extract subsequence relevant for downstream AU content 
@@ -121,7 +121,7 @@ class mRNA : public sequence {
     * @return mRNA containing the subsequence relevant for downstream AU
     *    content calculation
     *********************************************************************/
-    mRNA get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position);
+    mRNA get_subsequence_for_downstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position) const;
 
     /*****************************************************************//**
     * @brief extract subsequence relevant for upstream AU content 
@@ -142,7 +142,7 @@ class mRNA : public sequence {
     * @return mRNA containing the subsequence relevant for downstream AU
     *    content calculation
     *********************************************************************/
-    mRNA get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position);
+    mRNA get_subsequence_for_upstream_AU_content(chromosomePosition predicted_miRNA_three_prime_position) const;
 
     /*****************************************************************//**
     * @brief apply SNP on mRNA
@@ -194,7 +194,7 @@ class mRNA : public sequence {
     * @return mRNA containing the subsequence relevant for the alignment
     *********************************************************************/
     
-    inline mRNA mRNA::get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len) {
+    inline mRNA mRNA::get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len) const {
       return get_subsequence_chr_to(predicted_miRNA_three_prime_position,len);
 }
 

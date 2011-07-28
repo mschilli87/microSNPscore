@@ -1,4 +1,6 @@
 
+#include <algorithm>
+// for std::max (downregulation score calculation)
 #include "miRNA.h"
 #include "mRNA.h"
 #include "alignment.h"
@@ -74,13 +76,20 @@ namespace microSNPscore {
       | Calculate downregulation score candidates for all optimal |
       | alignments and return the maximum:                        |
        \*********************************************************/
-      optimalAlignmentList alignments(the_mRNA,*this);
-      downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin()));
-      for(optimalAlignmentList::const_iterator alignment_it(alignments.begin()+1);alignment_it!=alignments.end();++alignment_it)
+      optimalAlignmentList alignments(the_mRNA.get_subsequence_for_alignment(predicted_three_prime_position),*this);
+      if(alignments.begin() == alignments.end())
       {
-        downregulation_score = std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it));
+        return 0;
       }
-      return downregulation_score;
+      else
+      {
+        downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin()));
+        for(optimalAlignmentList::const_iterator alignment_it(alignments.begin()+1);alignment_it!=alignments.end();++alignment_it)
+        {
+          downregulation_score = std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it));
+        }
+        return downregulation_score;
+      }
 }
 
     /*****************************************************************//**

@@ -114,8 +114,8 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
     std::cout << *entry_it;
   }
   std::cout << "If we align the relevant BCL2 substring with the mature miR195 we get:\n";
-  std::cout << optimalAlignmentList(BCL2.get_subsequence_for_alignment(60793322),
-                                    sequenceFileEntry(">mature195|6920949|6920969|1|17\nUAGCAGCACAGAAAUAUUGGC\n").get_miRNA());
+  miRNA mature195(sequenceFileEntry(">mature195|6920949|6920969|1|17\nUAGCAGCACAGAAAUAUUGGC\n").get_miRNA());
+  std::cout << optimalAlignmentList(BCL2.get_subsequence_for_alignment(60793322),mature195);
   std::cout << "\nNow it is time to introduce the SNP rs4987856.\n";
   SNP rs4987856("rs4987856","G","A","chr18",Minus,60793494);
   std::cout << "It is located on chromosome " << rs4987856.get_chromosome() << " at position " << rs4987856.get_position(Minus);
@@ -129,5 +129,5 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << "As you might see (or not ^^) the position of interest now contains ";
   std::cout << *BCL2.mutate(rs4987856).get_nucleotide_chr(rs4987856.get_position(BCL2.mutate(rs4987856).get_strand())) << ".\n";
   std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
-  std::cout << rs4987856.get_deregulation_score(miR195,BCL2,60793322) << ".\n";
+  std::cout << rs4987856.get_deregulation_score(mature195,BCL2,60793322) << ".\n";
 }
