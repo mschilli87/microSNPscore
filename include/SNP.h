@@ -219,14 +219,14 @@ class SNP {
     * Lowercase letters are treated as uppercase ones.
     * T is understood as Thymine and is treated as Uracil (simulating
     * transscription).
-    * Dashes (-) are understood as Gaps and are omitted.
-    * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
-    * and are treated as Mask.
+    * Other characters than A,a,C,c,G,g,U,u,T,t,X or x raise an error and
+    * are treated as Mask.
     *
     * @param the_char character telling which base to return
     *
     * @return nucleo base corresponding to the given character
     *********************************************************************/
+    
     static nucleoBase make_base(char the_char);
 
     /*****************************************************************//**

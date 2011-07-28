@@ -35,19 +35,26 @@ namespace microSNPscore {
     
     SNP::SNP(SNPID the_ID, std::string reference_string, std::string alternative_string, chromosomeType the_chromosome, strandType the_strand, const chromosomePosition the_position)
     :ID(the_ID),chromosome(the_chromosome),position(the_position),shift(alternative_string.length()-reference_string.length()) {
-       /******************************************************************\ 
-      | Convert the strings to nucleo base vectors and invert them for the |
-      | sequence not matching the strand and move the position if needed:  |
-       \******************************************************************/
+       /*****************************************************************\ 
+      | Convert the strings to nucleo base vectors (ignoring gaps) and    |
+      | invert them for the sequence not matching the strand and move the | 
+      | position if needed:                                               |
+       \*****************************************************************/
       std::vector<nucleoBase> reference;
       for(std::string::const_iterator base_it(reference_string.begin());base_it!=reference_string.end();++base_it)
       {
-        reference.push_back(make_base(*base_it));
+        if(*base_it != '-')
+        {
+          reference.push_back(make_base(*base_it));
+        }
       }
       std::vector<nucleoBase> alternative;
       for(std::string::const_iterator base_it(alternative_string.begin());base_it!=alternative_string.end();++base_it)
       {
-        alternative.push_back(make_base(*base_it));
+        if(*base_it != '-')
+        {
+          alternative.push_back(make_base(*base_it));
+        }
       }
       if(the_strand == Plus)
       {
@@ -114,16 +121,42 @@ namespace microSNPscore {
     * Lowercase letters are treated as uppercase ones.
     * T is understood as Thymine and is treated as Uracil (simulating
     * transscription).
-    * Dashes (-) are understood as Gaps and are omitted.
-    * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
-    * and are treated as Mask.
+    * Other characters than A,a,C,c,G,g,U,u,T,t,X or x raise an error and
+    * are treated as Mask.
     *
     * @param the_char character telling which base to return
     *
     * @return nucleo base corresponding to the given character
     *********************************************************************/
+    
     nucleoBase SNP::make_base(char the_char)
     {
+       /******************************************************************\ 
+      | Return the nucleo base corresponding to the char or state an error |
+      | and return Mask. Because return exists the function there is no    |
+      | need for break statements:                                         |
+       \******************************************************************/
+      switch(the_char)
+      {
+        case 'a':
+        case 'A': return Adenine;
+        case 't':
+        case 'T':
+        case 'u':
+        case 'U': return Uracil;
+        case 'c':
+        case 'C': return Cytosine;
+        case 'g':
+        case 'G': return Guanine;
+        case 'x':
+        case 'X': return Mask;
+        default:
+          std::cerr << "microSNPscore::SNP::make_base\n";
+          std::cerr << " ==> illegal nucleo base character: \n";
+          std::cerr << the_char << std::endl;
+          std::cerr << "  --> assuming Mask\n";
+          return Mask;
+      }
 }
 
     /*****************************************************************//**
