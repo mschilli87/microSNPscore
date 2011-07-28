@@ -9,6 +9,7 @@
 #include <vector>
 
 namespace microSNPscore { class nucleotide; } 
+namespace microSNPscore { class SNP; } 
 
 namespace microSNPscore {
 
@@ -486,6 +487,20 @@ class sequence {
     * @return the subsequence starting and ending at the given positions
     *********************************************************************/
     sequence get_subsequence_chr_from_to(chromosomePosition from, chromosomePosition to) const;
+
+    /*****************************************************************//**
+    * @brief apply SNP on sequence
+    *
+    * This method is used to change a mRNA as described by a given SNP.
+    * If the SNP information do not match those in the sequence an
+    * unchanged copy of the seqeunce is returned (after stating an error).
+    *
+    * @param the_SNP SNP containing the information how the mRNA should be
+    *     changed
+    *
+    * @return a copy of the sequence with the changes defined by the SNP
+    *********************************************************************/
+    sequence mutate(const SNP & the_SNP) const;
 
 
   private:

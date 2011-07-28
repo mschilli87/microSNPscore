@@ -134,21 +134,6 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
-    * @brief apply SNP on mRNA
-    *
-    * This method is used to change a mRNA as described by a given SNP.
-    * If the SNP information do not match those in the mRNA an unchanged
-    * copy of the mRNA is returned (after stating an error).
-    *
-    * @param the_SNP SNP containing the information how the mRNA should be
-    *     changed
-    *
-    * @return a copy of the mRNA with the changes defined by the SNP
-    *********************************************************************/
-    mRNA mRNA::mutate(const SNP & the_SNP) const {
-}
-
-    /*****************************************************************//**
     * @brief internal constructor
     *
     * This method is used to convert a sequence to a mRNA.

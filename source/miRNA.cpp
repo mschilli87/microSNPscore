@@ -2,6 +2,7 @@
 #include "miRNA.h"
 #include "mRNA.h"
 #include "alignment.h"
+#include "SNP.h"
 
 namespace microSNPscore {
 
@@ -95,6 +96,20 @@ namespace microSNPscore {
     *     given alignment
     *********************************************************************/
     downregulation_score miRNA::downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const {
+}
+
+    /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This method is used to convert a sequence to a miRNA.
+    *
+    * @param the_sequence const sequence reference to the sequence that
+    *     should become an miRNA
+    *
+    * @return miRNA with the same attributes as the given sequence
+    *********************************************************************/
+    miRNA::miRNA(const sequence & the_sequence)
+    :sequence(the_sequence) {
 }
 
 

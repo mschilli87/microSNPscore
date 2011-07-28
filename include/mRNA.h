@@ -156,7 +156,7 @@ class mRNA : public sequence {
     *
     * @return a copy of the mRNA with the changes defined by the SNP
     *********************************************************************/
-    mRNA mutate(const SNP & the_SNP) const;
+    inline mRNA mutate(const SNP & the_SNP) const;
 
 
   private:
@@ -196,6 +196,22 @@ class mRNA : public sequence {
     
     inline mRNA mRNA::get_subsequence_for_alignment(chromosomePosition predicted_miRNA_three_prime_position, sequenceLength len) {
       return get_subsequence_chr_to(predicted_miRNA_three_prime_position,len);
+}
+
+    /*****************************************************************//**
+    * @brief apply SNP on mRNA
+    *
+    * This method is used to change a mRNA as described by a given SNP.
+    * If the SNP information do not match those in the mRNA an unchanged
+    * copy of the mRNA is returned (after stating an error).
+    *
+    * @param the_SNP SNP containing the information how the mRNA should be
+    *     changed
+    *
+    * @return a copy of the mRNA with the changes defined by the SNP
+    *********************************************************************/
+    inline mRNA mRNA::mutate(const SNP & the_SNP) const {
+      return mRNA(sequence::mutate(the_SNP));
 }
 
 

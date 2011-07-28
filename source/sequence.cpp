@@ -6,6 +6,7 @@
 #include <algorithm>
 //for std::sort (exon sorting)
 #include "sequence.h"
+#include "SNP.h"
 
 namespace microSNPscore {
 
@@ -230,6 +231,21 @@ if(get_strand()==Minus)
 }
 return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
                                chromosome_position_to_sequence_position(to));
+}
+
+    /*****************************************************************//**
+    * @brief apply SNP on sequence
+    *
+    * This method is used to change a mRNA as described by a given SNP.
+    * If the SNP information do not match those in the sequence an
+    * unchanged copy of the seqeunce is returned (after stating an error).
+    *
+    * @param the_SNP SNP containing the information how the mRNA should be
+    *     changed
+    *
+    * @return a copy of the sequence with the changes defined by the SNP
+    *********************************************************************/
+    sequence sequence::mutate(const SNP & the_SNP) const {
 }
 
     /*****************************************************************//**

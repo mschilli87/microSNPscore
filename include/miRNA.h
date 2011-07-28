@@ -8,6 +8,7 @@
 
 namespace microSNPscore { class mRNA; } 
 namespace microSNPscore { class alignment; } 
+namespace microSNPscore { class SNP; } 
 
 namespace microSNPscore {
 
@@ -117,7 +118,29 @@ class miRNA : public sequence {
     *********************************************************************/
     downregulation_score downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const;
 
+
+  public:
+    inline miRNA mutate(const SNP & the_SNP) const;
+
+
+  private:
+    /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This method is used to convert a sequence to a miRNA.
+    *
+    * @param the_sequence const sequence reference to the sequence that
+    *     should become an miRNA
+    *
+    * @return miRNA with the same attributes as the given sequence
+    *********************************************************************/
+    miRNA(const sequence & the_sequence);
+
 };
+    inline miRNA miRNA::mutate(const SNP & the_SNP) const {
+      return miRNA(sequence::mutate(the_SNP));
+}
+
 
 } // namespace microSNPscore
 #endif

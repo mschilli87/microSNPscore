@@ -93,7 +93,17 @@ class SNP {
     /*****************************************************************//**
     * @brief get method for position attribute
     *
-    * This method is used to access the  position on the chromosome (the
+    * This method is used to access the number of nucleotides the
+    * alternative sequence is longer than the reference sequence.
+    *
+    * @return the position shift of the SNP
+    *********************************************************************/
+    inline const short get_shift() const;
+
+    /*****************************************************************//**
+    * @brief get method for position attribute
+    *
+    * This method is used to access the position on the chromosome (the
     * 5' end of the + strand (i.e. the 3' end of the - strand) beeing
     * position 1) of the 5' end of the SNP's reference sequence on the
     * given strand.
@@ -317,6 +327,18 @@ class SNP {
     *********************************************************************/
     inline const chromosomeType SNP::get_chromosome() const {
       return chromosome;
+    }
+
+    /*****************************************************************//**
+    * @brief get method for position attribute
+    *
+    * This method is used to access the number of nucleotides the
+    * alternative sequence is longer than the reference sequence.
+    *
+    * @return the position shift of the SNP
+    *********************************************************************/
+    inline const short SNP::get_shift() const {
+      return shift;
     }
 
     /*****************************************************************//**
