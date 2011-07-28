@@ -128,4 +128,6 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << sequenceFileEntry(BCL2.mutate(rs4987856));
   std::cout << "As you might see (or not ^^) the position of interest now contains ";
   std::cout << *BCL2.mutate(rs4987856).get_nucleotide_chr(rs4987856.get_position(BCL2.mutate(rs4987856).get_strand())) << ".\n";
+  std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
+  std::cout << rs4987856.get_deregulation_score(miR195,BCL2,60793322) << ".\n";
 }
