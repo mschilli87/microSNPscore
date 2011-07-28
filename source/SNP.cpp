@@ -173,6 +173,48 @@ namespace microSNPscore {
     *********************************************************************/
     std::vector<nucleoBase> SNP::invert(const std::vector<nucleoBase> & the_bases)
     {
+       /***********************************************************\ 
+      | Create an empty nucleo base vector and iterate over the the |
+      | givenbases (if there are some) in reverse order appending   |
+      | their complement or Mask (stating an error) to the vector   |
+      | before returning it:                                        |
+       \***********************************************************/
+      std::vector<nucleoBase> complement;
+      if(the_bases.begin() != the_bases.end())
+      {
+        for(const_iterator base_it(the_bases.end()-1);base_it>=the_bases.begin();--base_it)
+        {
+          nucleoBase the_base(Adenine);
+          switch(the_base)
+          {
+            case Uracil:
+              break;
+            case Adenine:
+              the_base = Uracil;
+              break;
+            case Guanine:
+              the_base = Cytosine;
+              break;
+            case Cytosine:
+              the_base = Guanine;
+              break;
+            case Gap:
+              the_base = Gap;
+              break;
+            case Mask:
+              the_base = Mask;
+              break;
+            default:
+              std::cerr << "microSNPscore::SNP::invert\n";
+              std::cerr << " ==> Undefined nucleo base: ";
+              std::cerr << the_base << std:: endl;
+              std::cerr << "  --> assuming Masked\n";
+              the_base = Mask;
+          }
+          complement.push_back(the_base);
+        }
+      }
+      return complement;
 }
 
 
