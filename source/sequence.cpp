@@ -272,18 +272,18 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
         | the 5' end of the - strand has higher positions than the changing  |
         | subsequence:                                                       |
          \******************************************************************/
-        std::vector<nucleotide> the_nucleotides(get_length()+shift);
+        std::vector<nucleotide> the_nucleotides;
         sequencePosition position(0);
         for(const_iterator sequence_it(begin());sequence_it!=change_begin;++sequence_it)
         {
           the_nucleotides.push_back(nucleotide(sequence_it->get_base(),++position,sequence_it->get_chromosome_position() +
                                                                                   (get_strand() == Plus ? 0 : shift)));
         }
-         /*************************************************************\ 
-        | Iterate over the alternative sequnce and insert it to the new |
-        | vector counting the chromosome position up for + stranded     |
-        | sequences or down for - stranded sequences, respectively:     |
-         \*************************************************************/
+         /**************************************************************\ 
+        | Iterate over the alternative sequence and insert it to the new |
+        | vector counting the chromosome position up for + stranded      |
+        | sequences or down for - stranded sequences, respectively:      |
+         \**************************************************************/
         chromosomePosition position_on_chromosome(the_SNP.get_position(get_strand()));
         for(SNP::const_iterator alternative_it(alternative_begin);alternative_it!=alternative_end;
             ++alternative_it,position_on_chromosome += (get_strand() == Plus ? 1 : -1))
@@ -307,7 +307,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
         | exons shifting exons borders that have higher positions than the  |
         | changed subsequence:                                              |
          \*****************************************************************/
-        std::vector<exon> the_exons(exons_end()-exons_begin());
+        std::vector<exon> the_exons;
         for(const_exon_iterator exon_it(exons_begin());exon_it!=exons_end();++exon_it)
         {
           if(shift == 0 || exon_it->get_end() < the_SNP.get_position(Plus)) // nothing to change
