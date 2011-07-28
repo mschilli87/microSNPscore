@@ -107,6 +107,7 @@ namespace microSNPscore {
     *     given alignment
     *********************************************************************/
     downregulationScore miRNA::downregulation_score_candidate(const mRNA & the_mRNA, const chromosomePosition & predicted_three_prime_position, const alignment & the_alignment) const {
+      return the_alignment.get_score();
 }
 
     /*****************************************************************//**
