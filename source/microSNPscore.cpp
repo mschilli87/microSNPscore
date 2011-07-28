@@ -5,6 +5,7 @@
 #include "miRNA.h"
 #include "sequenceFile.h"
 #include "alignment.h"
+#include "SNP.h"
 
 using namespace microSNPscore;
 
@@ -115,4 +116,9 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << "If we align the relevant BCL2 substring with the mature miR195 we get:\n";
   std::cout << optimalAlignmentList(BCL2.get_subsequence_for_alignment(60793322),
                                     sequenceFileEntry(">mature195|6920949|6920969|1|17\nUAGCAGCACAGAAAUAUUGGC\n").get_miRNA());
+  std::cout << "\nNow it is time to introduce the SNP rs4987856.\n";
+  SNP rs4987856("rs4987856","G","A","18",Minus,60793494);
+  std::cout << "It is located on chromosome " << rs4987856.get_chromosome() << " at position " << rs4987856.get_position(Minus);
+  std::cout << " and has a shift length of " << rs4987856.get_shift() << ".\n";
+  std::cout << "The BCL nucleotide at that position is " << *BCL2.get_nucleotide_chr(rs4987856.get_position(BCL2.get_strand())) << ".\n";
 }
