@@ -178,12 +178,16 @@ class SNP {
     * sequence and if so whether the information about the reference
     * sequence stored in the SNP match those stored in the sequence (if
     * not an error is stated and @p false is returned).
+    * A SNP is said to match a sequence if its whole reference sequence is
+    * located on a single exon of the sequence and the nucleo bases in
+    * that region are the same.
     *
     * @param the_sequence sequence the SNP should be mapped on
     *
     * @return @p true if the SNP is on the sequence and the reference
     *     matches, @p false otherwise
     *********************************************************************/
+    
     bool matches(const sequence & the_sequence) const;
 
     /*****************************************************************//**

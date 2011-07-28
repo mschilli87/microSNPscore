@@ -80,13 +80,47 @@ namespace microSNPscore {
     * sequence and if so whether the information about the reference
     * sequence stored in the SNP match those stored in the sequence (if
     * not an error is stated and @p false is returned).
+    * A SNP is said to match a sequence if its whole reference sequence is
+    * located on a single exon of the sequence and the nucleo bases in
+    * that region are the same.
     *
     * @param the_sequence sequence the SNP should be mapped on
     *
     * @return @p true if the SNP is on the sequence and the reference
     *     matches, @p false otherwise
     *********************************************************************/
+    
     bool SNP::matches(const sequence & the_sequence) const {
+       /*****************************************************************\ 
+      | Compare the chromosomes and if they are the same search for an    |
+      | exon starting before and ending after the reference and if one is |
+      | found, compare the sequence's bases with those of the reference   |
+      | sequence (on the corresponding strand):                           |
+       \*****************************************************************/
+      if(get_chromosome() != the_sequence.get_chromosome())
+      {
+        return false;
+      }
+      else // same chromosome
+      {
+        const sequenceLength length = reference_end(Plus)-reference_begin(Plus);
+        sequence::const_exon_iterator exon_it(the_sequence.exons_begin());
+        for(;exon_it != the_sequence.exons_end() && exon_it->get_start() > get_position(Plus);++exon_it ) {/* nothing */}
+        if(exon_it == the_sequence.exons_end() || exon_it->get_end() < (get_position(Plus) + length))
+        {
+          return false;
+        }
+        else // whole reference on one exon of the sequence
+        {
+          const strandType the_strand(the_sequence.get_strand());
+          const const_iterator begin(reference_begin(the_strand));
+          const const_iterator end(reference_end(the_strand));
+          const_iterator bases_it(begin);
+          for(sequence::const_iterator sequence_it(the_sequence.get_nucleotide_chr(get_position(the_strand)));
+              bases_it!=end && sequence_it->get_base() == *bases_it;++bases_it,++sequence_it) {/* nothing */}
+          return bases_it == end;
+        }
+      }
 }
 
     /*****************************************************************//**
