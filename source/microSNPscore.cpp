@@ -170,4 +170,9 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of a seed mismatch on the downregulation.\n";
   std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-A->U-125:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(mutAtoUat125).get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nThe next SNP we use is a point mutation from Thymine to Cytosine (+ strand) at position 125 we call mut-T->C-125.\n";
+  SNP mutTtoCat125("mut-T->C-125","T","C","007",Plus,125);
+  std::cout << "This SNP should simulate the impact of a seed wobble pair on the downregulation.\n";
+  std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-T->C-125:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(mutTtoCat125).get_subsequence_for_alignment(120),miR0815);
 }

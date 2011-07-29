@@ -241,7 +241,7 @@ namespace microSNPscore {
         for(const_iterator base_it(the_bases.end()-1);base_it>=the_bases.begin();--base_it)
         {
           nucleoBase the_base(Adenine);
-          switch(the_base)
+          switch(*base_it)
           {
             case Uracil:
               break;
@@ -263,7 +263,7 @@ namespace microSNPscore {
             default:
               std::cerr << "microSNPscore::SNP::invert\n";
               std::cerr << " ==> Undefined nucleo base: ";
-              std::cerr << the_base << std:: endl;
+              std::cerr << *base_it << std:: endl;
               std::cerr << "  --> assuming Masked\n";
               the_base = Mask;
           }
