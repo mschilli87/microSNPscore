@@ -185,4 +185,10 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of moving the 3' match.\n";
   std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:del-129:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(del129).get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nThe next SNP we use is a muatation from GAU to G (just to test a weird way to describe a delition) (- strand) ";
+  std::cout << "at position 244 we call mut-GAU->G-244.\n";
+  SNP mutGAUtoGat244("mut-GAU->G-244","GAU","G","007",Minus,244);
+  std::cout << "This SNP should simulate the impact of shortening the 3' match.\n";
+  std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-GAU->G-244:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(mutGAUtoGat244).get_subsequence_for_alignment(120),miR0815);
 }
