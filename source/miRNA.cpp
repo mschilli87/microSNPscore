@@ -473,7 +473,29 @@ namespace microSNPscore {
     *********************************************************************/
     downregulationScore miRNA::calculate_UTR_dist_feature(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, seedType seed_type)
     {
-      return 233.56983;
+       /**********************************************\
+| Define the regression parameters as in mirSVR: |
+       \**********************************************/
+      const downregulationScore intercept = -0.07;
+      const downregulationScore     slope =  0.000172;
+       /*****************************************\
+| Define the distance cutoff to not penalty |
+      | long UTRs too much as in  mirSVR:         |
+       \*****************************************/
+      const sequenceLength distance_cutoff = 1500;
+       /*****************************************************\ 
+      | Get sequence position of predicted 3' target site end |
+      | and calculate distances to both sequence ends:        |
+       \*****************************************************/
+      const sequencePosition three_prime_position = the_mRNA.get_nucleotide_chr(predicted_three_prime_position)->get_sequence_position();
+      const sequenceLength    five_prime_distance = the_mRNA.get_length()-three_prime_position;
+      const sequenceLength   three_prime_distance = three_prime_position-((seed_type==eightMer || seed_type==sevenMerMEight) ? 9 : 8);
+       /***************************************************************\ 
+      | Calculate the minimal distance (or cut of) and apply regression |
+      | function before returning the final feature score:              |
+       \***************************************************************/
+      const sequenceLength min_distance(std::min(three_prime_distance,five_prime_distance));
+      return std::min(min_distance,distance_cutoff) * slope + intercept;
 }
 
     /*****************************************************************//**
