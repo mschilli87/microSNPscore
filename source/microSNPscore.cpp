@@ -180,4 +180,9 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of removing the gap behind the seed match on the downregulation.\n";
   std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:cnv-A-1->3-128:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(cnvA1to3at128).get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nThe next SNP we use is a point deletion at position 129 we call del-129.\n";
+  SNP del129("del-129","T","","007",Minus,129);
+  std::cout << "This SNP should simulate the impact of moving the 3' match.\n";
+  std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:del-129:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(del129).get_subsequence_for_alignment(120),miR0815);
 }
