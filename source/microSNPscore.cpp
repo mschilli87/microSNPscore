@@ -146,6 +146,11 @@ agcuagcugacuagcguagcuacguagcuagucagucgaugcuagcga\n");
   std::cout << FASTA4711;
   mRNA gene4711(sequenceFileEntry(FASTA4711).get_mRNA());
   std::cout << "\nThe base marked in upper case is chromosome position 120 and we take that position to be reported as 3' end of the target site.\n";
-  std::cout << "\nThis leads to the following optimal alignment(s) of mir-0815 and gene-4711:\n";
+  std::cout << "\nThis leads to the following optimal alignment(s) of miR-0815 and gene-4711:\n";
   std::cout << optimalAlignmentList(gene4711.get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nThe first SNP we use for our test is a big deletion from position 25 to 100 we call del-25-100.\n";
+  SNP del25to100("del-25-100","agaucuucucagcuagcugacuagcugaucguagcuagcugacuagcguagcuacguagcuagucagucgaugcua","","007",Minus,100);
+  std::cout << "This SNP should simulate the impact of the distance to the UTR 3' end on the downregulation.\n";
+  std::cout << "\nEven though we expect no changes we align miR-0815 and gene-4711:del-25-100 to test the 3' position shift:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(del25to100).get_subsequence_for_alignment(120+del25to100.get_shift()),miR0815);
 }

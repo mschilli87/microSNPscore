@@ -65,7 +65,7 @@ namespace microSNPscore {
       }
       else
       {
-        position+=reference_string.length()-1;
+        position-=reference_string.length()-1;
         reference_minus=reference;
         alternative_minus=alternative;
         reference_plus=invert(reference);
@@ -105,8 +105,8 @@ namespace microSNPscore {
       {
         const sequenceLength length = reference_end(Plus)-reference_begin(Plus);
         sequence::const_exon_iterator exon_it(the_sequence.exons_begin());
-        for(;exon_it != the_sequence.exons_end() && exon_it->get_start() > get_position(Plus);++exon_it ) {/* nothing */}
-        if(exon_it == the_sequence.exons_end() || exon_it->get_end() < (get_position(Plus) + length))
+        for(;exon_it != the_sequence.exons_end() && exon_it->get_end() < get_position(Plus)+length-1;++exon_it ) {/* nothing */}
+        if(exon_it == the_sequence.exons_end() || exon_it->get_start() > get_position(Plus))
         {
           return false;
         }

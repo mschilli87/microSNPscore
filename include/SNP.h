@@ -359,7 +359,7 @@ class SNP {
     * @return the reference sequence's 5' end position on chromosome
     *********************************************************************/
     inline chromosomePosition SNP::get_position(strandType the_strand) const {
-      return position - (the_strand == Plus ? 0 : get_shift());
+      return position + (the_strand == Plus ? 0 : (reference_end(Plus)-reference_begin(Plus)-1));
 }
 
     /*****************************************************************//**
