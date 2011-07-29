@@ -175,4 +175,9 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of a seed wobble pair on the downregulation.\n";
   std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-T->C-125:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(mutTtoCat125).get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nThe next SNP we use is a copy number variation from one to three Adenine (+ strand) at position 128 we call cnv-A-1->3-128.\n";
+  SNP cnvA1to3at128("cnv-A-1->3-128","A","AAA","007",Plus,128);
+  std::cout << "This SNP should simulate the impact of removing the gap behind the seed match on the downregulation.\n";
+  std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:cnv-A-1->3-128:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(cnvA1to3at128).get_subsequence_for_alignment(120),miR0815);
 }
