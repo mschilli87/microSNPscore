@@ -150,7 +150,13 @@ agcuagcugacuagcguagcuacguagcuagucagucgaugcuagcga\n");
   std::cout << optimalAlignmentList(gene4711.get_subsequence_for_alignment(120),miR0815);
   std::cout << "\nThe first SNP we use for our test is a big deletion from position 25 to 100 we call del-25-100.\n";
   SNP del25to100("del-25-100","agaucuucucagcuagcugacuagcugaucguagcuagcugacuagcguagcuacguagcuagucagucgaugcua","","007",Minus,100);
-  std::cout << "This SNP should simulate the impact of the distance to the UTR 3' end on the downregulation.\n";
+  std::cout << "This SNP should simulate the impact of the distance to the UTR 5' end on the downregulation.\n";
   std::cout << "\nEven though we expect no changes we align miR-0815 and gene-4711:del-25-100 to test the 3' position shift:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(del25to100).get_subsequence_for_alignment(120+del25to100.get_shift()),miR0815);
+  std::cout << "\nThe next SNP we use is a big insertion of 200 Guanine (+ strand) after position 300 we call ins-200G-300.\n";
+  SNP ins200Gat300("ins-200G-300","T","TGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG\
+GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG","007",Plus,300);
+  std::cout << "This SNP should simulate the impact of the distance to the UTR 3' end on the downregulation.\n";
+  std::cout << "\nAgain we expect no changes for the alignment(s) for miR-0815 and gene-4711:ins-200G-300 but this time there should be no shift:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(ins200Gat300).get_subsequence_for_alignment(120),miR0815);
 }
