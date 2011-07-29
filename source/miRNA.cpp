@@ -490,9 +490,16 @@ namespace microSNPscore {
     *********************************************************************/
     void miRNA::calculate_seed_match_features(downregulationScore features[], const alignment & the_alignment)
     {
-      for(unsigned int i=0;i<9;++i)
+       /******************************************************************\ 
+      | The first feature (1A) is 1 if the mRNA 3' end of the site is      |
+      | Adenine, the other 8 features (m2-m9) are 1 if their corresponding |
+      | alignment column (counting from miRNA 5' or mRNA 3', respectively) |
+      | contain a match. Otherwise the features are 0:                     |
+       \******************************************************************/
+      features[0]=the_alignment.begin()->get_mRNA_nucleotide().get_base()==Adenine;
+      for(unsigned int alignment_position=1;alignment_position<10;++alignment_position)
       {
-        features[i]=0;
+        features[alignment_position]=(the_alignment.begin()+alignment_position)->get_match().get_identifier()==Match;
       }
 }
 
