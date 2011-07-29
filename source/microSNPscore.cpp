@@ -159,4 +159,10 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of the distance to the UTR 3' end on the downregulation.\n";
   std::cout << "\nAgain we expect no changes for the alignment(s) for miR-0815 and gene-4711:ins-200G-300 but this time there should be no shift:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(ins200Gat300).get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nThe next SNP we use is a point mutation from Adenine to Uracil (- strand) at position 120 we call mut-A->U-120.\n";
+  SNP mutAtoUat120("mut-A->U-120","A","U","007",Minus,120);
+  std::cout << "This SNP should simulate the impact of the UTR 3' end of the target site beeing Adenin to the UTR 3' end ";
+  std::cout << "on the downregulation as well as the lack of impact of a match at that position.\n";
+  std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-A->U-120:\n";
+  std::cout << optimalAlignmentList(gene4711.mutate(mutAtoUat120).get_subsequence_for_alignment(120),miR0815);
 }
