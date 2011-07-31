@@ -7,9 +7,9 @@
 #include "nucleotide.h"
 #include "alignment.h"
 
+namespace microSNPscore { class SNP; } 
 namespace microSNPscore { class mRNA; } 
 namespace microSNPscore { class alignment; } 
-namespace microSNPscore { class SNP; } 
 
 namespace microSNPscore {
 
@@ -70,6 +70,8 @@ class miRNA : public sequence {
     *********************************************************************/
     miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
 
+    inline miRNA mutate(const SNP & the_SNP) const;
+
     /*****************************************************************//**
     * @brief calculate downregulation score
     *
@@ -97,6 +99,18 @@ class miRNA : public sequence {
 
   private:
     /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This method is used to convert a sequence to a miRNA.
+    *
+    * @param the_sequence const sequence reference to the sequence that
+    *     should become an miRNA
+    *
+    * @return miRNA with the same attributes as the given sequence
+    *********************************************************************/
+    miRNA(const sequence & the_sequence);
+
+    /*****************************************************************//**
     * @brief calculate deregulation score for one possible alignment
     *
     * This method calculates the sore measuring how much the translation of
@@ -122,24 +136,6 @@ class miRNA : public sequence {
     * @see get_downregulation_score()
     *********************************************************************/
     static downregulationScore downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment);
-
-
-  public:
-    inline miRNA mutate(const SNP & the_SNP) const;
-
-
-  private:
-    /*****************************************************************//**
-    * @brief internal constructor
-    *
-    * This method is used to convert a sequence to a miRNA.
-    *
-    * @param the_sequence const sequence reference to the sequence that
-    *     should become an miRNA
-    *
-    * @return miRNA with the same attributes as the given sequence
-    *********************************************************************/
-    miRNA(const sequence & the_sequence);
 
     /*****************************************************************//**
     * @brief secondary structure features calculation

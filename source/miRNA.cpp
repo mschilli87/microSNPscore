@@ -4,9 +4,9 @@
 #include <cmath>
 // for exp (downregulation score sigmoid function)
 #include "miRNA.h"
+#include "SNP.h"
 #include "mRNA.h"
 #include "alignment.h"
-#include "SNP.h"
 
 namespace microSNPscore {
 
@@ -94,6 +94,20 @@ namespace microSNPscore {
         }
         return downregulation_score;
       }
+}
+
+    /*****************************************************************//**
+    * @brief internal constructor
+    *
+    * This method is used to convert a sequence to a miRNA.
+    *
+    * @param the_sequence const sequence reference to the sequence that
+    *     should become an miRNA
+    *
+    * @return miRNA with the same attributes as the given sequence
+    *********************************************************************/
+    miRNA::miRNA(const sequence & the_sequence)
+    :sequence(the_sequence) {
 }
 
     /*****************************************************************//**
@@ -327,20 +341,6 @@ namespace microSNPscore {
 | Apply sigmoid function before returning the final score: |
        \********************************************************/
       return score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
-}
-
-    /*****************************************************************//**
-    * @brief internal constructor
-    *
-    * This method is used to convert a sequence to a miRNA.
-    *
-    * @param the_sequence const sequence reference to the sequence that
-    *     should become an miRNA
-    *
-    * @return miRNA with the same attributes as the given sequence
-    *********************************************************************/
-    miRNA::miRNA(const sequence & the_sequence)
-    :sequence(the_sequence) {
 }
 
     /*****************************************************************//**
