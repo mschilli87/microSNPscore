@@ -428,7 +428,49 @@ namespace microSNPscore {
     *********************************************************************/
     downregulationScore miRNA::calculate_AU_content_feature(const mRNA & downstream_mRNA_subsequence, const mRNA & upstream_mRNA_subsequence, seedType seed_type)
     {
-      return 0.58134;
+       /**************************************\ 
+      | Define regression parameters depending |
+      | on the seed type as in mirSVR:         |
+       \**************************************/
+      const downregulationScore intercept = seed_type == eightMer       ? 0.365 :
+                                            seed_type == sevenMerMEight ? 0.269 :
+                                            seed_type == sevenMerAOne   ? 0.236 :
+                                         /* seed_type == sixMer        */ 0.13  ;
+      const downregulationScore slope = seed_type == eightMer       ? -0.64  :
+                                        seed_type == sevenMerMEight ? -0.5   :
+                                        seed_type == sevenMerAOne   ? -0.42  :
+                                     /* seed_type == sixMer        */ -0.241 ;
+       /********************\ 
+      | Calculate constants: |
+       \********************/
+      const sequenceLength   upstream_shift = (seed_type == sevenMerAOne || seed_type == sixMer ) ? 1 : 0;
+      const sequenceLength downstream_shift = (seed_type == eightMer || seed_type == sevenMerAOne) ? 1 : 0;
+      const sequenceLength  upstream_length = upstream_mRNA_subsequence.get_length();
+       /******************************************************************\ 
+      | Iterate over the sequences scoring each position with 1/d where d  |
+      | is the distance to the seed match region summing up the single     |
+      | scores to an overall maximal reachable score and the reached score |
+      | counting only positions with Adenine or Uracil:                    |
+       \******************************************************************/
+      downregulationScore the_score(0);
+      downregulationScore max_score(0);
+      for(sequence::const_iterator upstream_it(upstream_mRNA_subsequence.begin());upstream_it!=upstream_mRNA_subsequence.end();++upstream_it)
+      {
+        const downregulationScore position_score = 1 / (upstream_length - upstream_it->get_sequence_position() + 1 + upstream_shift);
+        the_score += (upstream_it->get_base() == Adenine || upstream_it->get_base() == Uracil) ? position_score : 0;
+        max_score += position_score;
+      }
+      for(sequence::const_iterator downstream_it(downstream_mRNA_subsequence.begin());downstream_it!=downstream_mRNA_subsequence.end();++downstream_it)
+      {
+        const downregulationScore position_score = 1 / (downstream_it->get_sequence_position() + downstream_shift);
+        the_score += (downstream_it->get_base() == Adenine || downstream_it->get_base() == Uracil) ?  position_score : 0;
+        max_score += position_score;
+      }
+       /******************************************************************\ 
+      | Calculate the fraction of the reachable score that was reached and |
+      | apply the regression function before returning the final score:    |
+       \******************************************************************/
+      return the_score / max_score * slope + intercept;
 }
 
     /*****************************************************************//**
