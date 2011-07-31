@@ -515,13 +515,20 @@ namespace microSNPscore {
     *********************************************************************/
     downregulationScore miRNA::calculate_UTR_dist_feature(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, seedType seed_type)
     {
-       /**********************************************\
-| Define the regression parameters as in mirSVR: |
-       \**********************************************/
-      const downregulationScore intercept = -0.07;
-      const downregulationScore     slope =  0.000172;
-       /*****************************************\
-| Define the distance cutoff to not penalty |
+       /**************************************\ 
+      | Define regression parameters depending |
+      | on the seed type as in mirSVR:         |
+       \**************************************/
+      const downregulationScore intercept = seed_type == eightMer       ? -0.07 :
+                                            seed_type == sevenMerMEight ? -0.037 :
+                                            seed_type == sevenMerAOne   ? -0.032 :
+                                         /* seed_type == sixMer        */ -0.018 ;
+      const downregulationScore slope = seed_type == eightMer       ? 0.000172 :
+                                        seed_type == sevenMerMEight ? 0.000091 :
+                                        seed_type == sevenMerAOne   ? 0.000072 :
+                                     /* seed_type == sixMer        */ 0.000049 ;
+       /*****************************************\ 
+      | Define the distance cutoff to not penalty |
       | long UTRs too much as in  mirSVR:         |
        \*****************************************/
       const sequenceLength distance_cutoff = 1500;
