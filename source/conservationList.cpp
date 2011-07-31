@@ -1,6 +1,8 @@
 
 #include <iostream>
 // for std::cerr and std::endl (error stating)
+#include <algorithm>
+// for std::lower_bound (binary search for ranges)
 #include "conservationList.h"
 
 namespace microSNPscore {
@@ -72,79 +74,31 @@ namespace microSNPscore {
     *********************************************************************/
     
     conservationScore conservationList::get_score(const chromosomeType & chromosome, const chromosomePosition & position) {
-}
-
-    /*****************************************************************//**
-    * @brief get conservation range by chromosome and position
-    *
-    * This method is used to access the conservation range of a given
-    * position on a given chromosome.
-    * If the list is empty its end will be returned.
-    * If the chromosome is unknown, the last range of the preceeding 
-    * chromosome in order is returned.
-    *
-    * @param chromosome the chromosome the position of interest is
-    * located on
-    * @param position the position of interest on the given chromosome
-    *     (the 5' end of the + strand (i.e. the 3' end of the - end)
-    *     beeing position 1)
-    *
-    * @return iterator pointing to the conservation range of the given
-    *     position on the given chromosome
-    *********************************************************************/
-    
-    conservationRange conservationList::get_range(const chromosomeType & chromosome, const chromosomePosition & position) {
-       /**************************\ 
-      | Initialize lookup borders: |
-       \**************************/
-      iterator begin = ranges.begin();
-      iterator end = ranges.end();
-       /**********************************************\ 
-      | As long as more than one position is possible: |
-       \**********************************************/
-      while(end-begin>1)
+       /************************************************************\ 
+      | Search for the first range not beginning before the searched |
+      | and return its score if it is a perfect macht or the one     |
+      | position of its predecessor (if one exists):                 |
+       \************************************************************/
+      const std::vector<conservationRange>::const_iterator possible_border(std::lower_bound(ranges.begin(),ranges.end(),conservationRange(chromosome,position)));
+      if(possible_border!=ranges.end())
       {
-         /***************************************\ 
-        | Look at the to elements in the middle:  |
-         \***************************************/
-        const iterator mid = begin + ((sequenceLength)(end-begin-1)/2);
-        const chromosomeType mid_chr = mid->get_chromosome();
-        const chromosomePosition mid_start = mid->get_start();
-        const iterator next = mid+1;
-        const chromosomeType next_chr = next->get_chromosome();
-        const chromosomePosition next_start = next->get_start();
-         /************************************************************\ 
-        | If the chromosome does not exist or the position is between  |
-        | the two elements it has to be the left middle element:       |
-         \************************************************************/
-        if((mid_chr < chromosome && next_chr > chromosome) ||
-           (mid_chr == chromosome && mid_start <= position &&
-           (next_chr > chromosome || next_start > position))) // mid <= position && next > position
+        if(possible_border->get_chromosome() == chromosome && possible_border->get_start() == position)
         {
-          begin=mid;
-          end=next;
-        } // mid =< position && next > position
-         /***********************************\ 
-        | If even the right middle element is |
-        | too the target cannot be before it: |
-         \***********************************/
-        else if(next_chr < chromosome || (next_chr == chromosome && next_start < position)) // next < position
+          return possible_border->get_score();
+        }
+        else if(possible_border != ranges.begin() && (possible_border-1)->get_chromosome() == chromosome)
         {
-          begin=next;
-        } // next < position
-         /*********************************************\ 
-        | If the target is not at nor right of the left |
-        | middle element, it has to be in the left :    |
-         \*********************************************/
-        else // mid > position
-        {
-          end=mid;
-        }// mid > position
-      } //begin != end
-       /****************************************\ 
-      | In the end return the remaining element: |
-       \****************************************/
-      return begin;
+          return (possible_border-1)->get_score();
+        }
+      } // else case for both if statements:
+       /***************************************************\ 
+      | If no score is defined state an error and return 0: |
+       \***************************************************/
+      std::cerr << "microSNPscore::conservationList::get_score\n";
+      std::cerr << " ==> Unkown chromosome: " << chromosome << std::endl;
+      std::cerr << "  --> assuming zero conservation\n";
+      return 0;
+      
 }
 
 

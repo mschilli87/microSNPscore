@@ -5,7 +5,6 @@
 #include "sequence.h"
 #include "nucleotide.h"
 #include "filepath.h"
-#include <list>
 #include <vector>
 
 namespace microSNPscore {
@@ -215,41 +214,11 @@ class conservationList {
 
   private:
     /*****************************************************************//**
-    * @brief iterator type
-    *
-    * This type is used to access the conservation ranges in the list.
-    *********************************************************************/
-    typedef std::list<conservationRange>::iterator iterator;
-
-    /*****************************************************************//**
     * @brief conservation range list
     *
     * This is a vector containing the conservation list's entries.
     *********************************************************************/
     std::vector<conservationRange> ranges;
-
-
-  public:
-    /*****************************************************************//**
-    * @brief get conservation range by chromosome and position
-    *
-    * This method is used to access the conservation range of a given
-    * position on a given chromosome.
-    * If the list is empty its end will be returned.
-    * If the chromosome is unknown, the last range of the preceeding 
-    * chromosome in order is returned.
-    *
-    * @param chromosome the chromosome the position of interest is
-    * located on
-    * @param position the position of interest on the given chromosome
-    *     (the 5' end of the + strand (i.e. the 3' end of the - end)
-    *     beeing position 1)
-    *
-    * @return iterator pointing to the conservation range of the given
-    *     position on the given chromosome
-    *********************************************************************/
-    
-    conservationRange get_range(const chromosomeType & chromosome, const chromosomePosition & position);
 
 };
 
