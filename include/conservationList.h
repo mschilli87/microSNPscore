@@ -4,7 +4,9 @@
 
 #include "sequence.h"
 #include "nucleotide.h"
+#include "filepath.h"
 #include <list>
+#include <vector>
 
 namespace microSNPscore {
 
@@ -14,6 +16,11 @@ namespace microSNPscore {
 * This represents a score of a conservation range
 *********************************************************************/
 typedef double conservationScore;
+/*****************************************************************//**
+* @brief conservation range
+*
+* This represent a range on a chromosome with the same conservation.
+*********************************************************************/
 class conservationRange {
   public:
     /*****************************************************************//**
@@ -42,6 +49,17 @@ class conservationRange {
     *********************************************************************/
     
     conservationRange(chromosomeType the_chromosome = "", chromosomePosition the_start = 0, conservationScore the_score = 0);
+
+    /*****************************************************************//**
+    * @brief less than operator
+    *
+    * This returns if the range is located before another given range.
+    *
+    * @param the_range range to compare with
+    *
+    * @return true if this range is before the other one, false otherwise
+    *********************************************************************/
+    inline bool operator<(const conservationRange & the_range) const;
 
     /*****************************************************************//**
     * @brief get method for chromosome attribute
@@ -100,6 +118,19 @@ class conservationRange {
 
 };
     /*****************************************************************//**
+    * @brief less than operator
+    *
+    * This returns if the range is located before another given range.
+    *
+    * @param the_range range to compare with
+    *
+    * @return true if this range is before the other one, false otherwise
+    *********************************************************************/
+    inline bool conservationRange::operator<(const conservationRange & the_range) const {
+      return get_chromosome()<the_range.get_chromosome() || (get_chromosome() == the_range.get_chromosome() && get_start() < the_range.get_start());
+}
+
+    /*****************************************************************//**
     * @brief get method for chromosome attribute
     *
     * This method is used to access the chromosome the conservation range
@@ -135,25 +166,32 @@ class conservationRange {
       return score;
     }
 
+/*****************************************************************//**
+* @brief conservation list
+*
+* This represent a searchable list range on a chromosome with the same
+* conservation.
+*********************************************************************/
 class conservationList {
-  private:
-    /*****************************************************************//**
-    * @brief conservation range list
-    *
-    * This is a list containing the conservation list's entries.
-    *********************************************************************/
-    std::list<conservationRange> ranges;
-
-
   public:
     /*****************************************************************//**
-    * @brief add conservation range to the list
+    * @brief constructor
     *
-    * This method is used to insert a new conservation range to the list.
+    * This is used to create an instance of the class conservationList
+    * from a given file.
+    * The file should contain a tab-separated table with the columns
+    * chromosome name, start position and conservation score for each
+    * range sorted ascending by chromosome name and start position.
+    * If the file does not exist (or cannot be opened for reading) an
+    * error is raised and an empty list is created.
+    * If a line does not match the format or is not in order, an error is
+    * raised and the line is ignored.
     *
-    * @param conservation_range conservationRange to insert in the list
+    * @param conservation_file file path of the input file
+    *
+    * @return a conservationList containing the ranges given in the file
     *********************************************************************/
-    void add(const conservationRange & conservation_range);
+    conservationList(const filePath & conservation_file);
 
     /*****************************************************************//**
     * @brief get conservation score by chromosome and position
@@ -183,6 +221,13 @@ class conservationList {
     *********************************************************************/
     typedef std::list<conservationRange>::iterator iterator;
 
+    /*****************************************************************//**
+    * @brief conservation range list
+    *
+    * This is a vector containing the conservation list's entries.
+    *********************************************************************/
+    std::vector<conservationRange> ranges;
+
 
   public:
     /*****************************************************************//**
@@ -204,7 +249,7 @@ class conservationList {
     *     position on the given chromosome
     *********************************************************************/
     
-    conservationScore get_range(const chromosomeType & chromosome, const chromosomePosition & position);
+    conservationRange get_range(const chromosomeType & chromosome, const chromosomePosition & position);
 
 };
 

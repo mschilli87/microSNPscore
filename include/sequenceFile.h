@@ -9,15 +9,10 @@
 #include "mRNA.h"
 #include "miRNA.h"
 #include <vector>
+#include "filepath.h"
 
 namespace microSNPscore {
 
-/*****************************************************************//**
-* @brief file path type
-*
-* This represents a file path.
-*********************************************************************/
-typedef std::string filePath;
 /*****************************************************************//**
 * @brief sequence file entry class
 *

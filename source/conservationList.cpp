@@ -35,13 +35,23 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
-    * @brief add conservation range to the list
+    * @brief constructor
     *
-    * This method is used to insert a new conservation range to the list.
+    * This is used to create an instance of the class conservationList
+    * from a given file.
+    * The file should contain a tab-separated table with the columns
+    * chromosome name, start position and conservation score for each
+    * range sorted ascending by chromosome name and start position.
+    * If the file does not exist (or cannot be opened for reading) an
+    * error is raised and an empty list is created.
+    * If a line does not match the format or is not in order, an error is
+    * raised and the line is ignored.
     *
-    * @param conservation_range conservationRange to insert in the list
+    * @param conservation_file file path of the input file
+    *
+    * @return a conservationList containing the ranges given in the file
     *********************************************************************/
-    void conservationList::add(const conservationRange & conservation_range) {
+    conservationList::conservationList(const filePath & conservation_file) {
 }
 
     /*****************************************************************//**
@@ -83,7 +93,58 @@ namespace microSNPscore {
     *     position on the given chromosome
     *********************************************************************/
     
-    conservationScore conservationList::get_range(const chromosomeType & chromosome, const chromosomePosition & position) {
+    conservationRange conservationList::get_range(const chromosomeType & chromosome, const chromosomePosition & position) {
+       /**************************\ 
+      | Initialize lookup borders: |
+       \**************************/
+      iterator begin = ranges.begin();
+      iterator end = ranges.end();
+       /**********************************************\ 
+      | As long as more than one position is possible: |
+       \**********************************************/
+      while(end-begin>1)
+      {
+         /***************************************\ 
+        | Look at the to elements in the middle:  |
+         \***************************************/
+        const iterator mid = begin + ((sequenceLength)(end-begin-1)/2);
+        const chromosomeType mid_chr = mid->get_chromosome();
+        const chromosomePosition mid_start = mid->get_start();
+        const iterator next = mid+1;
+        const chromosomeType next_chr = next->get_chromosome();
+        const chromosomePosition next_start = next->get_start();
+         /************************************************************\ 
+        | If the chromosome does not exist or the position is between  |
+        | the two elements it has to be the left middle element:       |
+         \************************************************************/
+        if((mid_chr < chromosome && next_chr > chromosome) ||
+           (mid_chr == chromosome && mid_start <= position &&
+           (next_chr > chromosome || next_start > position))) // mid <= position && next > position
+        {
+          begin=mid;
+          end=next;
+        } // mid =< position && next > position
+         /***********************************\ 
+        | If even the right middle element is |
+        | too the target cannot be before it: |
+         \***********************************/
+        else if(next_chr < chromosome || (next_chr == chromosome && next_start < position)) // next < position
+        {
+          begin=next;
+        } // next < position
+         /*********************************************\ 
+        | If the target is not at nor right of the left |
+        | middle element, it has to be in the left :    |
+         \*********************************************/
+        else // mid > position
+        {
+          end=mid;
+        }// mid > position
+      } //begin != end
+       /****************************************\ 
+      | In the end return the remaining element: |
+       \****************************************/
+      return begin;
 }
 
 
