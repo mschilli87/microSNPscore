@@ -489,7 +489,48 @@ namespace microSNPscore {
     *********************************************************************/
     downregulationScore miRNA::calculate_three_prime_feature(const alignment & the_alignment)
     {
-      return 2.32868;
+       /**************************************************\ 
+      | Define weights as in Grimsonetal2007 (normailzed): |
+       \**************************************************/
+      const downregulationScore four_mer_weights[9] = {0.2424242,0.3333333,0.6060606,0.9090909,1,0.6060606,0.4545455,0.2121212,0.1818182};
+       /***************************************************************\ 
+      | Initialize variables and iterate over the possible 4mer starts: |
+       \***************************************************************/
+      downregulationScore max_score(0);
+      alignment::const_iterator start_it(the_alignment.begin());
+      for(sequencePosition start_pos(9);start_pos!=18;++start_pos)
+      {
+         /********************************************************\ 
+        | Search alignment column corresponding to the 4mer start: |
+         \********************************************************/
+        for(;start_it->get_miRNA_nucleotide().get_sequence_position()!=start_pos;++start_it) { /* nothing */ };
+         /*****************************************************************\ 
+        | Score adjacent matches with 0.5 and those within the 4mer with 1: |
+         \*****************************************************************/
+        downregulationScore four_mer_score((start_it-1)->get_match().get_identifier() == Match ? 0.5 : 1);
+        alignment::const_iterator alignment_it(start_it);
+        for(sequenceLength four_mer_pos(0);four_mer_pos!=4;++four_mer_pos,++alignment_it)
+        {
+          if(alignment_it->get_match().get_identifier() == Match)
+          {
+            ++four_mer_score;
+          }
+        } // four_mer_pos
+        ++alignment_it;
+        if(alignment_it->get_match().get_identifier() == Match)
+        {
+          four_mer_score += 0.5;
+        }
+         /**********************************************\ 
+        | Weight the 4mer score an update maximal score: |
+         \**********************************************/
+        four_mer_score *= four_mer_weights[start_pos-8];
+        max_score = std::max(max_score,four_mer_score);
+      } // start_pos
+       /*********************************************\ 
+      | Return the best score as final feature score: |
+       \*********************************************/
+      return max_score;
 }
 
     /*****************************************************************//**
