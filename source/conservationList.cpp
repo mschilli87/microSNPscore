@@ -3,6 +3,13 @@
 // for std::cerr and std::endl (error stating)
 #include <algorithm>
 // for std::lower_bound (binary search for ranges)
+#include <fstream>
+// for std::ifstream (file reading)
+#include <regex.h>
+// for regex_t, regmatch_t, regcomp and regexec (regular expressions)
+#include <sstream>
+// for std::istringstream (type conversion)
+
 #include "conservationList.h"
 
 namespace microSNPscore {
@@ -54,6 +61,88 @@ namespace microSNPscore {
     * @return a conservationList containing the ranges given in the file
     *********************************************************************/
     conservationList::conservationList(const filePath & conservation_file) {
+       /********************************************************\ 
+      | Try to open an input file stream associated to the given |
+      | file path stating an error in the case of failure:       |
+       \********************************************************/
+      std::ifstream infile(conservation_file.c_str());
+      if(infile.fail())
+      {
+        std::cerr << "microSNPscore::conservationList::conservationList\n";
+        std::cerr << " ==> Cannot open file to read from: ";
+        std::cerr << conservation_file << std::endl;
+        std::cerr << "  --> no conservations will be read from the file\n";
+      }
+      else
+      {
+         /**************************************************************\ 
+        | Try to initialize extended regular expression matching a valid |
+        | conservation range line stating error in case of failure:      |
+         \**************************************************************/
+        regex_t line_regex;
+        char line_pattern[] = "^([[:alnum:]]+)\t([[:digit:]]+)\t([[:digit:].]+)$";
+        if(regcomp(&line_regex,line_pattern,REG_EXTENDED) != 0)
+        {
+          std::cerr << "microSNPscore::conservationList::conservationList\n";
+          std::cerr << " ==> compiling line regular expression failed\n";
+          std::cerr << "  --> no conservations will be read from the file\n";
+        }
+        else
+        {
+           /**************************************************************\ 
+          | Read the content of the file linewise into a string and try to |
+          | match the initialized regular expression stating error in case |
+          | of failure:                                                    |
+           \**************************************************************/
+          std::string line_string;
+          size_t line_nmatch(3);
+          regmatch_t line_pmatch[line_nmatch];
+          while(getline(infile,line_string).good())
+          {
+            if(regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0) != 0)
+            {
+                  std::cerr << "microSNPscore::conservationList::conservationList\n";
+                  std::cerr << " ==> no valid conservation range:\n";
+                  std::cerr << line_string << std::endl;
+                  std::cerr << "  --> omitting line\n";
+            }
+            else
+            {
+               /*****************************************************************\ 
+              | Extract the subsequences matching the regular expression's groups |
+              | from the line assigning them to the corresponding parameters      |
+              | (converting them via a stringstream) create conservation range:   |
+               \*****************************************************************/
+              chromosomeType line_chromosome(line_string.substr(line_pmatch[1].rm_so,line_pmatch[1].rm_eo-line_pmatch[1].rm_so));
+              chromosomePosition line_start;
+              std::istringstream stream_start(line_string.substr(line_pmatch[2].rm_so,line_pmatch[2].rm_eo-line_pmatch[2].rm_so));
+              stream_start >> line_start;
+              conservationScore line_score;
+              std::istringstream stream_score(line_string.substr(line_pmatch[3].rm_so,line_pmatch[3].rm_eo-line_pmatch[3].rm_so));
+              stream_score >> line_score;
+              conservationRange line_range(line_chromosome,line_start,line_score);
+               /*******************************************************\ 
+              | If this is not the first line check whether is in order |
+              | with its predecessor stating an error if not:           |
+               \*******************************************************/
+              if(ranges.begin() != ranges.end() && line_range <= *(ranges.end()-1))
+              {
+                  std::cerr << "microSNPscore::conservationList::conservationList\n";
+                  std::cerr << " ==> conservation range out of order:\n";
+                  std::cerr << line_string << std::endl;
+                  std::cerr << "  --> omitting line\n";
+              }
+              else
+              {
+                 /***********************************\ 
+                | Append the new range to the vector: |
+                 \***********************************/
+                ranges.push_back(line_range);
+              } // ranges.begin() == ranges.end() || line_range > *(ranges.end()-1)
+            } // regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0) == 0
+          } // getline(infile,line_string).good()
+        } // regcomp(&line_regex,line_pattern,REG_EXTENDED) == 0
+      } // !infile.fail()
 }
 
     /*****************************************************************//**

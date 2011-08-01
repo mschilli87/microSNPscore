@@ -61,6 +61,17 @@ class conservationRange {
     inline bool operator<(const conservationRange & the_range) const;
 
     /*****************************************************************//**
+    * @brief less than operator
+    *
+    * This returns if the range is located before another given range.
+    *
+    * @param the_range range to compare with
+    *
+    * @return true if this range is before the other one, false otherwise
+    *********************************************************************/
+    inline bool operator <=(const conservationRange & the_range) const;
+
+    /*****************************************************************//**
     * @brief get method for chromosome attribute
     *
     * This method is used to access the chromosome the conservation range
@@ -127,6 +138,19 @@ class conservationRange {
     *********************************************************************/
     inline bool conservationRange::operator<(const conservationRange & the_range) const {
       return get_chromosome()<the_range.get_chromosome() || (get_chromosome() == the_range.get_chromosome() && get_start() < the_range.get_start());
+}
+
+    /*****************************************************************//**
+    * @brief less than operator
+    *
+    * This returns if the range is located before another given range.
+    *
+    * @param the_range range to compare with
+    *
+    * @return true if this range is before the other one, false otherwise
+    *********************************************************************/
+    inline bool conservationRange::operator <=(const conservationRange & the_range) const {
+      return get_chromosome()<the_range.get_chromosome() || (get_chromosome() == the_range.get_chromosome() && get_start() <= the_range.get_start());
 }
 
     /*****************************************************************//**
