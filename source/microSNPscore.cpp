@@ -130,8 +130,8 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << sequenceFileEntry(BCL2.mutate(rs4987856));
   std::cout << "As you might see (or not ^^) the position of interest now contains ";
   std::cout << *BCL2.mutate(rs4987856).get_nucleotide_chr(rs4987856.get_position(BCL2.mutate(rs4987856).get_strand())) << ".\n";
-  std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
-  std::cout << rs4987856.get_deregulation_score(mature195,BCL2,60793322) << ".\n";
+//  std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
+//  std::cout << rs4987856.get_deregulation_score(mature195,BCL2,60793322,/* conservations */) << ".\n";
   std::cout << "\n\n====================================================================================================\n\n";
   std::cout << "For a more comprehensive test of the deregulation score calculation we need more examples testing more cases:\n\n";
   std::cout << "We start with a made up miRNA we call miR-0815:\n\n";
@@ -235,7 +235,7 @@ chr1	56	0.645\n");
   for(std::vector<SNP>::const_iterator SNP_it(SNPs.begin());SNP_it!=SNPs.end();++SNP_it)
   {
     std::cout << "\t" << SNP_it->get_ID() << (SNP_it->get_ID().length() < 8 ? "\t" : "") << "\t|\t";
-    std::cout << SNP_it->get_deregulation_score(miR0815,gene4711,120) << std::endl;
+    std::cout << SNP_it->get_deregulation_score(miR0815,gene4711,120,conservation_list) << std::endl;
   }
   remove(conservation_file_path.c_str());
 }
