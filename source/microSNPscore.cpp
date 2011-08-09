@@ -1,11 +1,13 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include <fstream>
 #include "mRNA.h"
 #include "miRNA.h"
 #include "sequenceFile.h"
 #include "alignment.h"
 #include "SNP.h"
+#include "conservationList.h"
 
 using namespace microSNPscore;
 
@@ -206,10 +208,34 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of extending the 3' match.\n";
   std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-GG->CA-247:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(mutGGtoCAat247).get_subsequence_for_alignment(120),miR0815);
+  std::cout << "\nIn addition to that data we need conservation information for our scoring algorithm.\n";
+  std::cout << "Therefor we create a conservation ranges file with the following content:\n";
+  std::string conservation_file_content("\
+001	1	0.12\n\
+001	3	0.4\n\
+001	1213	8.2\n\
+001	1278	0.32\n\
+007	1	0.32\n\
+007	56	0.45\n\
+007	120	0.83\n\
+007	130	0.53\n\
+007	200	0.23\n\
+007	240	0.001\n\
+007	242	0.93\n\
+007	251	0.12\n\
+chr1	1	0.2\n\
+chr1	56	0.645\n");
+  std::cout << std::endl << conservation_file_content << std::endl;
+  filePath conservation_file_path("test.conservations");
+  std::ofstream conservation_file_stream(conservation_file_path.c_str());
+  conservation_file_stream << conservation_file_content;
+  conservation_file_stream.close();
+  conservationList conservation_list(conservation_file_path);
   std::cout << "\nNow we calculate the deregulation score for those SNPs:\n\n\tSNP\t\t|\tscore\n------------------------+------------------------\n";
   for(std::vector<SNP>::const_iterator SNP_it(SNPs.begin());SNP_it!=SNPs.end();++SNP_it)
   {
     std::cout << "\t" << SNP_it->get_ID() << (SNP_it->get_ID().length() < 8 ? "\t" : "") << "\t|\t";
     std::cout << SNP_it->get_deregulation_score(miR0815,gene4711,120) << std::endl;
   }
+  remove(conservation_file_path.c_str());
 }
