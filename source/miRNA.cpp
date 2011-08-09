@@ -324,7 +324,7 @@ namespace microSNPscore {
       downregulationScore features[feature_count];
       features[UTRLength]=the_mRNA.get_length();
       calculate_accessability_features(&features[SS01],the_mRNA.get_subsequence_for_accessability(predicted_three_prime_position),predicted_three_prime_position);
-      features[conservation]=calculate_conservation_feature(the_alignment,the_mRNA.get_strand(),conservations);
+      features[conservation]=calculate_conservation_feature(the_alignment,the_mRNA.get_strand(),the_mRNA.get_chromosome(),conservations);
       features[AU_content]=calculate_AU_content_feature(the_mRNA.get_subsequence_for_downstream_AU_content(predicted_three_prime_position),
                                                         the_mRNA.get_subsequence_for_upstream_AU_content(predicted_three_prime_position),
                                                         the_alignment.get_seed_type());
@@ -399,8 +399,9 @@ namespace microSNPscore {
     *
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
-    * @param the_strand the strand (Plus or Minus) the mRNA is transcribed
+    * @param mRNA_strand the strand (Plus or Minus) the mRNA is transcribed
     *     from
+    * @param mRNA_chromosome the chromosome the mRNA is located on
     * @param conservations conservationList containing the conservation
     *     ranges to use for the scoring
     *
@@ -409,7 +410,7 @@ namespace microSNPscore {
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    downregulationScore miRNA::calculate_conservation_feature(const alignment & the_alignment, strandType the_strand, const conservationList & conservations)
+    downregulationScore miRNA::calculate_conservation_feature(const alignment & the_alignment, strandType mRNA_strand, const chromosomeType & mRNA_chromosome, const conservationList & conservations)
     {
       return 0.57633;
 }

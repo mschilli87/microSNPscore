@@ -171,8 +171,9 @@ class miRNA : public sequence {
     *
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
-    * @param the_strand the strand (Plus or Minus) the mRNA is transcribed
+    * @param mRNA_strand the strand (Plus or Minus) the mRNA is transcribed
     *     from
+    * @param mRNA_chromosome the chromosome the mRNA is located on
     * @param conservations conservationList containing the conservation
     *     ranges to use for the scoring
     *
@@ -181,7 +182,7 @@ class miRNA : public sequence {
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static downregulationScore calculate_conservation_feature(const alignment & the_alignment, strandType the_strand, const conservationList & conservations);
+    static downregulationScore calculate_conservation_feature(const alignment & the_alignment, strandType mRNA_strand, const chromosomeType & mRNA_chromosome, const conservationList & conservations);
 
     /*****************************************************************//**
     * @brief local AU content feature calculation

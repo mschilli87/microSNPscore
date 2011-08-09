@@ -8,6 +8,7 @@
 #include "alignment.h"
 #include "SNP.h"
 #include "conservationList.h"
+#include "filepath.h"
 
 using namespace microSNPscore;
 
