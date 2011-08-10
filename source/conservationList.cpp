@@ -162,7 +162,7 @@ namespace microSNPscore {
     *     chromosome
     *********************************************************************/
     
-    conservationScore conservationList::get_score(const chromosomeType & chromosome, const chromosomePosition & position) {
+    conservationScore conservationList::get_score(const chromosomeType & chromosome, const chromosomePosition & position) const {
        /************************************************************\ 
       | Search for the first range not beginning before the searched |
       | and return its score if it is a perfect macht or the one     |

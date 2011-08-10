@@ -233,7 +233,7 @@ class conservationList {
     *     chromosome
     *********************************************************************/
     
-    conservationScore get_score(const chromosomeType & chromosome, const chromosomePosition & position);
+    conservationScore get_score(const chromosomeType & chromosome, const chromosomePosition & position) const;
 
 
   private:

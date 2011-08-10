@@ -3,6 +3,8 @@
 // for std::max (downregulation score calculation)
 #include <cmath>
 // for exp (downregulation score sigmoid function)
+#include <numeric>
+// for std::accumulate (conservation score mean calculation)
 #include "miRNA.h"
 #include "SNP.h"
 #include "mRNA.h"
@@ -412,7 +414,42 @@ namespace microSNPscore {
     *********************************************************************/
     downregulationScore miRNA::calculate_conservation_feature(const alignment & the_alignment, strandType mRNA_strand, const chromosomeType & mRNA_chromosome, const conservationList & conservations)
     {
-      return 0.57633;
+       /******************************************************************\ 
+      | Initialize empty score vector and add conservation scores for all  |
+      | non-gap mRNA-positions involved in the given mRNA:miRNA-alignment: |
+       \******************************************************************/
+      std::vector<conservationScore> scores_raw;
+      for(alignment::const_iterator column_it(the_alignment.begin());column_it!=the_alignment.end();++column_it)
+      {
+        nucleotide mRNA_nucleotide(column_it->get_mRNA_nucleotide());
+        if(mRNA_nucleotide.get_base() != Gap)
+        {
+          scores_raw.push_back(conservations.get_score(mRNA_chromosome,mRNA_nucleotide.get_chromosome_position()));
+        }
+      }
+       /*****************************************************************\ 
+      | Initialize another empty score vector and add the first score if  |
+      | it exists or a zero otherwise and append all the following scores |
+      | omitting adjacent zero-scores:                                    |
+       \*****************************************************************/
+      std::vector<conservationScore> scores_single_zero;
+      scores_single_zero.push_back(scores_raw.begin()==scores_raw.end() ? 0 : *scores_raw.begin());
+      if(scores_raw.begin()+1<scores_raw.end())
+      {
+        for(std::vector<conservationScore>::const_iterator predecessor_it(scores_raw.begin()),
+                                                           score_it(scores_raw.begin()+1);score_it!=scores_raw.end();++predecessor_it,
+                                                                                                                   ++score_it)
+        {
+          if(*score_it != 0 || *predecessor_it != 0)
+          {
+            scores_single_zero.push_back(*score_it);
+          }
+        }
+      }
+       /************************************************************\ 
+      | Return the mean of the filtered score vector as final score: |
+       \************************************************************/
+      return (std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0) / (scores_single_zero.end() - scores_single_zero.begin()));
 }
 
     /*****************************************************************//**
