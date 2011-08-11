@@ -2,9 +2,15 @@
 #include <algorithm>
 // for std::max (downregulation score calculation)
 #include <cmath>
-// for exp (downregulation score sigmoid function)
+// for exp (downregulation score sigmoid function) and std::log (accessability score calculation)
 #include <numeric>
 // for std::accumulate (conservation score mean calculation)
+#include <sstream>
+// for std::istringstream (type conversion) and std::ostream (command string composition)
+#include <fstream>
+// for std::ifstream (file access to read RNAplfold output)
+#include <cstdlib>
+// for std::system (RNAplfold call)
 #include "miRNA.h"
 #include "SNP.h"
 #include "mRNA.h"
@@ -371,26 +377,133 @@ namespace microSNPscore {
     *********************************************************************/
     void miRNA::calculate_accessability_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position)
     {
-      features[0]=6.42691;
-      features[1]=6.36598;
-      features[2]=6.27593;
-      features[3]=6.18784;
-      features[4]=5.92570;
-      features[5]=5.91493;
-      features[6]=6.07210;
-      features[7]=6.17630;
-      features[8]=6.20022;
-      features[9]=6.18562;
-      features[10]=6.20394;
-      features[11]=6.36488;
-      features[12]=6.58276;
-      features[13]=7.05142;
-      features[14]=7.05196;
-      features[15]=6.99292;
-      features[16]=7.00693;
-      features[17]=7.14608;
-      features[18]=7.06098;
-      features[19]=6.94628;
+       /*********************\ 
+      | Define feature count: |
+       \*********************/
+      const unsigned short int feature_count=20;
+       /*****************************************\ 
+      | Define RNAplfold parameters as in mirSVR: |
+       \*****************************************/
+      const unsigned short int RNAplfold_span=40;
+      const unsigned short int RNAplfold_winsize=80;
+      const unsigned short int RNAplfold_width=16;
+       /*******************************************\ 
+      | Define RNAplfold and echo executable paths: |
+       \*******************************************/
+      const filePath RNAplfold_command("RNAplfold");
+      const filePath echo_command("echo");
+       /***********************************\ 
+      | Define RNAplfold output file paths: |
+       \***********************************/
+      const filePath RNAplfold_outfile("plfold_lunp");
+      const filePath RNAplfold_dotplotfile("plfold_dp.ps");
+       /******************************************\ 
+      | Define number of comments at the beginning |
+      | of the RNAplfold output file:              |
+       \******************************************/
+      const unsigned short int RNAplfold_comment_lines=2;
+       /******************************************************\ 
+      | Define score cutoff for logarithmization as in mirSVR: |
+       \******************************************************/
+      const downregulationScore score_cutoff(0.000001);
+       /******************************************\ 
+      | Compose RNAplfold call and call RNAplfold: |
+       \******************************************/
+      std::ostringstream RNAplfold_call;
+      RNAplfold_call << echo_command << " \"" << mRNA_subsequence <<"\" | " << RNAplfold_command
+                     << " -L " << RNAplfold_span << " -W " << RNAplfold_winsize << " -u " << RNAplfold_width;
+      system(RNAplfold_call.str().c_str());
+       /*****************************\ 
+      | Remove unneeded dotplot file: |
+       \*****************************/
+      remove(RNAplfold_dotplotfile.c_str());
+       /*****************************************************************\ 
+      | Calculate sequence position of predecited target site three prime |
+      | end and the up to +-feature count nucleotides up- and downstream  |
+      | borders and get iterators pointing at the begin and end of the    |
+      | interesting region of the mRNA subsequence:                       |
+       \*****************************************************************/
+      const sequencePosition center_position(mRNA_subsequence.get_nucleotide_chr(predicted_three_prime_position)->get_sequence_position());
+      const sequencePosition begin_position(center_position>feature_count ? center_position-feature_count : 1);
+      const sequencePosition end_position(mRNA_subsequence.get_length()>center_position+feature_count ? center_position+feature_count
+                                                                                                      : mRNA_subsequence.get_length());
+      const sequence::const_iterator begin(mRNA_subsequence[begin_position]);
+      const sequence::const_iterator end(mRNA_subsequence[end_position+1]);
+       /***************************************************************\ 
+      | Initialize variables an open RNAplfold output file skipping the |
+      | comment lines in the beginning of the file (as defined before): |
+       \***************************************************************/
+      sequence::const_iterator mRNA_it(mRNA_subsequence.begin());
+      std::string line;
+      std::ifstream RNAplfold_output(RNAplfold_outfile.c_str());
+      for(unsigned short int i=0;i!=RNAplfold_comment_lines;i++)
+      {
+        std::getline(RNAplfold_output,line);
+      }
+       /**************************************************\ 
+      | Skip the lines corresponding to nucleotides before |
+      | the interesting region of the mRNA subsequence:    |
+       \**************************************************/
+      for(;mRNA_it!=begin;++mRNA_it)
+      {
+        std::getline(RNAplfold_output,line);
+      }
+       /***************************************************************\ 
+      | Initialize empty score vector and append zero scores for the    |
+      | features that correspond to positions before the sequence begin |
+      | (less nucleotides before predicted target site than features):  |
+       \***************************************************************/
+      std::vector<downregulationScore> scores;
+      for(unsigned short int i=center_position;i<=feature_count;++i)
+      {
+        scores.push_back(0);
+      }
+       /*****************************************************************\ 
+      | Iterate over the interesting part of the mRNA subsequence reading |
+      | the corresponding lines and extracting the second tab-separated   |
+      | word to convert it to a score and append it to the vector:        |
+       \*****************************************************************/
+      for(;mRNA_it!=end;++mRNA_it)
+      {
+        std::getline(RNAplfold_output,line);
+        std::istringstream line_stream(line);
+        std::string score_string;
+        std::getline(line_stream,score_string,'\t');
+        std::getline(line_stream,score_string,'\t');
+        std::istringstream score_stream(score_string);
+        downregulationScore score;
+        score_stream >> score;
+        scores.push_back(score);
+      }
+       /***************************************\ 
+      | Close and remove RNAplfold output file: |
+       \***************************************/
+      RNAplfold_output.close();
+      remove(RNAplfold_outfile.c_str());
+       /****************************************************************\ 
+      | Append zero scores for the features that correspond to positions |
+      | behind the sequence end (less nucleotides after predicted target |
+      | site than features):                                             |
+       \****************************************************************/
+      for(unsigned short int i=end_position-center_position;i<feature_count;++i)
+      {
+        scores.push_back(0);
+      }
+       /******************************************************************\ 
+      | Iterate over the scores and features assigning each feature the    |
+      | logarithm of the maximum of the sum of its corresponding scores or |
+      | the cutoff:                                                        |
+       \******************************************************************/
+      std::vector<downregulationScore>::const_iterator score_it(scores.begin());
+      for(unsigned short int feature_number=0;feature_number<feature_count;++feature_number,score_it+=2)
+      {
+        downregulationScore feature_score((*score_it + *(score_it+1))/2);
+        if (feature_score < score_cutoff)
+        {
+          feature_score = score_cutoff;
+        }
+        features[feature_number]=std::log(feature_score);
+      }
 }
 
     /*****************************************************************//**
