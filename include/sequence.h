@@ -9,6 +9,7 @@
 #include <vector>
 
 namespace microSNPscore { class nucleotide; } 
+namespace microSNPscore { class conservationList; } 
 namespace microSNPscore { class SNP; } 
 
 namespace microSNPscore {
@@ -248,10 +249,14 @@ class sequence {
     *     the 3' end of the + strand and accordingly the 5' end of
     *     the - strand) of the exons containing the sequence as
     *     comma-separated list.
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return a sequence containing the given nucleotides located on the
-    *     given chromosome, strand and positions.
+    *     given chromosome, strand and positions with the given
+    *     conservation scores.
     *********************************************************************/
-    sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
+    sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations);
 
     /*****************************************************************//**
     * @brief get method for ID attribute
@@ -519,6 +524,7 @@ class sequence {
     *    sequence
     * @param the_nucleotides: std::vector<nucleotide> representing the
     *     sequence's nucleotides
+    *
     * @return a sequence with the given attributes
     *********************************************************************/
     sequence(sequenceID the_ID, chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides);
@@ -588,11 +594,13 @@ class sequence {
     * @param end_of_exons const_exon_iterator pointing behind the
     *     sequence's exon vector
     * @param the_length the requested length of the sequence
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
     static std::vector<nucleotide> initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand
-    , const const_exon_iterator & begin_of_exons, const const_exon_iterator & end_of_exons, sequenceLength the_length);
+    , const const_exon_iterator & begin_of_exons, const const_exon_iterator & end_of_exons, sequenceLength the_length, const conservationList & conservations);
 
     /*****************************************************************//**
     * @brief string to position vector conversion

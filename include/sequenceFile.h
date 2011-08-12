@@ -11,6 +11,8 @@
 #include <vector>
 #include "filepath.h"
 
+namespace microSNPscore { class conservationList; } 
+
 namespace microSNPscore {
 
 /*****************************************************************//**
@@ -72,9 +74,12 @@ class sequenceFileEntry {
     * This method is used to create a sequence object corresponding to the
     * sequence file entry.
     *
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
-    inline sequence get_sequence() const;
+    inline sequence get_sequence(const conservationList & conservations) const;
 
     /*****************************************************************//**
     * @brief mRNA object creation
@@ -82,9 +87,12 @@ class sequenceFileEntry {
     * This method is used to create a mRNA object corresponding to the
     * sequence file entry.
     *
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the mRNA
+    *
     * @return mRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline mRNA get_mRNA() const;
+    inline mRNA get_mRNA(const conservationList & conservations) const;
 
     /*****************************************************************//**
     * @brief miRNA object creation
@@ -92,9 +100,12 @@ class sequenceFileEntry {
     * This method is used to create a miRNA object corresponding to the
     * sequence file entry.
     *
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the miRNA
+    *
     * @return miRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline miRNA get_miRNA() const;
+    inline miRNA get_miRNA(const conservationList & conservations) const;
 
     /*****************************************************************//**
     * @brief FASTA entry creation
@@ -172,10 +183,13 @@ class sequenceFileEntry {
     * This method is used to create a sequence object corresponding to the
     * sequence file entry.
     *
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
-    inline sequence sequenceFileEntry::get_sequence() const {
-      return sequence(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
+    inline sequence sequenceFileEntry::get_sequence(const conservationList & conservations) const {
+      return sequence(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations);
 }
 
     /*****************************************************************//**
@@ -184,10 +198,13 @@ class sequenceFileEntry {
     * This method is used to create a mRNA object corresponding to the
     * sequence file entry.
     *
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the mRNA
+    *
     * @return mRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline mRNA sequenceFileEntry::get_mRNA() const {
-      return mRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
+    inline mRNA sequenceFileEntry::get_mRNA(const conservationList & conservations) const {
+      return mRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations);
 }
 
     /*****************************************************************//**
@@ -196,10 +213,13 @@ class sequenceFileEntry {
     * This method is used to create a miRNA object corresponding to the
     * sequence file entry.
     *
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the miRNA
+    *
     * @return miRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline miRNA sequenceFileEntry::get_miRNA() const {
-      return miRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends);
+    inline miRNA sequenceFileEntry::get_miRNA(const conservationList & conservations) const {
+      return miRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations);
 }
 
 /*****************************************************************//**

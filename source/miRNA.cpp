@@ -12,9 +12,9 @@
 #include <cstdlib>
 // for std::system (RNAplfold call)
 #include "miRNA.h"
+#include "conservationList.h"
 #include "SNP.h"
 #include "mRNA.h"
-#include "conservationList.h"
 #include "alignment.h"
 
 namespace microSNPscore {
@@ -55,11 +55,14 @@ namespace microSNPscore {
     *     the 3' end of the + strand and accordingly the 5' end of
     *     the - strand) of the exons containing the miRNA as
     *     comma-separated list.
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return a miRNA containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    miRNA::miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
-    :sequence(the_id,sequence_string,the_chromosome,the_strand,exon_starts,exon_ends) {
+    miRNA::miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations)
+    :sequence(the_id,sequence_string,the_chromosome,the_strand,exon_starts,exon_ends,conservations) {
 }
 
     /*****************************************************************//**

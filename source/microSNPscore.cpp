@@ -13,7 +13,8 @@
 using namespace microSNPscore;
 
 int main(){
-  miRNA miR195("hsa-miR195","aGCTTCCCUGGCUCUAGCAGCACAGAAAUAUUGGCACAGGGAAGCGAGUCUGCCAAUAUUGGCUGUGCUGCUCCAGGCAGGGUGGUG","chr17",Plus,"6920934","6921020");
+/*  miRNA miR195("hsa-miR195","aGCTTCCCUGGCUCUAGCAGCACAGAAAUAUUGGCACAGGGAAGCGAGUCUGCCAAUAUUGGCUGUGCUGCUCCAGGCAGGGUGGUG","chr17",Plus,"6920934","6921020"
+                ,conservations);
   mRNA BCL2("BCL2","AGUCAACAUGCCUGCCCCAAACAAAUAUGCAAAAGGUUCACUAAAGCAGUAGAAAUAAUAUGCAUUGUCAGUGAUGUACCAUGAAACAAAGCUGCAGGCUGUUUAAGAAAAAAUAACACACAUAUAAACAU\
 CACACACACAGACAGACACACACACACACAACAAUUAACAGUCUUCAGGCAAAACGUCGAAUCAGCUAUUUACUGCCAAAGGGAAAUAUCAUUUAUUUUUUACAUUAUUAAGAAAAAAAGAUUUAUUUAUUUAAGACAGUCCCAUCAAAAC\
 UCCUGUCUUUGGAAAUCCGACCACUAAUUGCCAAGCACCGCUUCGUGUGGCUCCACCUGGAUGUUCUGUGCCUGUAAACAUAGAUUCGCUUUCCAUGUUGUUGGCCGGAUCACCAUCUGAAGAGCAGACGGAUGGAAAAAGGACCUGAUCA\
@@ -49,7 +50,7 @@ UGGGAACACUGGUGGAGGAUGGAAAGGCUCGCUCAAUCAAGAAAAUUCUGAGACUAUUAAUAAAUAAGACUGUAGUGUAG
 UAAGUUUUUCCCUCCAAGGUAGAAUUUGCAAGAGUGACAGUGGAUUGCAUUUCUUUUGGGGAAGCUUUCUUUUGGUGGUUUUGUUUAUUAUACCUUCUUAAGUUUUCAACCAAGGUUUGCUUUUGUUUUGAGUUACUGGGGUUAUUUUUGU\
 UUUAAAUAAAAAUAAGUGUACAAUAAGUGUUUUUGUAUUGAAAGCUUUUGUUAUCAAGAUUUUCAUACUUUUACCUUCCAUGGCUCUUUUUAAGAUUGAUACUUUUAAGAGGUGGCUGAUAUUCUGCAACACUGUACACAUAAAAAAUACG\
 GUAAGGAUACUUUACAUGGUUAAGGUAAAGUAAGUCUCCAGUUGGCCACCAUUAGCUAUAAUGGCACUUUGUUUGUGUUGUUGGAAAAAGUCACAUUGCCAUUAAACUUUCCUUGUCUGUCUAGUUAAUAUUGUGAAGAAAAAUAAAGUAC\
-AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857");
+AGUGUGAGAUACUG","chr18",Minus,"60790579","60795857",conservations);
   std::cout << "Length of miR195: " << miR195.get_length() << std::endl;
   std::cout << "BCL2 is transcribed from the " << BCL2.get_strand() << " strand.\n";
   std::cout << "First nucleotide of BCL2 is " << BCL2.begin()->get_base() << " (" << *(BCL2.begin());
@@ -131,14 +132,38 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
   std::cout << sequenceFileEntry(BCL2.mutate(rs4987856));
   std::cout << "As you might see (or not ^^) the position of interest now contains ";
   std::cout << *BCL2.mutate(rs4987856).get_nucleotide_chr(rs4987856.get_position(BCL2.mutate(rs4987856).get_strand())) << ".\n";
-//  std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
-//  std::cout << rs4987856.get_deregulation_score(mature195,BCL2,60793322,/* conservations */) << ".\n";
+  std::cout << "The deregulation score of rs4987856 for the miR195 target site in BCL2 starting at position 60793322 on the chromosome is ";
+  std::cout << rs4987856.get_deregulation_score(mature195,BCL2,60793322, conservations) << ".\n"; */
   std::cout << "\n\n====================================================================================================\n\n";
   std::cout << "For a more comprehensive test of the deregulation score calculation we need more examples testing more cases:\n\n";
-  std::cout << "We start with a made up miRNA we call miR-0815:\n\n";
+
+  std::cout << "\nFirst we need conservation information for our scoring algorithm.\n";
+  std::cout << "Therefor we create a conservation ranges file with the following content:\n";
+  std::string conservation_file_content("\
+001	1	0.12\n\
+001	3	0.4\n\
+001	1213	0.82\n\
+001	1278	0.32\n\
+007	1	0.32\n\
+007	56	0.45\n\
+007	120	0.83\n\
+007	130	0.53\n\
+007	200	0.23\n\
+007	240	0.001\n\
+007	242	0.93\n\
+007	251	0.12\n\
+chr1	1	0.2\n\
+chr1	56	0.645\n");
+  filePath conservation_file_path("test.conservations");
+  std::ofstream conservation_file_stream(conservation_file_path.c_str());
+  conservation_file_stream << conservation_file_content;
+  conservation_file_stream.close();
+  conservationList conservation_list(conservation_file_path);
+  std::cout << std::endl << conservation_list << std::endl << std::endl;
+  std::cout << "Now we start with a made up miRNA we call miR-0815:\n\n";
   std::string FASTA0815(">miR-0815|11|31|1|42\naACCGUGAagucaucaccagc\n");
   std::cout << FASTA0815;
-  miRNA miR0815(sequenceFileEntry(FASTA0815).get_miRNA());
+  miRNA miR0815(sequenceFileEntry(FASTA0815).get_miRNA(conservation_list));
   std::cout << "\nThe seed is marked in upper case\n";
   std::cout << "\nIn addition to that miRNA we make up a mRNA we call gene-4711:\n\n";
   std::string FASTA4711(">gene-4711|21,242|129,360|-1|007\n\
@@ -147,7 +172,7 @@ cggggaucguacuacuacugacuuacgacuacgacguguacggcuagcauccccgugauu\n\
 uucacgguAcaucagucuagcgcgagagagaucuucucagcuagcugacuagcugaucgu\n\
 agcuagcugacuagcguagcuacguagcuagucagucgaugcuagcga\n");
   std::cout << FASTA4711;
-  mRNA gene4711(sequenceFileEntry(FASTA4711).get_mRNA());
+  mRNA gene4711(sequenceFileEntry(FASTA4711).get_mRNA(conservation_list));
   std::cout << "\nThe base marked in upper case is chromosome position 120 and we take that position to be reported as 3' end of the target site.\n";
   std::cout << "\nThis leads to the following optimal alignment(s) of miR-0815 and gene-4711:\n";
   std::cout << optimalAlignmentList(gene4711.get_subsequence_for_alignment(120),miR0815);
@@ -209,29 +234,6 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   std::cout << "This SNP should simulate the impact of extending the 3' match.\n";
   std::cout << "\nAgain the optimal alignment(s) for miR-0815 and gene-4711:mut-GG->CA-247:\n";
   std::cout << optimalAlignmentList(gene4711.mutate(mutGGtoCAat247).get_subsequence_for_alignment(120),miR0815);
-  std::cout << "\nIn addition to that data we need conservation information for our scoring algorithm.\n";
-  std::cout << "Therefor we create a conservation ranges file with the following content:\n";
-  std::string conservation_file_content("\
-001	1	0.12\n\
-001	3	0.4\n\
-001	1213	0.82\n\
-001	1278	0.32\n\
-007	1	0.32\n\
-007	56	0.45\n\
-007	120	0.83\n\
-007	130	0.53\n\
-007	200	0.23\n\
-007	240	0.001\n\
-007	242	0.93\n\
-007	251	0.12\n\
-chr1	1	0.2\n\
-chr1	56	0.645\n");
-  filePath conservation_file_path("test.conservations");
-  std::ofstream conservation_file_stream(conservation_file_path.c_str());
-  conservation_file_stream << conservation_file_content;
-  conservation_file_stream.close();
-  conservationList conservation_list(conservation_file_path);
-  std::cout << std::endl << conservation_list << std::endl;
   std::cout << "\nNow we calculate the deregulation score for those SNPs:\n\n\tSNP\t\t|\tscore\n------------------------+------------------------\n";
   for(std::vector<SNP>::const_iterator SNP_it(SNPs.begin());SNP_it!=SNPs.end();++SNP_it)
   {

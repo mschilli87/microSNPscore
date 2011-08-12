@@ -6,6 +6,7 @@
 #include <algorithm>
 //for std::sort (exon sorting)
 #include "sequence.h"
+#include "conservationList.h"
 #include "SNP.h"
 
 namespace microSNPscore {
@@ -101,12 +102,16 @@ namespace microSNPscore {
     *     the 3' end of the + strand and accordingly the 5' end of
     *     the - strand) of the exons containing the sequence as
     *     comma-separated list.
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return a sequence containing the given nucleotides located on the
-    *     given chromosome, strand and positions.
+    *     given chromosome, strand and positions with the given
+    *     conservation scores.
     *********************************************************************/
-    sequence::sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends)
+    sequence::sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations)
     :ID(the_ID),chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends)))
-    ,length(initialize_length(exons.begin(),exons.end())),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons.begin(),exons.end(),length)) {
+    ,length(initialize_length(exons.begin(),exons.end())),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons.begin(),exons.end(),length,conservations)) {
 }
 
 /*****************************************************************//**
@@ -350,6 +355,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     *    sequence
     * @param the_nucleotides: std::vector<nucleotide> representing the
     *     sequence's nucleotides
+    *
     * @return a sequence with the given attributes
     *********************************************************************/
     sequence::sequence(sequenceID the_ID, chromosomeType the_chromosome, strandType the_strand, std::vector<exon> the_exons, sequenceLength the_length, const std::vector<nucleotide> & the_nucleotides)
@@ -464,11 +470,13 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     * @param end_of_exons const_exon_iterator pointing behind the
     *     sequence's exon vector
     * @param the_length the requested length of the sequence
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
     *
     * @return a vector containing the sequence's nucleotides
     *********************************************************************/
     std::vector<nucleotide> sequence::initialize_nucleotides(const std::string & the_sequence, chromosomeType the_chromosome, strandType the_strand
-    , const sequence::const_exon_iterator & begin_of_exons, const sequence::const_exon_iterator & end_of_exons, sequenceLength the_length)
+    , const sequence::const_exon_iterator & begin_of_exons, const sequence::const_exon_iterator & end_of_exons, sequenceLength the_length, const conservationList & conservations)
     {
        /**************************************************************\ 
       | Initialize empty nucleotide vector, counters and iterators and |
@@ -539,7 +547,8 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
               std::cerr << "  --> assuming Mask\n";
               nucleo_base=Mask;
           } // switch(the_base_char)
-          nucleotide_vector.push_back(nucleotide(nucleo_base,++length_of_sequence,position_on_chromosome));
+          nucleotide_vector.push_back(nucleotide(nucleo_base,++length_of_sequence,position_on_chromosome,conservations.get_score(the_chromosome,
+                                                                                                                                 position_on_chromosome)));
            /***************************************************************\ 
           | Increment counters and if needed move on to next exon where the |
           | direction depends on the strand (+: forward / -:backward):      |

@@ -7,9 +7,9 @@
 #include "nucleotide.h"
 #include "alignment.h"
 
+namespace microSNPscore { class conservationList; } 
 namespace microSNPscore { class SNP; } 
 namespace microSNPscore { class mRNA; } 
-namespace microSNPscore { class conservationList; } 
 namespace microSNPscore { class alignment; } 
 
 namespace microSNPscore {
@@ -66,10 +66,13 @@ class miRNA : public sequence {
     *     the 3' end of the + strand and accordingly the 5' end of
     *     the - strand) of the exons containing the miRNA as
     *     comma-separated list.
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return a miRNA containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends);
+    miRNA(sequenceID the_id, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations);
 
     inline miRNA mutate(const SNP & the_SNP) const;
 

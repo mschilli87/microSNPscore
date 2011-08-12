@@ -1,5 +1,6 @@
 
 #include "mRNA.h"
+#include "conservationList.h"
 #include "SNP.h"
 
 namespace microSNPscore {
@@ -40,11 +41,14 @@ namespace microSNPscore {
     *     the 3' end of the + strand and accordingly the 5' end of
     *     the - strand) of the exons containing the mRNA as
     *     comma-separated list.
+    * @param conservations conservationList containing the conservaton
+    *     ranges for the sequence
+    *
     * @return a mRNA containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    mRNA::mRNA(sequenceID the_ID, std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends)
-    :sequence(the_ID,sequence_string,the_chromosome,the_strand,exons_starts,exon_ends) {
+    mRNA::mRNA(sequenceID the_ID, std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends, const conservationList & conservations)
+    :sequence(the_ID,sequence_string,the_chromosome,the_strand,exons_starts,exon_ends,conservations) {
 }
 
     /*****************************************************************//**

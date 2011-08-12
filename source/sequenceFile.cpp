@@ -8,6 +8,7 @@
 #include <fstream>
 //for std::ofstream and std::ifstream (file access)
 #include "sequenceFile.h"
+#include "conservationList.h"
 
 namespace microSNPscore {
 
