@@ -152,6 +152,7 @@ caugaucGUCGAUACCAGUAXGGGGGGGGGGG\n");
 007	240	0.001\n\
 007	242	0.93\n\
 007	251	0.12\n\
+42	1	0.5\n\
 chr1	1	0.2\n\
 chr1	56	0.645\n");
   filePath conservation_file_path("test.conservations");
