@@ -345,19 +345,14 @@ namespace microSNPscore {
       | feature scores:                                                 |
        \***************************************************************/
       downregulationScore the_score(score_bias);
-      std::cout << "\n----------------------------------------\ncomputed features:\n";
       for(unsigned short int feature_number=0;feature_number<feature_count;++feature_number)
       {
-      std::cout << features[feature_number] << std::endl;
         the_score += (features[feature_number] - feature_means[feature_number]) / feature_sigmas[feature_number] * feature_weights[feature_number];
       }
-      std::cout << "----------------------------------------\n";
       
        /********************************************************\
 | Apply sigmoid function before returning the final score: |
        \********************************************************/
-      std::cout << "final score: " << score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
-      std::cout << "\n----------------------------------------\n\n";
       return score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
 }
 
@@ -551,8 +546,6 @@ namespace microSNPscore {
       | omitting adjacent zero-scores:                                    |
        \*****************************************************************/
       std::vector<conservationScore> scores_single_zero;
-      std::cout << "\n\n----------------------------------------\nconservations\n----------------------------------------\n";
-      std::cout << (scores_raw.begin()==scores_raw.end() ? 0 : *scores_raw.begin()) << std::endl;
       scores_single_zero.push_back(scores_raw.begin()==scores_raw.end() ? 0 : *scores_raw.begin());
       if(scores_raw.begin()+1<scores_raw.end())
       {
@@ -562,16 +555,10 @@ namespace microSNPscore {
         {
           if(*score_it != 0 || *predecessor_it != 0)
           {
-      std::cout << *score_it << std::endl;
             scores_single_zero.push_back(*score_it);
           }
         }
       }
-      std::cout << "----------------------------------------\nsum: ";
-      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0.0) << "\n----------------------------------------\ncount: ";
-      std::cout << (scores_single_zero.end() - scores_single_zero.begin()) << "\n----------------------------------------\nmean: ";
-      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0.0) / (scores_single_zero.end() - scores_single_zero.begin());
-      std::cout << "\n----------------------------------------\n\n";
        /************************************************************\ 
       | Return the mean of the filtered score vector as final score: |
        \************************************************************/
