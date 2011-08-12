@@ -345,14 +345,19 @@ namespace microSNPscore {
       | feature scores:                                                 |
        \***************************************************************/
       downregulationScore the_score(score_bias);
+      std::cout << "\n----------------------------------------\ncomputed features:\n";
       for(unsigned short int feature_number=0;feature_number<feature_count;++feature_number)
       {
+      std::cout << features[feature_number] << std::endl;
         the_score += (features[feature_number] - feature_means[feature_number]) / feature_sigmas[feature_number] * feature_weights[feature_number];
       }
+      std::cout << "----------------------------------------\n";
       
        /********************************************************\
 | Apply sigmoid function before returning the final score: |
        \********************************************************/
+      std::cout << "final score: " << score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
+      std::cout << "\n----------------------------------------\n\n";
       return score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
 }
 
