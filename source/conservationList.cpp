@@ -95,7 +95,7 @@ namespace microSNPscore {
           | of failure:                                                    |
            \**************************************************************/
           std::string line_string;
-          size_t line_nmatch(3);
+          size_t line_nmatch(4);
           regmatch_t line_pmatch[line_nmatch];
           while(getline(infile,line_string).good())
           {
