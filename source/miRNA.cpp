@@ -507,7 +507,7 @@ namespace microSNPscore {
         {
           feature_score = score_cutoff;
         }
-        features[feature_number]=std::log(feature_score);
+        features[feature_number]=-1*std::log(feature_score);
       }
 }
 
