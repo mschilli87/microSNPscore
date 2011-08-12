@@ -2,10 +2,12 @@
 #define MICROSNPSCORE_CONSERVATIONLIST_H
 
 
+#include <iostream>
+//for std::ostream (operator<<)
 #include "sequence.h"
 #include "nucleotide.h"
-#include "filepath.h"
 #include <vector>
+#include "filepath.h"
 
 namespace microSNPscore {
 
@@ -198,6 +200,13 @@ class conservationRange {
 class conservationList {
   public:
     /*****************************************************************//**
+    * @brief const iterator type
+    *
+    * This type is used to access the conservation list's ranges.
+    *********************************************************************/
+    typedef std::vector<conservationRange>::const_iterator const_iterator;
+
+    /*****************************************************************//**
     * @brief constructor
     *
     * This is used to create an instance of the class conservationList
@@ -215,6 +224,24 @@ class conservationList {
     * @return a conservationList containing the ranges given in the file
     *********************************************************************/
     conservationList(const filePath & conservation_file);
+
+    /*****************************************************************//**
+    * @brief conservation list begin
+    *
+    * This is used to get the first conservation range in the list.
+    *
+    * @return const_iterator pointing to the first conservation range
+    *********************************************************************/
+    const_iterator begin() const;
+
+    /*****************************************************************//**
+    * @brief conservation list end
+    *
+    * This is used to get the end of the conservation list.
+    *
+    * @return const_iterator pointing behind the last conservation range
+    *********************************************************************/
+    const_iterator end() const;
 
     /*****************************************************************//**
     * @brief get conservation score by chromosome and position
@@ -245,6 +272,37 @@ class conservationList {
     std::vector<conservationRange> ranges;
 
 };
+/*****************************************************************//**
+* @brief output stream conservation range insertion operator
+*
+* This operator is used to insert a conservation range to an output
+* stream (e.g. to print it on screen).
+* The conservation range will be represented by the tab separated
+* values chromosome, start and score.
+*
+* @param the_stream output stream the nucleotide should be inserted in
+* @param the_range conservation range to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted conservation range
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const conservationRange & the_range);
+
+/*****************************************************************//**
+* @brief output stream conservation list insertion operator
+*
+* This operator is used to insert a conservation list to an output
+* stream (e.g. to print it on screen).
+* The conservation list will be represented by its ranges each one on
+* a single line.
+*
+* @param the_stream output stream the nucleotide should be inserted in
+* @param the_list conservation list to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted conservation list
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const conservationList & the_list);
 
 } // namespace microSNPscore
 #endif

@@ -146,6 +146,28 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
+    * @brief conservation list begin
+    *
+    * This is used to get the first conservation range in the list.
+    *
+    * @return const_iterator pointing to the first conservation range
+    *********************************************************************/
+    conservationList::const_iterator conservationList::begin() const {
+      return ranges.begin();
+}
+
+    /*****************************************************************//**
+    * @brief conservation list end
+    *
+    * This is used to get the end of the conservation list.
+    *
+    * @return const_iterator pointing behind the last conservation range
+    *********************************************************************/
+    conservationList::const_iterator conservationList::end() const {
+      return ranges.end();
+}
+
+    /*****************************************************************//**
     * @brief get conservation score by chromosome and position
     *
     * This method is used to access the conservation score of a given
@@ -165,8 +187,8 @@ namespace microSNPscore {
     conservationScore conservationList::get_score(const chromosomeType & chromosome, const chromosomePosition & position) const {
        /************************************************************\ 
       | Search for the first range not beginning before the searched |
-      | and return its score if it is a perfect macht or the one     |
-      | position of its predecessor (if one exists):                 |
+      | position and return its score if it is a perfect match or    |
+      | the one of its predecessor (if one exists):                  |
        \************************************************************/
       const std::vector<conservationRange>::const_iterator possible_border(std::lower_bound(ranges.begin(),ranges.end(),conservationRange(chromosome,position)));
       if(possible_border!=ranges.end())
@@ -190,5 +212,49 @@ namespace microSNPscore {
       
 }
 
+/*****************************************************************//**
+* @brief output stream conservation range insertion operator
+*
+* This operator is used to insert a conservation range to an output
+* stream (e.g. to print it on screen).
+* The conservation range will be represented by the tab separated
+* values chromosome, start and score.
+*
+* @param the_stream output stream the nucleotide should be inserted in
+* @param the_range conservation range to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted conservation range
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const conservationRange & the_range)
+{
+  the_stream << the_range.get_chromosome() << '\t';
+  the_stream << the_range.get_start() << '\t';
+  the_stream << the_range.get_score();
+  return the_stream;
+}
+
+/*****************************************************************//**
+* @brief output stream conservation list insertion operator
+*
+* This operator is used to insert a conservation list to an output
+* stream (e.g. to print it on screen).
+* The conservation list will be represented by its ranges each one on
+* a single line.
+*
+* @param the_stream output stream the nucleotide should be inserted in
+* @param the_list conservation list to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted conservation list
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const conservationList & the_list)
+{
+  for(conservationList::const_iterator range_it(the_list.begin());range_it!=the_list.end();++range_it)
+  {
+    the_stream << *range_it << std::endl;
+  }
+  return the_stream;
+}
 
 } // namespace microSNPscore

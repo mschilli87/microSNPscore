@@ -226,12 +226,12 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 007	251	0.12\n\
 chr1	1	0.2\n\
 chr1	56	0.645\n");
-  std::cout << std::endl << conservation_file_content << std::endl;
   filePath conservation_file_path("test.conservations");
   std::ofstream conservation_file_stream(conservation_file_path.c_str());
   conservation_file_stream << conservation_file_content;
   conservation_file_stream.close();
   conservationList conservation_list(conservation_file_path);
+  std::cout << std::endl << conservation_list << std::endl;
   std::cout << "\nNow we calculate the deregulation score for those SNPs:\n\n\tSNP\t\t|\tscore\n------------------------+------------------------\n";
   for(std::vector<SNP>::const_iterator SNP_it(SNPs.begin());SNP_it!=SNPs.end();++SNP_it)
   {

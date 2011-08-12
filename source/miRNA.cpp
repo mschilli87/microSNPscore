@@ -551,19 +551,27 @@ namespace microSNPscore {
       | omitting adjacent zero-scores:                                    |
        \*****************************************************************/
       std::vector<conservationScore> scores_single_zero;
+      std::cout << "\n\n----------------------------------------\nconservations\n----------------------------------------\n";
+      std::cout << (scores_raw.begin()==scores_raw.end() ? 0 : *scores_raw.begin()) << std::endl;
       scores_single_zero.push_back(scores_raw.begin()==scores_raw.end() ? 0 : *scores_raw.begin());
       if(scores_raw.begin()+1<scores_raw.end())
       {
         for(std::vector<conservationScore>::const_iterator predecessor_it(scores_raw.begin()),
                                                            score_it(scores_raw.begin()+1);score_it!=scores_raw.end();++predecessor_it,
-                                                                                                                   ++score_it)
+                                                                                                                     ++score_it)
         {
           if(*score_it != 0 || *predecessor_it != 0)
           {
+      std::cout << *score_it << std::endl;
             scores_single_zero.push_back(*score_it);
           }
         }
       }
+      std::cout << "----------------------------------------\nsum: ";
+      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0) << "\n----------------------------------------\ncount: ";
+      std::cout << (scores_single_zero.end() - scores_single_zero.begin()) << "\n----------------------------------------\nmean: ";
+      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0) / (scores_single_zero.end() - scores_single_zero.begin());
+      std::cout << "\n----------------------------------------\n\n";
        /************************************************************\ 
       | Return the mean of the filtered score vector as final score: |
        \************************************************************/
