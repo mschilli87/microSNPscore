@@ -12,12 +12,6 @@
 namespace microSNPscore {
 
 /*****************************************************************//**
-* @brief conservation score type
-*
-* This represents a score of a conservation range
-*********************************************************************/
-typedef double conservationScore;
-/*****************************************************************//**
 * @brief conservation range
 *
 * This represent a range on a chromosome with the same conservation.

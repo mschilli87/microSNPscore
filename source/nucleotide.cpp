@@ -88,12 +88,15 @@ matchScore matchType::calculate_score(matchIdentifier the_identifier, matchPosit
 *     nucleotide, the 5' end of the + strand (i.e. the 3' end of
 *     the - strand) beeing position 1 (gaps should be given the
 *     position of their predecessor in the alignment) - Defaults to 0
+* @param the_conservation (pseudo-optional) conservation score of the
+*     nucleotide - Defaults to 0
 *
 * @return a nucleotide containing the given nucleo base and located at
-*     the given positions on chromosome and in sequence
+*     the given positions on chromosome and in sequence with the given
+*     conservation score
 *********************************************************************/
-nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position)
-:base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position) {
+nucleotide::nucleotide(nucleoBase the_base, sequencePosition the_sequence_position, chromosomePosition the_chromosome_position, conservationScore the_conservation)
+:base(the_base),sequence_position(the_sequence_position),chromosome_position(the_chromosome_position),conservation(the_conservation) {
 }
 
     /*****************************************************************//**

@@ -208,6 +208,12 @@ class matchType {
     }
 
 /*****************************************************************//**
+* @brief conservation score type
+*
+* This represents a score of a conservation range
+*********************************************************************/
+typedef double conservationScore;
+/*****************************************************************//**
 * @brief nucleotide class
 *
 * This represents a nucleotide.
@@ -236,11 +242,14 @@ class nucleotide {
     *     nucleotide, the 5' end of the + strand (i.e. the 3' end of
     *     the - strand) beeing position 1 (gaps should be given the
     *     position of their predecessor in the alignment) - Defaults to 0
+    * @param the_conservation (pseudo-optional) conservation score of the
+    *     nucleotide - Defaults to 0
     *
     * @return a nucleotide containing the given nucleo base and located at
-    *     the given positions on chromosome and in sequence
+    *     the given positions on chromosome and in sequence with the given
+    *     conservation score
     *********************************************************************/
-    nucleotide(nucleoBase the_base = Mask, sequencePosition the_sequence_position = 0, chromosomePosition the_chromosome_position = 0);
+    nucleotide(nucleoBase the_base = Mask, sequencePosition the_sequence_position = 0, chromosomePosition the_chromosome_position = 0, conservationScore the_conservation = 0);
 
     /*****************************************************************//**
     * @brief get method for nucleo base attribute
@@ -273,6 +282,16 @@ class nucleotide {
     * @return the position of the nucleotide on its chromosome
     *********************************************************************/
     inline const chromosomePosition get_chromosome_position() const;
+
+    /*****************************************************************//**
+    * @brief get method for conservation score attribute
+    *
+    * This method is used to access the conservations score of the
+    * nucleotide.
+    *
+    * @return the conservation score of the nucleotide
+    *********************************************************************/
+    inline const conservationScore get_conservation() const;
 
     /*****************************************************************//**
     * @brief match calculation
@@ -357,6 +376,24 @@ class nucleotide {
     *********************************************************************/
     chromosomePosition chromosome_position;
 
+    /*****************************************************************//**
+    * @brief conservation score
+    *
+    * This is the nucleotide's conservation score.
+    * It should be const but because nucleotides shall be used in a vector
+    * and std::vector tries to assign its elements to an internal array it
+    * needs a working assignment operator which has to change the object's
+    * members and therefore they cannot be declared const.
+    * Nevertheless this attribute is not intended to be changed in any
+    * other context than assigning an initialized object to an unitialized
+    * one produced by the standard constructor which
+    * is in fact not designed to be used directly but only provided to
+    * allow array allocation which is needed to create containers, too.
+    *
+    * @see nucleotide()
+    *********************************************************************/
+    conservationScore conservation;
+
 };
     /*****************************************************************//**
     * @brief get method for nucleo base attribute
@@ -394,6 +431,18 @@ class nucleotide {
     *********************************************************************/
     inline const chromosomePosition nucleotide::get_chromosome_position() const {
       return chromosome_position;
+    }
+
+    /*****************************************************************//**
+    * @brief get method for conservation score attribute
+    *
+    * This method is used to access the conservations score of the
+    * nucleotide.
+    *
+    * @return the conservation score of the nucleotide
+    *********************************************************************/
+    inline const conservationScore nucleotide::get_conservation() const {
+      return conservation;
     }
 
 /*****************************************************************//**
