@@ -568,14 +568,14 @@ namespace microSNPscore {
         }
       }
       std::cout << "----------------------------------------\nsum: ";
-      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0) << "\n----------------------------------------\ncount: ";
+      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0.0) << "\n----------------------------------------\ncount: ";
       std::cout << (scores_single_zero.end() - scores_single_zero.begin()) << "\n----------------------------------------\nmean: ";
-      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0) / (scores_single_zero.end() - scores_single_zero.begin());
+      std::cout << std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0.0) / (scores_single_zero.end() - scores_single_zero.begin());
       std::cout << "\n----------------------------------------\n\n";
        /************************************************************\ 
       | Return the mean of the filtered score vector as final score: |
        \************************************************************/
-      return (std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0) / (scores_single_zero.end() - scores_single_zero.begin()));
+      return (std::accumulate(scores_single_zero.begin(),scores_single_zero.end(),0.0) / (scores_single_zero.end() - scores_single_zero.begin()));
 }
 
     /*****************************************************************//**
