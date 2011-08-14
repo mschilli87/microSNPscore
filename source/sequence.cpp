@@ -176,7 +176,8 @@ if(get_length()!=0 && from<to)
   exon_vector.push_back(exon(exon_start,exon_end));
   for(const_iterator nucleotide_it(get_nucleotide(from));nucleotide_it<=get_nucleotide(to);++nucleotide_it)
   {
-    nucleotide_vector.push_back(nucleotide(nucleotide_it->get_base(),++sequence_length,nucleotide_it->get_chromosome_position()));
+    nucleotide_vector.push_back(nucleotide(nucleotide_it->get_base(),++sequence_length,nucleotide_it->get_chromosome_position(),
+                                           nucleotide_it->get_conservation()));
   }
    /*************************************************************\ 
   | Return a sequence on the same chromosome and strand, with the |

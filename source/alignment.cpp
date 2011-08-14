@@ -528,8 +528,8 @@ columns(the_columns),score(the_score),seed_type(sixMer) {
             const unsigned short int index_left = index - 1;
             const unsigned short int index_up = index - miRNA_length;
             const unsigned short int index_upleft = index_up - 1;
-            const nucleotide mRNA_gap(Gap,mRNA_it->get_sequence_position(),mRNA_it->get_chromosome_position());
-            const nucleotide miRNA_gap(Gap,miRNA_it->get_sequence_position(),miRNA_it->get_chromosome_position());
+            const nucleotide mRNA_gap(Gap,mRNA_it->get_sequence_position(),mRNA_it->get_chromosome_position(),0);
+            const nucleotide miRNA_gap(Gap,miRNA_it->get_sequence_position(),miRNA_it->get_chromosome_position(),0);
              /******************************************************************\ 
             | While the central iteration of the linear programming algorithm is |
             | quite clear there are many different cases since the recursive     |
