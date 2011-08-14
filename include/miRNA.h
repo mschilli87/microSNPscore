@@ -92,15 +92,13 @@ class miRNA : public sequence {
     *     position 1) that is predicted to be the mRNA nucleotide that
     *     would bind the miRNA 5' end (if it would bind) (i.e. one base
     *     downstream (3') from the seed match region)
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the conservation scoring
     *
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA
     *
     * @see SNP::get_deregulation_score()
     *********************************************************************/
-    downregulationScore get_downregulation_score(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const conservationList & conservations) const;
+    downregulationScore get_downregulation_score(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const;
 
 
   private:
@@ -134,8 +132,6 @@ class miRNA : public sequence {
     *     downstream (3') from the seed match region)
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the conservation scoring
     *
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA considering the
@@ -143,7 +139,7 @@ class miRNA : public sequence {
     *
     * @see get_downregulation_score()
     *********************************************************************/
-    static downregulationScore downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment, const conservationList & conservations);
+    static downregulationScore downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment);
 
     /*****************************************************************//**
     * @brief secondary structure features calculation
@@ -174,18 +170,13 @@ class miRNA : public sequence {
     *
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
-    * @param mRNA_strand the strand (Plus or Minus) the mRNA is transcribed
-    *     from
-    * @param mRNA_chromosome the chromosome the mRNA is located on
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the scoring
     *
     * @return conservation score for the target site represented by the
     *     given alignment
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static downregulationScore calculate_conservation_feature(const alignment & the_alignment, strandType mRNA_strand, const chromosomeType & mRNA_chromosome, const conservationList & conservations);
+    static downregulationScore calculate_conservation_feature(const alignment & the_alignment);
 
     /*****************************************************************//**
     * @brief local AU content feature calculation

@@ -239,7 +239,7 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   for(std::vector<SNP>::const_iterator SNP_it(SNPs.begin());SNP_it!=SNPs.end();++SNP_it)
   {
     std::cout << "\t" << SNP_it->get_ID() << (SNP_it->get_ID().length() < 8 ? "\t" : "") << "\t|\t";
-    std::cout << SNP_it->get_deregulation_score(miR0815,gene4711,120,conservation_list) << std::endl;
+    std::cout << SNP_it->get_deregulation_score(miR0815,gene4711,120) << std::endl;
   }
   remove(conservation_file_path.c_str());
 }

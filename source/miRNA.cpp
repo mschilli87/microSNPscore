@@ -81,15 +81,13 @@ namespace microSNPscore {
     *     position 1) that is predicted to be the mRNA nucleotide that
     *     would bind the miRNA 5' end (if it would bind) (i.e. one base
     *     downstream (3') from the seed match region)
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the conservation scoring
     *
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA
     *
     * @see SNP::get_deregulation_score()
     *********************************************************************/
-    downregulationScore miRNA::get_downregulation_score(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const conservationList & conservations) const {
+    downregulationScore miRNA::get_downregulation_score(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const {
        /*********************************************************\ 
       | Calculate downregulation score candidates for all optimal |
       | alignments and return the maximum:                        |
@@ -101,10 +99,10 @@ namespace microSNPscore {
       }
       else
       {
-        downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin(),conservations));
+        downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin()));
         for(optimalAlignmentList::const_iterator alignment_it(alignments.begin()+1);alignment_it!=alignments.end();++alignment_it)
         {
-          downregulation_score=std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it,conservations));
+          downregulation_score=std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it));
         }
         return downregulation_score;
       }
@@ -142,8 +140,6 @@ namespace microSNPscore {
     *     downstream (3') from the seed match region)
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the conservation scoring
     *
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA considering the
@@ -151,7 +147,7 @@ namespace microSNPscore {
     *
     * @see get_downregulation_score()
     *********************************************************************/
-    downregulationScore miRNA::downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment, const conservationList & conservations)
+    downregulationScore miRNA::downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment)
     {
        /****************************************\ 
       | Define number and names of the features: |
@@ -335,7 +331,7 @@ namespace microSNPscore {
       downregulationScore features[feature_count];
       features[UTRLength]=the_mRNA.get_length();
       calculate_accessability_features(&features[SS01],the_mRNA.get_subsequence_for_accessability(predicted_three_prime_position),predicted_three_prime_position);
-      features[conservation]=calculate_conservation_feature(the_alignment,the_mRNA.get_strand(),the_mRNA.get_chromosome(),conservations);
+      features[conservation]=calculate_conservation_feature(the_alignment);
       features[AU_content]=calculate_AU_content_feature(the_mRNA.get_subsequence_for_downstream_AU_content(predicted_three_prime_position),
                                                         the_mRNA.get_subsequence_for_upstream_AU_content(predicted_three_prime_position),
                                                         the_alignment.get_seed_type());
@@ -517,18 +513,13 @@ namespace microSNPscore {
     *
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
-    * @param mRNA_strand the strand (Plus or Minus) the mRNA is transcribed
-    *     from
-    * @param mRNA_chromosome the chromosome the mRNA is located on
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the scoring
     *
     * @return conservation score for the target site represented by the
     *     given alignment
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    downregulationScore miRNA::calculate_conservation_feature(const alignment & the_alignment, strandType mRNA_strand, const chromosomeType & mRNA_chromosome, const conservationList & conservations)
+    downregulationScore miRNA::calculate_conservation_feature(const alignment & the_alignment)
     {
        /******************************************************************\ 
       | Initialize empty score vector and add conservation scores for all  |
@@ -540,7 +531,7 @@ namespace microSNPscore {
         nucleotide mRNA_nucleotide(column_it->get_mRNA_nucleotide());
         if(mRNA_nucleotide.get_base() != Gap)
         {
-          scores_raw.push_back(conservations.get_score(mRNA_chromosome,mRNA_nucleotide.get_chromosome_position()));
+          scores_raw.push_back(mRNA_nucleotide.get_conservation());
         }
       }
        /*****************************************************************\ 

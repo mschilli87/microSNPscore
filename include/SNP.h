@@ -10,7 +10,6 @@
 namespace microSNPscore { class sequence; } 
 namespace microSNPscore { class miRNA; } 
 namespace microSNPscore { class mRNA; } 
-namespace microSNPscore { class conservationList; } 
 
 namespace microSNPscore {
 
@@ -208,8 +207,6 @@ class SNP {
     *     position 1) that is predicted to be the mRNA nucleotide that
     *     would bind the miRNA 5' end (if it would bind) (i.e. one base
     *     downstream (3') from the seed match region)
-    * @param conservations conservationList containing the conservation
-    *     ranges to use for the conservation scoring
     *
     * @return the deregulation score of the SNP for the target site of
     *     the miRNA starting at the given position in the given mRNA
@@ -217,7 +214,7 @@ class SNP {
     * @see miRNA::get_downregulation_score()
     *********************************************************************/
     
-    deregulationScore get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const conservationList & conservations) const;
+    deregulationScore get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const;
 
 
   private:
