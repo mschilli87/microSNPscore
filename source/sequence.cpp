@@ -282,18 +282,19 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
         for(const_iterator sequence_it(begin());sequence_it!=change_begin;++sequence_it)
         {
           the_nucleotides.push_back(nucleotide(sequence_it->get_base(),++position,sequence_it->get_chromosome_position() +
-                                                                                  (get_strand() == Plus ? 0 : shift)));
+                                                                                  (get_strand() == Plus ? 0 : shift),sequence_it->get_conservation()));
         }
          /**************************************************************\ 
         | Iterate over the alternative sequence and insert it to the new |
         | vector counting the chromosome position up for + stranded      |
-        | sequences or down for - stranded sequences, respectively:      |
+        | sequences or down for - stranded sequences, respectively,      |
+        | setting the consevation to zero:                               |
          \**************************************************************/
         chromosomePosition position_on_chromosome(the_SNP.get_position(get_strand()));
         for(SNP::const_iterator alternative_it(alternative_begin);alternative_it!=alternative_end;
             ++alternative_it,position_on_chromosome += (get_strand() == Plus ? 1 : -1))
         {
-          the_nucleotides.push_back(nucleotide(*alternative_it,++position,position_on_chromosome));
+          the_nucleotides.push_back(nucleotide(*alternative_it,++position,position_on_chromosome,0));
         } 
          /*****************************************************************\ 
         | Iterate over the 3' unchanging subsequence and copy it to the new |
@@ -305,7 +306,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
         for(const_iterator sequence_it(change_end);sequence_it!=end();++sequence_it)
         {
           the_nucleotides.push_back(nucleotide(sequence_it->get_base(),++position,sequence_it->get_chromosome_position() +
-                                                                                  (get_strand() == Plus ? shift : 0)));
+                                                                                  (get_strand() == Plus ? shift : 0),sequence_it->get_conservation()));
         }
          /*****************************************************************\ 
         | Initialize exon vector for the mutated sequence, iterate over the |
