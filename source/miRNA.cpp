@@ -66,6 +66,21 @@ namespace microSNPscore {
 }
 
     /*****************************************************************//**
+    * @brief standard constructor - do not use directly
+    *
+    * This is only provided to allow array allocation but you will need
+    * to assign a valid object created by the parameterized constructor
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
+    *
+    * @return: an unitialized miRNA object
+    *********************************************************************/
+    miRNA::miRNA()
+    :sequence() {
+}
+
+    /*****************************************************************//**
     * @brief calculate downregulation score
     *
     * This method calculates the sore measuring how much the translation of

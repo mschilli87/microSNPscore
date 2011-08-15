@@ -6,7 +6,7 @@
 namespace microSNPscore {
 
     /*****************************************************************//**
-    * @brief constructor
+    * @brief constructor - Do not call without parameter values!
     *
     * This is used to create an instance of the class SNP.
     * Lowercase letters are treated as uppercase ones.
@@ -15,25 +15,35 @@ namespace microSNPscore {
     * Dashes (-) are understood as Gaps and are omitted.
     * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
     * and are treated as Mask.
+    * The default values are not intended to be used directly.
+    * They are only provided to allow array allocation but you will need
+    * to assign a valid object created by giving those parameters a value
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
     *
-    * @param the_ID SNPID representing the ID of the SNP
-    * @param reference_string String representing the nucleotide sequence
-    *     of the SNP's reference sequence (Adenine: A, Cytosine: C,
-    *     Guanine: G, Uracil: U, Mask: X)
-    * @param alternative_string String representing the nucleotide sequence
-    *     of the SNP's alternative sequence (Adenine: A, Cytosine: C,
-    *     Guanine: G, Uracil: U, Mask: X)
-    * @param the_chromosome chromosomeType representing the chromosome the
-    *     SNP is located on
-    * @param the_strand strandType representing the strand (Plus/Minus) on
-    *     which the SNP is defined
-    * @param the_position: chromosomePosition representing the position of
-    *     the 5' end of the reference sequence
+    * @param the_ID (pseudo-optional) SNPID representing the ID of the
+    *     SNP - Defaults to ""
+    * @param reference_string (pseudo-optional) String representing the
+    *     nucleotide sequence of the SNP's reference sequence (Adenine: A,
+    *     Cytosine: C, Guanine: G, Uracil: U, Mask: X) - Defaults to ""
+    * @param alternative_string (pseudo-optional) String representing the
+    *     nucleotide sequence of the SNP's alternative sequence (Adenine:
+    *     A, Cytosine: C, Guanine: G, Uracil: U, Mask: X) - Defaults to ""
+    * @param the_chromosome (pseudo-optional) chromosomeType representing
+    *     the chromosome the SNP is located on - Defaults to ""
+    * @param the_strand (pseudo-optional) strandType representing the
+    *     strand (Plus/Minus) on which the SNP is defined - Defaults to
+    *     Plus
+    * @param the_position (pseudo-optional) chromosomePosition
+    *     representing the position of the 5' end of the reference
+    *     sequence - Defaults to 0
+    *
     * @return a SNP containing the given nucleotides located on the given
     *     chromosome, strand and position.
     *********************************************************************/
     
-    SNP::SNP(SNPID the_ID, std::string reference_string, std::string alternative_string, chromosomeType the_chromosome, strandType the_strand, const chromosomePosition the_position)
+    SNP::SNP(SNPID the_ID, std::string reference_string, std::string alternative_string, chromosomeType the_chromosome, strandType the_strand, chromosomePosition the_position)
     :ID(the_ID),chromosome(the_chromosome),position(the_position),shift(alternative_string.length()-reference_string.length()) {
        /*****************************************************************\ 
       | Convert the strings to nucleo base vectors (ignoring gaps) and    |

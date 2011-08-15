@@ -47,8 +47,23 @@ namespace microSNPscore {
     * @return a mRNA containing the given nucleotides located on the
     *     given chromosome, strand and positions.
     *********************************************************************/
-    mRNA::mRNA(sequenceID the_ID, std::string sequence_string, const chromosomeType & the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends, const conservationList & conservations)
+    mRNA::mRNA(const sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exons_starts, std::string exon_ends, const conservationList & conservations)
     :sequence(the_ID,sequence_string,the_chromosome,the_strand,exons_starts,exon_ends,conservations) {
+}
+
+    /*****************************************************************//**
+    * @brief standard constructor - do not use directly
+    *
+    * This is only provided to allow array allocation but you will need
+    * to assign a valid object created by the parameterized constructor
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
+    *
+    * @return: an unitialized mRNA object
+    *********************************************************************/
+    mRNA::mRNA()
+    :sequence() {
 }
 
     /*****************************************************************//**

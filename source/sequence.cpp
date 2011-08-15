@@ -114,6 +114,21 @@ namespace microSNPscore {
     ,length(initialize_length(exons.begin(),exons.end())),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons.begin(),exons.end(),length,conservations)) {
 }
 
+    /*****************************************************************//**
+    * @brief standard constructor - do not use directly
+    *
+    * This is only provided to allow array allocation but you will need
+    * to assign a valid object created by the parameterized constructor
+    * to actually use it. This is done by containers like std::vector and
+    * the reason for providing those default values is to allow using
+    * containers containing objects of this class.
+    *
+    * @return: an unitialized sequence object
+    *********************************************************************/
+    sequence::sequence()
+    :ID(""),chromosome(""),strand(Plus),exons(std::vector<exon>()),length(0),nucleotides(std::vector<nucleotide>()) {
+}
+
 /*****************************************************************//**
 * @brief get subsequence between sequence positions
 *
