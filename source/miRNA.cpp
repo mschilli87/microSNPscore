@@ -404,7 +404,7 @@ namespace microSNPscore {
        /*******************************************\ 
       | Define RNAplfold and echo executable paths: |
        \*******************************************/
-      const filePath RNAplfold_command("RNAplfold");
+      const filePath RNAplfold_command("__RNAPLFOLD__");
       const filePath echo_command("echo");
        /***********************************\ 
       | Define RNAplfold output file paths: |
