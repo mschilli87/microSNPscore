@@ -221,6 +221,20 @@ int main(int argc, char * argv[])
     read_SNPs(SNPs,SNP_file_path);
     std::vector<prediction> predictions;
     read_predictions(predictions,prediction_file_path);
+     /**************************************************\ 
+    | Iterate over the predictions printing the original |
+    | line followed by the deregulation score:           |
+     \**************************************************/
+    for(std::vector<prediction>::const_iterator prediction_it(predictions.begin());prediction_it!=predictions.end();++prediction_it)
+    {
+      std::cout << prediction_it->miRNA << '\t';
+      std::cout << prediction_it->mRNA << '\t';
+      std::cout << prediction_it->three_prime << '\t';
+      std::cout << prediction_it->SNP << '\t';
+      std::cout << SNPs[prediction_it->SNP].get_deregulation_score(miRNAs[prediction_it->miRNA],
+                                                                   mRNAs[prediction_it->mRNA],
+                                                                   prediction_it->three_prime) << std::endl;
+    }
     return 0;
   } // good call
 } // int main
