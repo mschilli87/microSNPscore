@@ -43,7 +43,7 @@ void read_SNPs(std::map<SNPID,SNP> & map, filePath path)
     | valid SNP file line stating error in case of failure:    |
      \********************************************************/
     regex_t line_regex;
-    char line_pattern[] = "^([^\t]+)\t([[:alpha:]]+)\t([[:alpha:]]*)\t([^\t]+)\t[+-]\t([[:digit:]]+)$";
+    char line_pattern[] = "^([^\t]+)\t([[:alpha:]]+)\t([[:alpha:]]*)\t([^\t]+)\t([+-])\t([[:digit:]]+)$";
     if(regcomp(&line_regex,line_pattern,REG_EXTENDED) != 0)
     {
       std::cerr << "microSNPscore::read_SNPs\n";
