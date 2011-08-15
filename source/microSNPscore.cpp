@@ -95,7 +95,7 @@ void read_SNPs(std::map<SNPID,SNP> & map, filePath path)
   } // !file.fail()
 }
 
-void read_predictions(std::vector<prediction> vector,filePath path)
+void read_predictions(std::vector<prediction> & vector,filePath path)
 {
    /********************************************************\ 
   | Try to open an input file stream associated to the given |
