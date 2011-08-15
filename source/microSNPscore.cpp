@@ -16,8 +16,8 @@ using namespace microSNPscore;
 
 struct prediction
 {
-  sequenceID         mRNA;
   sequenceID         miRNA;
+  sequenceID         mRNA;
   chromosomePosition three_prime;
   SNPID              SNP;
 };
@@ -149,15 +149,15 @@ void read_predictions(std::vector<prediction> vector,filePath path)
           | from the line assigning them to the corresponding parameters      |
           | (converting them via a stringstream) to create a prediction:      |
            \*****************************************************************/
-          sequenceID mRNA(line_string.substr(line_pmatch[1].rm_so,line_pmatch[1].rm_eo-line_pmatch[1].rm_so));
-          sequenceID miRNA(line_string.substr(line_pmatch[2].rm_so,line_pmatch[2].rm_eo-line_pmatch[2].rm_so));
+          sequenceID miRNA(line_string.substr(line_pmatch[1].rm_so,line_pmatch[1].rm_eo-line_pmatch[1].rm_so));
+          sequenceID mRNA(line_string.substr(line_pmatch[2].rm_so,line_pmatch[2].rm_eo-line_pmatch[2].rm_so));
           chromosomePosition three_prime;
           std::istringstream stream_three_prime(line_string.substr(line_pmatch[3].rm_so,line_pmatch[3].rm_eo-line_pmatch[3].rm_so));
           stream_three_prime >> three_prime;
           SNPID SNP(line_string.substr(line_pmatch[4].rm_so,line_pmatch[4].rm_eo-line_pmatch[4].rm_so));
           prediction line_prediction;
-          line_prediction.mRNA = mRNA;
           line_prediction.miRNA = miRNA;
+          line_prediction.mRNA = mRNA;
           line_prediction.three_prime = three_prime;
           line_prediction.SNP = SNP;
            /****************************************\ 
