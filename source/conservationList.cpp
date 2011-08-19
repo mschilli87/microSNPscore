@@ -80,7 +80,7 @@ namespace microSNPscore {
         | conservation range line stating error in case of failure:      |
          \**************************************************************/
         regex_t line_regex;
-        char line_pattern[] = "^(.+)\t([[:digit:]]+)\t([[:digit:].e-+]+)$";
+        char line_pattern[] = "^(.+)\t([[:digit:]]+)\t([-[:digit:].e+]+)$";
         if(regcomp(&line_regex,line_pattern,REG_EXTENDED) != 0)
         {
           std::cerr << "microSNPscore::conservationList::conservationList\n";
