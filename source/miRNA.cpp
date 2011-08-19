@@ -364,8 +364,8 @@ namespace microSNPscore {
         the_score += (features[feature_number] - feature_means[feature_number]) / feature_sigmas[feature_number] * feature_weights[feature_number];
       }
       
-       /********************************************************\
-| Apply sigmoid function before returning the final score: |
+       /********************************************************\ 
+      | Apply sigmoid function before returning the final score: |
        \********************************************************/
       return score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
 }
