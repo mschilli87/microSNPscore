@@ -69,10 +69,15 @@ void read_SNPs(std::map<SNPID,SNP> & map, filePath path)
      \********************************************************/
     regex_t line_regex;
     char line_pattern[] = "^(.+)\t(.+)\t(.*)\t(.+)\t([-+])\t([[:digit:]]+)$";
-    if(regcomp(&line_regex,line_pattern,REG_EXTENDED) != 0)
+    int error_code = regcomp(&line_regex,line_pattern,REG_EXTENDED);
+    if(error_code != 0)
     {
       std::cerr << "microSNPscore::read_SNPs\n";
-      std::cerr << " ==> compiling line regular expression failed\n";
+      std::cerr << " ==> compiling line regular expression failed:\n";
+      const size_t error_len(regerror(error_code,&line_regex,NULL,0));
+      char error_message[error_len];
+      regerror(error_code,&line_regex,error_message,error_len);
+      std::cerr << error_message << std::endl;
       std::cerr << "  --> no SNPs will be read from the file\n";
     }
     else
@@ -87,11 +92,17 @@ void read_SNPs(std::map<SNPID,SNP> & map, filePath path)
       regmatch_t line_pmatch[line_nmatch];
       while(getline(file,line_string).good())
       {
-        if(regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0) != 0)
+        error_code = regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0);
+        if(error_code != 0)
         {
               std::cerr << "microSNPscore::read_SNPs\n";
               std::cerr << " ==> no valid SNP file line:\n";
               std::cerr << line_string << std::endl;
+              std::cerr << "     error message:\n";
+              const size_t error_len(regerror(error_code,&line_regex,NULL,0));
+              char error_message[error_len];
+              regerror(error_code,&line_regex,error_message,error_len);
+              std::cerr << error_message << std::endl;
               std::cerr << "  --> omitting line\n";
         }
         else
@@ -142,10 +153,15 @@ void read_predictions(std::vector<prediction> & vector,filePath path)
      \**************************************************************/
     regex_t line_regex;
     char line_pattern[] = "^([^\t]+)\t([^\t]+)\t([[:digit:]]+)\t([^\t]+)$";
-    if(regcomp(&line_regex,line_pattern,REG_EXTENDED) != 0)
+    int error_code = regcomp(&line_regex,line_pattern,REG_EXTENDED);
+    if(error_code != 0)
     {
       std::cerr << "microSNPscore::read_predictions\n";
-      std::cerr << " ==> compiling line regular expression failed\n";
+      std::cerr << " ==> compiling line regular expression failed:\n";
+              const size_t error_len(regerror(error_code,&line_regex,NULL,0));
+              char error_message[error_len];
+              regerror(error_code,&line_regex,error_message,error_len);
+              std::cerr << error_message << std::endl;
       std::cerr << "  --> no predictions will be read from the file\n";
     }
     else
@@ -160,11 +176,17 @@ void read_predictions(std::vector<prediction> & vector,filePath path)
       regmatch_t line_pmatch[line_nmatch];
       while(getline(file,line_string).good())
       {
-        if(regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0) != 0)
+        error_code = regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0);
+        if(error_code != 0)
         {
-              std::cerr << "microSNPscore::conservationList::conservationList\n";
+              std::cerr << "microSNPscore::read_predictions\n";
               std::cerr << " ==> no valid prediction file line:\n";
               std::cerr << line_string << std::endl;
+              std::cerr << "     error message:\n";
+              const size_t error_len(regerror(error_code,&line_regex,NULL,0));
+              char error_message[error_len];
+              regerror(error_code,&line_regex,error_message,error_len);
+              std::cerr << error_message << std::endl;
               std::cerr << "  --> omitting line\n";
         }
         else
