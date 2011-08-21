@@ -9,7 +9,7 @@
 #include "mRNA.h"
 #include "miRNA.h"
 #include <vector>
-#include "filepath.h"
+#include "filePath.h"
 
 namespace microSNPscore { class conservationList; } 
 

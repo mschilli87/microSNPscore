@@ -7,7 +7,7 @@
 #include "sequence.h"
 #include "nucleotide.h"
 #include <vector>
-#include "filepath.h"
+#include "filePath.h"
 
 namespace microSNPscore {
 

@@ -1,5 +1,5 @@
 
-#include "filepath.h"
+#include "filePath.h"
 
 namespace microSNPscore {
 
