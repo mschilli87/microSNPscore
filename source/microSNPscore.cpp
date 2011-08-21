@@ -24,13 +24,14 @@ struct prediction
 
 void read_sequences(std::map<sequenceID,mRNA> & mRNA_map,filePath mRNA_path,
                     std::map<sequenceID,miRNA> & miRNA_map,filePath miRNA_path,
-                    const conservationList & conservations)
+                    filePath conservations_path)
 {
      /****************************************************************\ 
     | Read the given files and insert the corresponing sequences into  |
     | their maps reusing the sequenceFile object to hold only one file |
     | at a time in memory:                                             |
      \****************************************************************/
+    conservationList conservations(conservations_path);
     sequenceFile the_file(mRNA_path);
     the_file.read();
     for(sequenceFile::const_iterator mRNA_it(the_file.begin());mRNA_it!=the_file.end();++mRNA_it)
@@ -247,12 +248,11 @@ int main(int argc, char * argv[])
      /***************************\ 
     | Read data from input files: |
      \***************************/
-    conservationList conservation_list(conservation_file_path);
     std::map<sequenceID,mRNA> mRNAs;
     std::map<sequenceID,miRNA> miRNAs;
     std::map<SNPID,SNP> SNPs;
     std::vector<prediction> predictions;
-    read_sequences(mRNAs,mRNA_file_path,miRNAs,miRNA_file_path,conservation_list);
+    read_sequences(mRNAs,mRNA_file_path,miRNAs,miRNA_file_path,conservation_file_path);
     read_SNPs(SNPs,SNP_file_path);
     read_predictions(predictions,prediction_file_path);
      /**************************************************\ 
