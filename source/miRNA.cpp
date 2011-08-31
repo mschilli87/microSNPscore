@@ -345,7 +345,7 @@ namespace microSNPscore {
        \*********************************/
       downregulationScore features[feature_count];
       features[UTRLength]=the_mRNA.get_length();
-      calculate_accessability_features(&features[SS01],the_mRNA.get_subsequence_for_accessability(predicted_three_prime_position),predicted_three_prime_position);
+      calculate_accessibility_features(&features[SS01],the_mRNA.get_subsequence_for_accessibility(predicted_three_prime_position),predicted_three_prime_position);
       features[conservation]=calculate_conservation_feature(the_alignment);
       features[AU_content]=calculate_AU_content_feature(the_mRNA.get_subsequence_for_downstream_AU_content(predicted_three_prime_position),
                                                         the_mRNA.get_subsequence_for_upstream_AU_content(predicted_three_prime_position),
@@ -373,7 +373,7 @@ namespace microSNPscore {
     /*****************************************************************//**
     * @brief secondary structure features calculation
     *
-    * This method is used to calculate the accessability features for the
+    * This method is used to calculate the accessibility features for the
     * downregulation score calculation.
     * It uses rnafold.
     *
@@ -389,7 +389,7 @@ namespace microSNPscore {
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    void miRNA::calculate_accessability_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position)
+    void miRNA::calculate_accessibility_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position)
     {
        /*********************\ 
       | Define feature count: |

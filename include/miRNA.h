@@ -157,7 +157,7 @@ class miRNA : public sequence {
     /*****************************************************************//**
     * @brief secondary structure features calculation
     *
-    * This method is used to calculate the accessability features for the
+    * This method is used to calculate the accessibility features for the
     * downregulation score calculation.
     * It uses rnafold.
     *
@@ -173,7 +173,7 @@ class miRNA : public sequence {
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static void calculate_accessability_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position);
+    static void calculate_accessibility_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position);
 
     /*****************************************************************//**
     * @brief target site conservation feature calculation
