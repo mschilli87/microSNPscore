@@ -151,14 +151,23 @@ int main(int argc, char * argv[])
     std::string conservation_file_path(argv[3]);
     std::string SNP_file_path(argv[4]);
     std::string prediction_file_path(argv[5]);
+    const bool verbose = (argc>6 && (std::string(argv[6]) == "-v" || std::string(argv[6]) == "--verbose"));
      /***************************\ 
     | Read data from input files: |
      \***************************/
+    if(verbose){std::cout << "microSNPscore: Reading input files..." << std::endl;}
     std::map<sequenceID,mRNA> mRNAs;
     std::map<sequenceID,miRNA> miRNAs;
     std::map<SNPID,SNP> SNPs;
+    if(verbose){std::cout << "microSNPscore: ...mRNA file: " << mRNA_file_path << std::endl
+                          << "microSNPscore: ...miRNA file: " << miRNA_file_path << std::endl
+                          << "microSNPscore: ...conservation file: " << conservation_file_path << std::endl
+                          << "microSNPscore: ...SNP file: " << SNP_file_path << std::endl;}
     read_sequences(mRNAs,mRNA_file_path,miRNAs,miRNA_file_path,conservation_file_path);
     read_SNPs(SNPs,SNP_file_path);
+    if(verbose){std::cout << "microSNPscore: ...successfully read " << mRNAs.size() << " mRNA sequences" << std::endl
+                          << "microSNPscore: ...successfully read " << miRNAs.size() << " miRNA sequences" << std::endl
+                          << "microSNPscore: ...successfully read " << SNPs.size() << " SNP datasets" << std::endl;}
      /**************************************************\ 
     | Iterate over the predictions printing the original |
     | line followed by the deregulation score:           |
@@ -186,7 +195,7 @@ int main(int argc, char * argv[])
       int error_code = regcomp(&line_regex,line_pattern,REG_EXTENDED);
       if(error_code != 0)
       {
-        std::cerr << "microSNPscore::read_predictions\n";
+        std::cerr << "microSNPscore::\n";
         std::cerr << " ==> compiling line regular expression failed:\n";
         const size_t error_len(regerror(error_code,&line_regex,NULL,0));
         char error_message[error_len];
@@ -206,6 +215,7 @@ int main(int argc, char * argv[])
         regmatch_t line_pmatch[line_nmatch];
         while(getline(file,line_string).good())
         {
+          if(verbose){std::cout << "microSNPscore: Reading prediction..." << std::endl;}
           error_code = regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0);
           if(error_code != 0)
           {
@@ -232,14 +242,19 @@ int main(int argc, char * argv[])
             std::istringstream stream_three_prime(line_string.substr(line_pmatch[3].rm_so,line_pmatch[3].rm_eo-line_pmatch[3].rm_so));
             stream_three_prime >> three_prime;
             SNPID SNP(line_string.substr(line_pmatch[4].rm_so,line_pmatch[4].rm_eo-line_pmatch[4].rm_so));
+            if(verbose){std::cout << "microSNPscore: ...miRNA ID: " << miRNA << std::endl
+                                  << "microSNPscore: ...mRNA ID: " << mRNA << std::endl
+                                  << "microSNPscore: ...3' position: " << three_prime << std::endl;}
              /******************************************\ 
             | Score the new prediction and print result: |
              \******************************************/
+            if(verbose){std::cout << "microSNPscore: Calculating deregulation score..." << std::endl;}
             std::cout << miRNA << '\t';
             std::cout << mRNA << '\t';
             std::cout << three_prime << '\t';
             std::cout << SNP << '\t';
             std::cout << SNPs[SNP].get_deregulation_score(miRNAs[miRNA],mRNAs[mRNA],three_prime) << std::endl;
+            if(verbose){std::cout << "microSNPscore ...done" << std::endl;}
           } // regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0) == 0
         } // getline(file,line_string).good()
       } // regcomp(&line_regex,line_pattern,REG_EXTENDED) == 0
