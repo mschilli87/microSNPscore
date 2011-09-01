@@ -25,7 +25,7 @@ class mRNA : public sequence {
     * This is used to create an instance of the class mRNA.
     * Lowercase letters are treated as uppercase ones.
     * T is understood as Thymine and is treated as Uracil (simulating
-    * transscription) raising an error message.
+    * transscription).
     * Dashes (-) are understood as Gaps and are omitted.
     * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
     * and are treated as Mask.

@@ -72,7 +72,7 @@ namespace microSNPscore {
     * This is used to create an instance of the class sequence.
     * Lowercase letters are treated as uppercase ones.
     * T is understood as Thymine and is treated as Uracil (simulating
-    * transscription) raising an error message.
+    * transscription).
     * Dashes (-) are understood as Gaps and are omitted.
     * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
     * and are treated as Mask.
@@ -467,7 +467,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
     * This method is used to calculate the nucleotide vector of a sequence.
     * Lowercase letters are treated as uppercase ones.
     * T is understood as Thymine and is treated as Uracil (simulating
-    * transscription) raising an error message.
+    * transscription).
     * Dashes (-) are understood as Gaps and are omitted.
     * Other characters than A,a,C,c,G,g,U,u,T,t,X,x or - raise an error
     * and are treated as Mask.
@@ -533,10 +533,6 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
               break;
             case 't':
             case 'T':
-              std::cerr << "microSNPscore::sequence::initialize_nucleotides\n";
-              std::cerr << " ==> illegal nucleo base character: \n";
-              std::cerr << the_base_char << std::endl;
-              std::cerr << "  --> assuming Uracil\n";
             case 'u':
             case 'U':
               nucleo_base=Uracil;
