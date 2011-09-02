@@ -936,5 +936,21 @@ std::ostream & operator<<(std::ostream & the_stream, const sequence & the_sequen
 *********************************************************************/
 std::ostream & operator<<(std::ostream & the_stream, const strandType & the_strand);
 
+/*****************************************************************//**
+* @brief output exon vector strand insertion operator
+*
+* This operator is used to insert an exon vector to an output stream
+* (e.g. to print it on screen).
+* The vector will be represented by the exon starts (;-separated), a |
+* and the exon ends (;-separated).
+*
+* @param the_stream output stream the strand should be inserted in
+* @param the_exvec std::vector<exons> to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted exon vector
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const std::vector<exon> & ex_vec);
+
 } // namespace microSNPscore
 #endif

@@ -253,8 +253,8 @@ int main(int argc, char * argv[])
             std::cout << mRNA << '\t';
             std::cout << three_prime << '\t';
             std::cout << SNP << '\t';
-            std::cout << SNPs[SNP].get_deregulation_score(miRNAs[miRNA],mRNAs[mRNA],three_prime) << std::endl;
-            if(verbose){std::cerr << "microSNPscore ...done" << std::endl;}
+            std::cout << SNPs[SNP].get_deregulation_score(miRNAs[miRNA],mRNAs[mRNA],three_prime,verbose) << std::endl;
+            if(verbose){std::cerr << "microSNPscore: ...done" << std::endl;}
           } // regexec(&line_regex,line_string.c_str(),line_nmatch,line_pmatch,0) == 0
         } // getline(file,line_string).good()
       } // regcomp(&line_regex,line_pattern,REG_EXTENDED) == 0

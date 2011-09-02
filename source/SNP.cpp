@@ -165,22 +165,43 @@ namespace microSNPscore {
       | score and if so return the score difference between reference |
       | and alternative shifting the predicted 3' position if needed: |
        \*************************************************************/
+      if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: Checking if SNP matches prediction..." << std::endl
+                            << "microSNPscore:    deregulation score calculation: ...miRNA is " << the_miRNA.get_ID() << std::endl
+                            << "microSNPscore:    deregulation score calculation: ...mRNA is " << the_mRNA.get_ID() << std::endl
+                            << "microSNPscore:    deregulation score calculation: ...SNP is " << get_ID() << std::endl
+                            << "microSNPscore:    deregulation score calculation: ...miRNA is located on chromosome " << the_miRNA.get_chromosome()
+                            <<                               " at " << std::vector<exon>(the_miRNA.exons_begin(),the_miRNA.exons_end()) << std::endl
+                            << "microSNPscore:    deregulation score calculation: ...mRNA is located on chromosome " << the_mRNA.get_chromosome()
+                            <<                               " at " << std::vector<exon>(the_mRNA.exons_begin(),the_mRNA.exons_end()) << std::endl
+                            << "microSNPscore:    deregulation score calculation: ...SNP is located on chromosome " << get_chromosome()
+                            <<                               " at " << get_position(Plus) << "|" << get_position(Minus) << std::endl;}
       const bool SNP_on_miRNA = matches(the_miRNA);
+      if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: ...SNP does" << (SNP_on_miRNA?"":" not") << " match miRNA" << std::endl;}
       const bool SNP_on_mRNA = matches(the_mRNA);
+      if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: ...SNP does" << (SNP_on_mRNA?"":" not") << " match mRNA" << std::endl;}
       if(!SNP_on_miRNA && !SNP_on_mRNA)
       {
+        if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: ...SNP does not match prediction --> score is 0" << std::endl
+                              << "microSNPscore:    deregulation score calculation: ...done" << std::endl;}
         return 0;
       }
       else
       {
-        return the_miRNA.get_downregulation_score(the_mRNA,predicted_three_prime_position) -
-               (SNP_on_miRNA ?
-                the_miRNA.mutate(*this).get_downregulation_score(the_mRNA,predicted_three_prime_position) :
-                the_miRNA.get_downregulation_score(the_mRNA.mutate(*this),predicted_three_prime_position +
-                                                                          (predicted_three_prime_position < (get_position(Plus) +
-                                                                                                             reference_end(Plus) -
-                                                                                                             reference_begin(Plus)) ?
-                                                                           0 : get_shift())));
+        if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: ...SNP does match prediction --> calculating score" << std::endl
+                              << "microSNPscore:    deregulation score calculation: Calculating wildtype score..." << std::endl;}
+        downregulationScore wt_score = the_miRNA.get_downregulation_score(the_mRNA,predicted_three_prime_position,verbose);
+        if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: Calculating mutant score..." << std::endl;}
+        downregulationScore mt_score = (SNP_on_miRNA ? the_miRNA.mutate(*this).get_downregulation_score(the_mRNA,predicted_three_prime_position) :
+                                                       the_miRNA.get_downregulation_score(the_mRNA.mutate(*this),predicted_three_prime_position +
+                                                                                          (predicted_three_prime_position < (get_position(Plus) +
+                                                                                                                             reference_end(Plus) -
+                                                                                                                             reference_begin(Plus)) ?
+                                                                                           0 : get_shift())),verbose);
+        if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: ...wildtype score is " << wt_score << std::endl
+                              << "microSNPscore:    deregulation score calculation: ...mutant score is " << mt_score << std::endl
+                              << "microSNPscore:    deregulation score calculation: ...deregulation score is " << wt_score - mt_score << std::endl
+                              << "microSNPscore:    deregulation score calculation: ...done" << std::endl;}
+        return wt_score - mt_score;
       }
 }
 

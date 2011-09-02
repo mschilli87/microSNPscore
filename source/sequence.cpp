@@ -2,7 +2,7 @@
 #include <iostream>
 //for std::cerr and std::endl (error stating)
 #include <sstream>
-//for std::istringstream (type conversion)
+//for std::istringstream (type conversion) and std::ostringstream (exon vector << operator)
 #include <algorithm>
 //for std::sort (exon sorting)
 #include "sequence.h"
@@ -758,6 +758,42 @@ std::ostream & operator<<(std::ostream & the_stream, const strandType & the_stra
   | Append sign depending on the strand and return result: |
    \******************************************************/
  return the_stream << (the_strand == Plus ? '+' : '-');
+}
+
+/*****************************************************************//**
+* @brief output exon vector strand insertion operator
+*
+* This operator is used to insert an exon vector to an output stream
+* (e.g. to print it on screen).
+* The vector will be represented by the exon starts (;-separated), a |
+* and the exon ends (;-separated).
+*
+* @param the_stream output stream the strand should be inserted in
+* @param the_ex_vec std::vector<exons> to be inserted in the output
+*     stream
+*
+* @return output stream with the inserted exon vector
+*********************************************************************/
+std::ostream & operator<<(std::ostream & the_stream, const std::vector<exon> & ex_vec)
+{
+   /*****************************************************************\ 
+  | Insert first start and save first end in stringstream, iterate    |
+  | over the exon vector appending semicolon and starts end ends then |
+  | insert "|" and ends string before returning the stream:           |
+   \*****************************************************************/
+  std::vector<exon>::const_iterator ex_it(ex_vec.begin());
+  std::ostringstream ends;
+  if(ex_it != ex_vec.end())
+  {
+    the_stream << ex_it->get_start();
+    ends << ex_it->get_end();
+    for(++ex_it;ex_it!=ex_vec.end();++ex_it)
+    {
+      the_stream << ";" << ex_it->get_start();
+       ends << ";" << ex_it->get_end();
+    }
+  }
+  return (the_stream << "|" << ends.str());
 }
 
 } // namespace microSNPscore
