@@ -150,6 +150,8 @@ namespace microSNPscore {
     *     position 1) that is predicted to be the mRNA nucleotide that
     *     would bind the miRNA 5' end (if it would bind) (i.e. one base
     *     downstream (3') from the seed match region)
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return the deregulation score of the SNP for the target site of
     *     the miRNA starting at the given position in the given mRNA
@@ -157,7 +159,7 @@ namespace microSNPscore {
     * @see miRNA::get_downregulation_score()
     *********************************************************************/
     
-    deregulationScore SNP::get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const {
+    deregulationScore SNP::get_deregulation_score(const miRNA & the_miRNA, const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, bool verbose) const {
        /*************************************************************\ 
       | Verify that the SNP may have influence on the downregulation  |
       | score and if so return the score difference between reference |

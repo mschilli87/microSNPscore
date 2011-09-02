@@ -105,13 +105,15 @@ class miRNA : public sequence {
     *     position 1) that is predicted to be the mRNA nucleotide that
     *     would bind the miRNA 5' end (if it would bind) (i.e. one base
     *     downstream (3') from the seed match region)
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA
     *
     * @see SNP::get_deregulation_score()
     *********************************************************************/
-    downregulationScore get_downregulation_score(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position) const;
+    downregulationScore get_downregulation_score(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, bool verbose = false) const;
 
 
   private:
@@ -145,6 +147,8 @@ class miRNA : public sequence {
     *     downstream (3') from the seed match region)
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return the downregulation score for the target site of the miRNA
     *     starting at the given position in the given mRNA considering the
@@ -152,7 +156,7 @@ class miRNA : public sequence {
     *
     * @see get_downregulation_score()
     *********************************************************************/
-    static downregulationScore downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment);
+    static downregulationScore downregulation_score_candidate(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, const alignment & the_alignment, bool verbose = false);
 
     /*****************************************************************//**
     * @brief secondary structure features calculation
@@ -170,10 +174,12 @@ class miRNA : public sequence {
     *     position 1) that is predicted to be the mRNA nucleotide that
     *     would bind the miRNA 5' end (if it would bind) (i.e. one base
     *     downstream (3') from the seed match region)
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static void calculate_accessibility_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position);
+    static void calculate_accessibility_features(downregulationScore features[], const mRNA & mRNA_subsequence, chromosomePosition predicted_three_prime_position, bool verbose = false);
 
     /*****************************************************************//**
     * @brief target site conservation feature calculation
@@ -183,13 +189,15 @@ class miRNA : public sequence {
     *
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return conservation score for the target site represented by the
     *     given alignment
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static downregulationScore calculate_conservation_feature(const alignment & the_alignment);
+    static downregulationScore calculate_conservation_feature(const alignment & the_alignment, bool verbose = false);
 
     /*****************************************************************//**
     * @brief local AU content feature calculation
@@ -204,13 +212,15 @@ class miRNA : public sequence {
     * @param seed_type the seed type (sixMer, sevenMerAOne,
     *     sevenMerMEight, EightMer) of the alignment that is considered to
     *     be the best one for the miRNA-induced downregulation
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return AU content score for the target site of the given seed type
     *     with the given flanking sequences
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static downregulationScore calculate_AU_content_feature(const mRNA & downstream_mRNA_subsequence, const mRNA & upstream_mRNA_subsequence, seedType seed_type);
+    static downregulationScore calculate_AU_content_feature(const mRNA & downstream_mRNA_subsequence, const mRNA & upstream_mRNA_subsequence, seedType seed_type, bool verbose = false);
 
     /*****************************************************************//**
     * @brief 3' match feature calculation
@@ -220,13 +230,15 @@ class miRNA : public sequence {
     *
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return 3' feature score for the target site represented by the
     *     given alignment
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static downregulationScore calculate_three_prime_feature(const alignment & the_alignment);
+    static downregulationScore calculate_three_prime_feature(const alignment & the_alignment, bool verbose = false);
 
     /*****************************************************************//**
     * @brief UTR distance feature calculation
@@ -243,13 +255,15 @@ class miRNA : public sequence {
     * @param seed_type the seed type (sixMer, sevenMerAOne,
     *     sevenMerMEight, EightMer) of the alignment that is considered to
     *     be the best one for the miRNA-induced downregulation
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return UTR distance score for a target site of the given site
     *     located at the given position in the given mRNA
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static downregulationScore calculate_UTR_dist_feature(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, seedType seed_type);
+    static downregulationScore calculate_UTR_dist_feature(const mRNA & the_mRNA, chromosomePosition predicted_three_prime_position, seedType seed_type, bool verbose = false);
 
     /*****************************************************************//**
     * @brief seed match features calculation
@@ -260,10 +274,12 @@ class miRNA : public sequence {
     * @param features array the ninefeature scores should be stored in
     * @param the_alignment an alignment that is considered to be the best
     *     one for the miRNA-induced downregulation
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @see downregulation_score_candidate()
     *********************************************************************/
-    static void calculate_seed_match_features(downregulationScore features[], const alignment & the_alignment);
+    static void calculate_seed_match_features(downregulationScore features[], const alignment & the_alignment, bool verbose = false);
 
 };
     inline miRNA miRNA::mutate(const SNP & the_SNP) const {
