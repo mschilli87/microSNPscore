@@ -715,7 +715,7 @@ return get_subsequence_from_to(chromosome_position_to_sequence_position(from),
 }
 
 /*****************************************************************//**
-* @brief sequence output stream insertion operator
+* @brief output stream sequence insertion operator
 *
 * This operator is used to insert a sequence to an output stream (e.g.
 * to print it on screen).
@@ -761,7 +761,7 @@ std::ostream & operator<<(std::ostream & the_stream, const strandType & the_stra
 }
 
 /*****************************************************************//**
-* @brief output exon vector strand insertion operator
+* @brief output stream exon vector insertion operator
 *
 * This operator is used to insert an exon vector to an output stream
 * (e.g. to print it on screen).

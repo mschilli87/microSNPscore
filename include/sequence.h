@@ -937,7 +937,7 @@ std::ostream & operator<<(std::ostream & the_stream, const sequence & the_sequen
 std::ostream & operator<<(std::ostream & the_stream, const strandType & the_strand);
 
 /*****************************************************************//**
-* @brief output exon vector strand insertion operator
+* @brief output stream exon vector insertion operator
 *
 * This operator is used to insert an exon vector to an output stream
 * (e.g. to print it on screen).
