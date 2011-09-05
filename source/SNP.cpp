@@ -191,12 +191,12 @@ namespace microSNPscore {
                               << "microSNPscore:    deregulation score calculation: Calculating wildtype score..." << std::endl;}
         downregulationScore wt_score = the_miRNA.get_downregulation_score(the_mRNA,predicted_three_prime_position,verbose);
         if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: Calculating mutant score..." << std::endl;}
-        downregulationScore mt_score = (SNP_on_miRNA ? the_miRNA.mutate(*this).get_downregulation_score(the_mRNA,predicted_three_prime_position) :
+        downregulationScore mt_score = (SNP_on_miRNA ? the_miRNA.mutate(*this).get_downregulation_score(the_mRNA,predicted_three_prime_position,verbose) :
                                                        the_miRNA.get_downregulation_score(the_mRNA.mutate(*this),predicted_three_prime_position +
                                                                                           (predicted_three_prime_position < (get_position(Plus) +
                                                                                                                              reference_end(Plus) -
                                                                                                                              reference_begin(Plus)) ?
-                                                                                           0 : get_shift())),verbose);
+                                                                                           0 : get_shift()),verbose));
         if(verbose){std::cerr << "microSNPscore:    deregulation score calculation: ...wildtype score is " << wt_score << std::endl
                               << "microSNPscore:    deregulation score calculation: ...mutant score is " << mt_score << std::endl
                               << "microSNPscore:    deregulation score calculation: ...deregulation score is " << wt_score - mt_score << std::endl

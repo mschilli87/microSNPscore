@@ -115,9 +115,9 @@ namespace microSNPscore {
                             << "microSNPscore:        downregulation score calculation: ...3' position is " << predicted_three_prime_position << std:: endl
                             << "microSNPscore:        downregulation score calculation: ...mRNA is located at "
                             <<                                             std::vector<exon>(the_mRNA.exons_begin(),the_mRNA.exons_end()) << std::endl
-                            << "microSNPscore:        downregulation score calculation: ...miRNA sequence is" << *this << std:: endl
-                            << "microSNPscore:        downregulation score calculation: ...mRNA sequence is" << the_mRNA << std:: endl
-                            << "microSNPscore:        downregulation score calculation: ...mRNA subsequence is"
+                            << "microSNPscore:        downregulation score calculation: ...miRNA sequence is " << *this << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...mRNA sequence is " << the_mRNA << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...mRNA subsequence is "
                             <<                                       the_mRNA.get_subsequence_for_alignment(predicted_three_prime_position) << std:: endl;}
       optimalAlignmentList alignments(the_mRNA.get_subsequence_for_alignment(predicted_three_prime_position),*this);
       if(verbose){std::cerr << "microSNPscore:        downregulation score calculation: ...done" << std:: endl
