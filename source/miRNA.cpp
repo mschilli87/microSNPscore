@@ -130,10 +130,10 @@ namespace microSNPscore {
       }
       else
       {
-        downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin()));
+        downregulationScore downregulation_score(downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignments.begin(),verbose));
         for(optimalAlignmentList::const_iterator alignment_it(alignments.begin()+1);alignment_it!=alignments.end();++alignment_it)
         {
-          downregulation_score=std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it));
+          downregulation_score=std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it,verbose));
         }
         if(verbose){std::cerr << "microSNPscore:        downregulation score calculation: ...final downregulation score: " << downregulation_score << std:: endl
                               << "microSNPscore:        downregulation score calculation: ...done" << std:: endl;}
@@ -363,9 +363,15 @@ namespace microSNPscore {
        /*********************************\ 
       | Calculate the raw feature scores: |
        \*********************************/
+      if(verbose){std::cerr << "microSNPscore:            downregulation score candidate: Calculating downregulation score candidate..." << std::endl
+                            << "microSNPscore:            downregulation score candidate: ...mRNA is " << the_mRNA.get_ID() << std::endl
+                            << "microSNPscore:            downregulation score candidate: ...3' position is " << predicted_three_prime_position << std::endl
+                            << "microSNPscore:            downregulation score candidate: ...alignment is " << the_alignment << std::endl
+                            << "microSNPscore:            downregulation score candidate: ...seed type is " << the_alignment.get_seed_type() << std::endl
+                            << "microSNPscore:            downregulation score candidate: ...calculating features..." << std::endl;}
       downregulationScore features[feature_count];
       features[UTRLength]=the_mRNA.get_length();
-      calculate_accessibility_features(&features[SS01],the_mRNA.get_subsequence_for_accessibility(predicted_three_prime_position),predicted_three_prime_position);
+      calculate_accessibility_features(&features[SS01],the_mRNA.get_subsequence_for_accessibility(predicted_three_prime_position),predicted_three_prime_position,verbose);
       features[conservation]=calculate_conservation_feature(the_alignment);
       features[AU_content]=calculate_AU_content_feature(the_mRNA.get_subsequence_for_downstream_AU_content(predicted_three_prime_position),
                                                         the_mRNA.get_subsequence_for_upstream_AU_content(predicted_three_prime_position),
@@ -387,6 +393,7 @@ namespace microSNPscore {
        /********************************************************\ 
       | Apply sigmoid function before returning the final score: |
        \********************************************************/
+      if(verbose){std::cerr << "microSNPscore:            downregulation score candidate: ...done" << std::endl;}
       return score_sigmoid_C / (1 + exp(score_sigmoid_alpha * the_score + score_sigmoid_beta));
 }
 
