@@ -109,9 +109,23 @@ namespace microSNPscore {
       | Calculate downregulation score candidates for all optimal |
       | alignments and return the maximum:                        |
        \*********************************************************/
+      if(verbose){std::cerr << "microSNPscore:        downregulation score calculation: Aligning RNAs..." << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...miRNA is " << get_ID() << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...mRNA is " << the_mRNA.get_ID() << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...3' position is " << predicted_three_prime_position << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...mRNA is located at "
+                            <<                                             std::vector<exon>(the_mRNA.exons_begin(),the_mRNA.exons_end()) << std::endl
+                            << "microSNPscore:        downregulation score calculation: ...miRNA sequence is" << *this << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...mRNA sequence is" << the_mRNA << std:: endl
+                            << "microSNPscore:        downregulation score calculation: ...mRNA subsequence is"
+                            <<                                       the_mRNA.get_subsequence_for_alignment(predicted_three_prime_position) << std:: endl;}
       optimalAlignmentList alignments(the_mRNA.get_subsequence_for_alignment(predicted_three_prime_position),*this);
+      if(verbose){std::cerr << "microSNPscore:        downregulation score calculation: ...done" << std:: endl
+                            << "microSNPscore:        downregulation score calculation: Optimal alignments: " << std::endl << alignments << std:: endl;}
       if(alignments.begin() == alignments.end())
       {
+        if(verbose){std::cerr << "microSNPscore:        downregulation score calculation: ...no alignments" << std:: endl
+                              << "microSNPscore:        downregulation score calculation: ...done" << std:: endl;}
         return 0;
       }
       else
@@ -121,6 +135,8 @@ namespace microSNPscore {
         {
           downregulation_score=std::max(downregulation_score,downregulation_score_candidate(the_mRNA,predicted_three_prime_position,*alignment_it));
         }
+        if(verbose){std::cerr << "microSNPscore:        downregulation score calculation: ...final downregulation score: " << downregulation_score << std:: endl
+                              << "microSNPscore:        downregulation score calculation: ...done" << std:: endl;}
         return downregulation_score;
       }
 }
