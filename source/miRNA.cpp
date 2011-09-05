@@ -455,10 +455,13 @@ namespace microSNPscore {
       std::ostringstream RNAplfold_call;
       RNAplfold_call << echo_command << " \"" << mRNA_subsequence <<"\" | " << RNAplfold_command
                      << " -L " << RNAplfold_span << " -W " << RNAplfold_winsize << " -u " << RNAplfold_width;
+      if(verbose){std::cerr << "microSNPscore:                accessibility calculation: Calculating accessability..." << std::endl
+                            << "microSNPscore:                accessibility calculation: ...calling " << RNAplfold_call.str() << "..." << std::endl;}
       system(RNAplfold_call.str().c_str());
        /*****************************\ 
       | Remove unneeded dotplot file: |
        \*****************************/
+      if(verbose){std::cerr << "microSNPscore:                accessibility calculation: ...removing dotplot file..." << std::endl;}
       remove(RNAplfold_dotplotfile.c_str());
        /*****************************************************************\ 
       | Calculate sequence position of predecited target site three prime |
@@ -470,6 +473,9 @@ namespace microSNPscore {
       const sequencePosition begin_position(center_position>feature_count ? center_position-feature_count : 1);
       const sequencePosition end_position(mRNA_subsequence.get_length()>center_position+feature_count ? center_position+feature_count
                                                                                                       : mRNA_subsequence.get_length());
+      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...center position is " << center_position << std::endl
+                            << "microSNPscore:                accessability calculation: ...begin position is " << begin_position << std::endl
+                            << "microSNPscore:                accessability calculation: ...end position is " << end_position << std::endl;}
       const sequence::const_iterator begin(mRNA_subsequence[begin_position]);
       const sequence::const_iterator end(mRNA_subsequence[end_position+1]);
        /***************************************************************\ 
@@ -499,6 +505,7 @@ namespace microSNPscore {
       std::vector<downregulationScore> scores;
       for(unsigned short int i=center_position;i<=feature_count;++i)
       {
+      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting zero-score for position " << i << std::endl;}
         scores.push_back(0);
       }
        /*****************************************************************\ 
@@ -516,6 +523,7 @@ namespace microSNPscore {
         std::istringstream score_stream(score_string);
         downregulationScore score;
         score_stream >> score;
+      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting score for position " << mRNA_it->get_sequence_position() << ": " << score << std::endl;}
         scores.push_back(score);
       }
        /***************************************\ 
@@ -530,6 +538,7 @@ namespace microSNPscore {
        \****************************************************************/
       for(unsigned short int i=end_position-center_position;i<feature_count;++i)
       {
+      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting zero-score for position " << i+center_position << std::endl;}
         scores.push_back(0);
       }
        /******************************************************************\ 
@@ -547,6 +556,7 @@ namespace microSNPscore {
         }
         features[feature_number]=-1*std::log(feature_score);
       }
+      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...done" << std::endl;}
 }
 
     /*****************************************************************//**
