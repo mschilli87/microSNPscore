@@ -1,4 +1,6 @@
 
+#include <algorithm>
+// for std::max and std::min (subsequence querying)
 #include "mRNA.h"
 #include "conservationList.h"
 #include "SNP.h"
@@ -91,7 +93,7 @@ namespace microSNPscore {
        \******************************************************************/
       sequenceLength window_size(80);
       sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position));
-      return get_subsequence_from_to(sequence_position - window_size,sequence_position + window_size);
+      return get_subsequence_from_to(std::max(1,sequence_position - window_size),std::min<int>(get_length(),sequence_position + window_size));
 }
 
     /*****************************************************************//**
@@ -120,7 +122,7 @@ namespace microSNPscore {
        \******************************************************************/
       sequenceLength window_size(30);
       sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position) + 1);
-      return get_subsequence_from_to(sequence_position,sequence_position + window_size);
+      return get_subsequence_from_to(sequence_position,std::min<int>(get_length(),sequence_position + window_size));
 }
 
     /*****************************************************************//**
@@ -149,7 +151,7 @@ namespace microSNPscore {
        \******************************************************************/
       sequenceLength window_size(30);
       sequencePosition sequence_position(chromosome_position_to_sequence_position(predicted_miRNA_three_prime_position) - 8);
-      return get_subsequence_from_to(sequence_position - window_size,sequence_position);
+      return get_subsequence_from_to(std::max(0,sequence_position - window_size),sequence_position);
 }
 
     /*****************************************************************//**
