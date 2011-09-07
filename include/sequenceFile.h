@@ -76,10 +76,12 @@ class sequenceFileEntry {
     *
     * @param conservations conservationList containing the conservaton
     *     ranges for the sequence
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
-    inline sequence get_sequence(const conservationList & conservations) const;
+    inline sequence get_sequence(const conservationList & conservations, bool verbose = false) const;
 
     /*****************************************************************//**
     * @brief mRNA object creation
@@ -89,10 +91,12 @@ class sequenceFileEntry {
     *
     * @param conservations conservationList containing the conservaton
     *     ranges for the mRNA
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return mRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline mRNA get_mRNA(const conservationList & conservations) const;
+    inline mRNA get_mRNA(const conservationList & conservations, bool verbose = false) const;
 
     /*****************************************************************//**
     * @brief miRNA object creation
@@ -102,10 +106,12 @@ class sequenceFileEntry {
     *
     * @param conservations conservationList containing the conservaton
     *     ranges for the miRNA
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return miRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline miRNA get_miRNA(const conservationList & conservations) const;
+    inline miRNA get_miRNA(const conservationList & conservations, bool verbose = false) const;
 
     /*****************************************************************//**
     * @brief FASTA entry creation
@@ -185,11 +191,13 @@ class sequenceFileEntry {
     *
     * @param conservations conservationList containing the conservaton
     *     ranges for the sequence
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return sequence object corresponding to the sequence file entry
     *********************************************************************/
-    inline sequence sequenceFileEntry::get_sequence(const conservationList & conservations) const {
-      return sequence(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations);
+    inline sequence sequenceFileEntry::get_sequence(const conservationList & conservations, bool verbose) const {
+      return sequence(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations,verbose);
 }
 
     /*****************************************************************//**
@@ -200,11 +208,13 @@ class sequenceFileEntry {
     *
     * @param conservations conservationList containing the conservaton
     *     ranges for the mRNA
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return mRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline mRNA sequenceFileEntry::get_mRNA(const conservationList & conservations) const {
-      return mRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations);
+    inline mRNA sequenceFileEntry::get_mRNA(const conservationList & conservations, bool verbose) const {
+      return mRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations,verbose);
 }
 
     /*****************************************************************//**
@@ -215,11 +225,13 @@ class sequenceFileEntry {
     *
     * @param conservations conservationList containing the conservaton
     *     ranges for the miRNA
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return miRNA object corresponding to the sequence file entry
     *********************************************************************/
-    inline miRNA sequenceFileEntry::get_miRNA(const conservationList & conservations) const {
-      return miRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations);
+    inline miRNA sequenceFileEntry::get_miRNA(const conservationList & conservations, bool verbose) const {
+      return miRNA(ID,nucleotide_sequence,chromosome,strand,exon_starts,exon_ends,conservations,verbose);
 }
 
 /*****************************************************************//**

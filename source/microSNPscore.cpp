@@ -16,7 +16,7 @@ using namespace microSNPscore;
 
 void read_sequences(std::map<sequenceID,mRNA> & mRNA_map,filePath mRNA_path,
                     std::map<sequenceID,miRNA> & miRNA_map,filePath miRNA_path,
-                    filePath conservations_path)
+                    filePath conservations_path, bool verbose = false)
 {
      /****************************************************************\ 
     | Read the given files and insert the corresponing sequences into  |
@@ -28,14 +28,14 @@ void read_sequences(std::map<sequenceID,mRNA> & mRNA_map,filePath mRNA_path,
     the_file.read();
     for(sequenceFile::const_iterator mRNA_it(the_file.begin());mRNA_it!=the_file.end();++mRNA_it)
     {
-      mRNA the_mRNA(mRNA_it->get_mRNA(conservations));
+      mRNA the_mRNA(mRNA_it->get_mRNA(conservations,verbose));
       mRNA_map.insert(std::pair<sequenceID,mRNA>(the_mRNA.get_ID(),the_mRNA));
     }
     the_file=sequenceFile(miRNA_path);
     the_file.read();
     for(sequenceFile::const_iterator miRNA_it(the_file.begin());miRNA_it!=the_file.end();++miRNA_it)
     {
-      miRNA the_miRNA(miRNA_it->get_miRNA(conservations));
+      miRNA the_miRNA(miRNA_it->get_miRNA(conservations,verbose));
       miRNA_map.insert(std::pair<sequenceID,miRNA>(the_miRNA.get_ID(),the_miRNA));
     }
 }
@@ -163,7 +163,7 @@ int main(int argc, char * argv[])
                           << "microSNPscore: ...miRNA file: " << miRNA_file_path << std::endl
                           << "microSNPscore: ...conservation file: " << conservation_file_path << std::endl
                           << "microSNPscore: ...SNP file: " << SNP_file_path << std::endl;}
-    read_sequences(mRNAs,mRNA_file_path,miRNAs,miRNA_file_path,conservation_file_path);
+    read_sequences(mRNAs,mRNA_file_path,miRNAs,miRNA_file_path,conservation_file_path,verbose);
     read_SNPs(SNPs,SNP_file_path);
     if(verbose){std::cerr << "microSNPscore: ...successfully read " << mRNAs.size() << " mRNA sequences" << std::endl
                           << "microSNPscore: ...successfully read " << miRNAs.size() << " miRNA sequences" << std::endl

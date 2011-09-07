@@ -252,12 +252,14 @@ class sequence {
     *     comma-separated list.
     * @param conservations conservationList containing the conservaton
     *     ranges for the sequence
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return a sequence containing the given nucleotides located on the
     *     given chromosome, strand and positions with the given
     *     conservation scores.
     *********************************************************************/
-    sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations);
+    sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations, bool verbose = false);
 
     /*****************************************************************//**
     * @brief standard constructor - do not use directly

@@ -104,14 +104,21 @@ namespace microSNPscore {
     *     comma-separated list.
     * @param conservations conservationList containing the conservaton
     *     ranges for the sequence
+    * @param verbose (optional) bool indicating wheter verbose output
+    *     to STDERR should be done or not - Defaults to false
     *
     * @return a sequence containing the given nucleotides located on the
     *     given chromosome, strand and positions with the given
     *     conservation scores.
     *********************************************************************/
-    sequence::sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations)
+    sequence::sequence(sequenceID the_ID, std::string sequence_string, chromosomeType the_chromosome, strandType the_strand, std::string exon_starts, std::string exon_ends, const conservationList & conservations, bool verbose)
     :ID(the_ID),chromosome(the_chromosome),strand(the_strand),exons(initialize_exons(position_string_to_vector(exon_starts),position_string_to_vector(exon_ends)))
     ,length(initialize_length(exons.begin(),exons.end())),nucleotides(initialize_nucleotides(sequence_string,the_chromosome,the_strand,exons.begin(),exons.end(),length,conservations)) {
+      if(verbose){std::cerr << "microSNPscore:     sequence initialization: ID is " << the_ID << std::endl
+                            << "microSNPscore:     sequence initialization: sequence is " << sequence_string << std::endl
+                            << "microSNPscore:     sequence initialization: location is " << exon_starts << "|" << exon_ends << std::endl
+                            << "microSNPscore:     sequence initialization: location length is " << length << std::endl
+                            << "microSNPscore:     sequence initialization: sequence length is " << sequence_string.length() << std::endl;}
 }
 
     /*****************************************************************//**
