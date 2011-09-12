@@ -469,10 +469,9 @@ namespace microSNPscore {
       pup[0][0]=RNAplfold_width;
       plist *dpp=NULL;
       plist *pl;
-      FILE *pUfp=NULL;
-      FILE *spup=NULL;
-      pl=pfl_fold(mRNA_subsequence_str,RNAplfold_winsize,RNAplfold_span,0.01,pup,&dpp,pUfp,spup);
-      pUfp=fopen(RNAplfold_outfile.c_str(),"w");
+      pl=pfl_fold(mRNA_subsequence_str,std::min(mRNA_subsequence.get_length(),RNAplfold_winsize),
+                  std::min(mRNA_subsequence.get_length(),RNAplfold_span),0.01,pup,&dpp,NULL,NULL);
+      FILE *pUfp=fopen(RNAplfold_outfile.c_str(),"w");
       putoutpU_prob(pup,mRNA_subsequence.get_length(),RNAplfold_width,pUfp,0);
       fclose(pUfp);
       free(pl);
