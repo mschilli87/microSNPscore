@@ -436,21 +436,6 @@ namespace microSNPscore {
       const unsigned short int RNAplfold_span=40;
       const unsigned short int RNAplfold_winsize=80;
       const unsigned short int RNAplfold_width=16;
-       /*******************************************\ 
-      | Define RNAplfold and echo executable paths: |
-       \*******************************************/
-      //const filePath RNAplfold_command("__RNAPLFOLD__");
-      //const filePath echo_command("echo");
-       /***********************************\ 
-      | Define RNAplfold output file paths: |
-       \***********************************/
-      const filePath RNAplfold_outfile("plfold_lunp");
-      const filePath RNAplfold_dotplotfile("plfold_dp.ps");
-       /******************************************\ 
-      | Define number of comments at the beginning |
-      | of the RNAplfold output file:              |
-       \******************************************/
-      const unsigned short int RNAplfold_comment_lines=2;
        /******************************************************\ 
       | Define score cutoff for logarithmization as in mirSVR: |
        \******************************************************/
@@ -471,10 +456,8 @@ namespace microSNPscore {
       plist *pl;
       pl=pfl_fold(mRNA_subsequence_str,std::min(mRNA_subsequence.get_length(),RNAplfold_winsize),
                   std::min(mRNA_subsequence.get_length(),RNAplfold_span),0.01,pup,&dpp,NULL,NULL);
-      FILE *pUfp=fopen(RNAplfold_outfile.c_str(),"w");
-      putoutpU_prob(pup,mRNA_subsequence.get_length(),RNAplfold_width,pUfp,0);
-      fclose(pUfp);
       free(pl);
+      free(dpp);
        /*****************************************************************\ 
       | Calculate sequence position of predecited target site three prime |
       | end and the up to +-feature count nucleotides up- and downstream  |
@@ -490,24 +473,15 @@ namespace microSNPscore {
                             << "microSNPscore:                accessability calculation: ...end position is " << end_position << std::endl;}
       const sequence::const_iterator begin(mRNA_subsequence[begin_position]);
       const sequence::const_iterator end(mRNA_subsequence[end_position+1]);
-       /***************************************************************\ 
-      | Initialize variables an open RNAplfold output file skipping the |
-      | comment lines in the beginning of the file (as defined before): |
-       \***************************************************************/
       sequence::const_iterator mRNA_it(mRNA_subsequence.begin());
-      std::string line;
-      std::ifstream RNAplfold_output(RNAplfold_outfile.c_str());
-      for(unsigned short int i=0;i!=RNAplfold_comment_lines;i++)
-      {
-        std::getline(RNAplfold_output,line);
-      }
        /**************************************************\ 
       | Skip the lines corresponding to nucleotides before |
       | the interesting region of the mRNA subsequence:    |
        \**************************************************/
-      for(;mRNA_it!=begin;++mRNA_it)
+      unsigned short int k=1;
+      for(;mRNA_it!=begin;++mRNA_it,++k)
       {
-        std::getline(RNAplfold_output,line);
+        free(pup[k]);
       }
        /***************************************************************\ 
       | Initialize empty score vector and append zero scores for the    |
@@ -517,32 +491,29 @@ namespace microSNPscore {
       std::vector<downregulationScore> scores;
       for(unsigned short int i=center_position;i<=feature_count;++i)
       {
-      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting zero-score for position " << i << std::endl;}
+        if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting zero-score for position " << i << std::endl;}
         scores.push_back(0);
       }
-       /*****************************************************************\ 
-      | Iterate over the interesting part of the mRNA subsequence reading |
-      | the corresponding lines and extracting the second tab-separated   |
-      | word to convert it to a score and append it to the vector:        |
-       \*****************************************************************/
-      for(;mRNA_it!=end;++mRNA_it)
+       /*********************************************************\ 
+      | Iterate over the interesting part of the mRNA subsequence |
+      | read the score and append it to the vector:               |
+       \*********************************************************/
+      for(;mRNA_it!=end;++mRNA_it,++k)
       {
-        std::getline(RNAplfold_output,line);
-        std::istringstream line_stream(line);
-        std::string score_string;
-        std::getline(line_stream,score_string,'\t');
-        std::getline(line_stream,score_string,'\t');
-        std::istringstream score_stream(score_string);
-        downregulationScore score;
-        score_stream >> score;
-      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting score for position " << mRNA_it->get_sequence_position() << ": " << score << std::endl;}
+        downregulationScore score(pup[k][1]);
+        if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting score for position " << mRNA_it->get_sequence_position() << ": " << score << std::endl;}
         scores.push_back(score);
+        free(pup[k]);
       }
-       /***************************************\ 
-      | Close and remove RNAplfold output file: |
-       \***************************************/
-      RNAplfold_output.close();
-      remove(RNAplfold_outfile.c_str());
+       /******************************\ 
+      | Ignore the rest of the scores: |
+       \******************************/
+      for(;k<mRNA_subsequence.get_length();++k)
+      {
+        free(pup[k]);
+      }
+      free(pup[0]);
+      free(pup);
        /****************************************************************\ 
       | Append zero scores for the features that correspond to positions |
       | behind the sequence end (less nucleotides after predicted target |
@@ -550,7 +521,7 @@ namespace microSNPscore {
        \****************************************************************/
       for(unsigned short int i=end_position-center_position;i<feature_count;++i)
       {
-      if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting zero-score for position " << i+center_position << std::endl;}
+        if(verbose){std::cerr << "microSNPscore:                accessability calculation: ...inserting zero-score for position " << i+center_position << std::endl;}
         scores.push_back(0);
       }
        /******************************************************************\ 
