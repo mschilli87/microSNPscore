@@ -9,8 +9,12 @@
 // for std::istringstream (type conversion) and std::ostream (command string composition)
 #include <fstream>
 // for std::ifstream (file access to read RNAplfold output)
-#include <cstdlib>
-// for std::system (RNAplfold call)
+extern "C"
+{
+    #include <LPfold.h>
+    #include <utils.h>
+    #include <string.h>
+}
 #include "miRNA.h"
 #include "conservationList.h"
 #include "SNP.h"
@@ -435,8 +439,8 @@ namespace microSNPscore {
        /*******************************************\ 
       | Define RNAplfold and echo executable paths: |
        \*******************************************/
-      const filePath RNAplfold_command("__RNAPLFOLD__");
-      const filePath echo_command("echo");
+      //const filePath RNAplfold_command("__RNAPLFOLD__");
+      //const filePath echo_command("echo");
        /***********************************\ 
       | Define RNAplfold output file paths: |
        \***********************************/
@@ -451,20 +455,27 @@ namespace microSNPscore {
       | Define score cutoff for logarithmization as in mirSVR: |
        \******************************************************/
       const downregulationScore score_cutoff(0.000001);
-       /******************************************\ 
-      | Compose RNAplfold call and call RNAplfold: |
-       \******************************************/
-      std::ostringstream RNAplfold_call;
-      RNAplfold_call << echo_command << " \"" << mRNA_subsequence <<"\" | " << RNAplfold_command
-                     << " -L " << RNAplfold_span << " -W " << RNAplfold_winsize << " -u " << RNAplfold_width;
-      if(verbose){std::cerr << "microSNPscore:                accessibility calculation: Calculating accessability..." << std::endl
-                            << "microSNPscore:                accessibility calculation: ...calling " << RNAplfold_call.str() << "..." << std::endl;}
-      system(RNAplfold_call.str().c_str());
-       /*****************************\ 
-      | Remove unneeded dotplot file: |
-       \*****************************/
-      if(verbose){std::cerr << "microSNPscore:                accessibility calculation: ...removing dotplot file..." << std::endl;}
-      remove(RNAplfold_dotplotfile.c_str());
+       /***************************************************\ 
+      | Calculate secondary structure as done in RNAplfold: |
+       \***************************************************/
+      if(verbose){std::cerr << "microSNPscore:                accessibility calculation: Calculating accessability..." << std::endl;}
+      std::ostringstream mRNA_subsequence_stream;
+      mRNA_subsequence_stream << mRNA_subsequence;
+      char mRNA_subsequence_str[mRNA_subsequence.get_length()+1];
+      mRNA_subsequence_str[0]='\0';
+      strcat(mRNA_subsequence_str,mRNA_subsequence_stream.str().c_str());
+      double **pup=(double**)space((mRNA_subsequence.get_length()+1)*sizeof(double *));
+      pup[0]=(double *)space(sizeof(double));
+      pup[0][0]=RNAplfold_width;
+      plist *dpp=NULL;
+      plist *pl;
+      FILE *pUfp=NULL;
+      FILE *spup=NULL;
+      pl=pfl_fold(mRNA_subsequence_str,RNAplfold_winsize,RNAplfold_span,0.01,pup,&dpp,pUfp,spup);
+      pUfp=fopen(RNAplfold_outfile.c_str(),"w");
+      putoutpU_prob(pup,mRNA_subsequence.get_length(),RNAplfold_width,pUfp,0);
+      fclose(pUfp);
+      free(pl);
        /*****************************************************************\ 
       | Calculate sequence position of predecited target site three prime |
       | end and the up to +-feature count nucleotides up- and downstream  |
